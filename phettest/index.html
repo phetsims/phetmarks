@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+  <title>PhET Test</title>
+
+  <style type="text/css">
+
+    #sims {
+      padding-top: 20px;
+    }
+
+    .status {
+      padding-right: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <button id="pullAll">Pull All</button>
+  <button id="chipperRefresh">Refresh Chipper</button>
+
+  <div id="pullStatus"></div>
+  <div id="chipperStatus"></div>
+
+  <table id="sims">
+  </table>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <script type="text/javascript">
+    // will be replaced by domain name in the future
+    var domain = '128.138.145.151';
+
+    document.getElementById( 'pullAll' ).addEventListener( 'click', function() {
+      var status = document.getElementById( 'pullStatus' );
+      status.innerText = 'pulling...';
+      $.ajax( 'http://' + domain + ':45362/pull-all' ).done( function( data ) {
+        status.innerText = '';
+      } ).fail( function() {
+        status.innerText = 'pull failed';
+      } );
+    } );
+
+    document.getElementById( 'chipperRefresh' ).addEventListener( 'click', function() {
+      var status = document.getElementById( 'chipperStatus' );
+      status.innerText = 'refreshing chipper';
+      $.ajax( 'http://' + domain + ':45362/chipper-refresh' ).done( function( data ) {
+        status.innerText = '';
+
+        updateSims();
+      } ).fail( function() {
+        status.innerText = 'chipper refresh failed';
+      } );
+    } );
+
+    function updateSims() {
+      var simsTable = document.getElementById( 'sims' );
+      while ( simsTable.childNodes.length ) {
+        simsTable.removeChild( simsTable.childNodes[ 0 ] );
+      }
+      $.ajax( 'http://' + domain + ':45362/sim-list' ).done( function( data ) {
+        var sims = data.output;
+
+        _.each( sims, function( simName ) {
+          // row
+          var tr = document.createElement( 'tr' );
+          simsTable.appendChild( tr );
+
+          function cell( element ) {
+            var td = document.createElement( 'td' );
+            tr.appendChild( td );
+            td.appendChild( element );
+          }
+          function linkCell( text, url ) {
+            var a = document.createElement( 'a' );
+            a.innerText = text;
+            a.href = url;
+            cell( a );
+          }
+          function actionCell( text, url ) {
+            var button = document.createElement( 'button' );
+            var status = document.createElement( 'span' );
+            status.className = 'status';
+            button.innerText = text;
+            button.addEventListener( 'click', function() {
+              status.innerText = 'running';
+              $.ajax( url ).done( function handle( data ) {
+                if ( data.success ) {
+                  status.innerText = '';
+                }
+                else {
+                  status.innerText = 'failed';
+                }
+              } ).fail( function() {
+                status.innerText = 'failed';
+              } );
+            } );
+            cell( button );
+            cell( status );
+          }
+
+          linkCell( simName, 'http://' + domain + '/' + simName + '/' + simName + '_en.html?ea&brand=phet' );
+          actionCell( 'Pull', 'http://' + domain + ':45362/pull?sim=' + simName );
+          actionCell( 'Build', 'http://' + domain + ':45362/build?sim=' + simName );
+          linkCell( 'Built Version', 'http://' + domain + '/' + simName + '/build/' + simName + '_en.html' );
+          linkCell( 'GitHub Issues', 'http://github.com/phetsims/' + simName + '/issues' );
+          linkCell( 'Dev', 'http://www.colorado.edu/physics/phet/dev/html/' + simName );
+          linkCell( 'Production', 'http://phet.colorado.edu/sims/html/' + simName + '/latest/' + simName + '_en.html' );
+        } );
+      } );
+    }
+
+    updateSims();
+  </script>
+</body>
+</html>
