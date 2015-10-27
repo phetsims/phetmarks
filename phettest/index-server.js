@@ -118,9 +118,11 @@ function taskSimList( req, res, query ) {
 
 function taskChipperRefresh( req, res, query ) {
   pull( 'chipper', function() {
-    npmInstall( 'chipper',
-                successFunction( req, res, 'chipper refresh' ),
-                errorFunction( req, res, 'chipper npm install' ) );
+    npmInstall( 'chipper', function() {
+      execute( rootDir + 'chipper/bin/clone-missing-repos.sh', [], rootDir,
+               successFunction( req, res, 'chipper refresh' ),
+               errorFunction( req, res, 'chipper clone missing repos') );
+    }, errorFunction( req, res, 'chipper npm install' ) );
   }, errorFunction( req, res, 'pull chipper' ) );
 }
 
