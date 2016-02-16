@@ -103,23 +103,23 @@
 
       function checkSim( sim ) {
         var statusElement = simSameMasterStatusElements[ sim ];
-        statusElement.innerText = '?';
+        $( statusElement ).text( '?' );
         statusElement.className = 'masterStatus';
         $.ajax( 'http://' + domain + ':45362/same-as-remote-master?repo=' + sim ).done( function( data ) {
           if ( data.output === 'same' ) {
-            statusElement.innerText = 'up-to-date';
+            $( statusElement ).text( 'up-to-date' );
             statusElement.className = 'masterStatus masterUpToDate'
           }
           else if ( data.output === 'different' ) {
-            statusElement.innerText = 'out-of-date';
+            $( statusElement ).text( 'out-of-date' );
             statusElement.className = 'masterStatus masterOutOfDate'
           } else {
-            statusElement.innerText = 'failed';
+            $( statusElement ).text( 'failed' );
             statusElement.className = 'masterStatus masterFailed'
           }
           reposToCheck.length && checkSim( reposToCheck.shift() );
         } ).fail( function() {
-          statusElement.innerText = 'failed';
+          $( statusElement ).text( 'failed' );
           statusElement.className = 'masterStatus masterFailed'
           reposToCheck.length && checkSim( reposToCheck.shift() );
         } );
@@ -131,7 +131,7 @@
     function checkCommonSameMaster() {
       var reposToCheck = [].concat( commonRepos );
       var statusElement = document.getElementById( 'commonSameAsRemoteMasterStatus' );
-      statusElement.innerText = 'checking status of common repos...';
+      $( statusElement ).text( 'checking status of common repos...' );
       statusElement.className = 'commonChecking'
       var outOfDateRepos = [];
 
@@ -146,16 +146,16 @@
           }
           else {
             if ( outOfDateRepos.length ) {
-              statusElement.innerText = 'out-of-date common repos: ' + outOfDateRepos.join( ', ' );
+              $( statusElement ).text( 'out-of-date common repos: ' + outOfDateRepos.join( ', ' ) );
               statusElement.className = 'commonOutOfDate'
             }
             else {
-              statusElement.innerText = 'common repos all up-to-date';
+              $( statusElement ).text( 'common repos all up-to-date' );
               statusElement.className = 'commonUpToDate'
             }
           }
         } ).fail( function() {
-          statusElement.innerText = 'common repo status check failed';
+          $( statusElement ).text( 'common repo status check failed' );
         } );
       }
       checkCommon( reposToCheck.shift() );
@@ -163,26 +163,26 @@
 
     document.getElementById( 'pullAll' ).addEventListener( 'click', function() {
       var status = document.getElementById( 'pullStatus' );
-      status.innerText = 'pulling...';
+      $( status ).text( 'pulling...' );
       $.ajax( 'http://' + domain + ':45362/pull-all' ).done( function( data ) {
-        status.innerText = '';
+        $( status ).text( '' );
 
         checkSimSameMaster();
         checkCommonSameMaster();
       } ).fail( function() {
-        status.innerText = 'pull failed';
+        $( status ).text( 'pull failed' );
       } );
     } );
 
     document.getElementById( 'chipperRefresh' ).addEventListener( 'click', function() {
       var status = document.getElementById( 'chipperStatus' );
-      status.innerText = 'refreshing chipper';
+      $( status ).text( 'refreshing chipper' );
       $.ajax( 'http://' + domain + ':45362/chipper-refresh' ).done( function( data ) {
-        status.innerText = '';
+        $( status ).text( '' );
 
         updateSims();
       } ).fail( function() {
-        status.innerText = 'chipper refresh failed';
+        $( status ).text( 'chipper refresh failed' );
       } );
     } );
 
@@ -206,7 +206,7 @@
           }
           function linkCell( text, url ) {
             var a = document.createElement( 'a' );
-            a.innerText = text;
+            $( a ).text( text );
             a.href = url;
             cell( a );
           }
@@ -214,19 +214,19 @@
             var button = document.createElement( 'button' );
             var status = document.createElement( 'span' );
             status.className = 'status';
-            button.innerText = text;
+            $( button ).text( text );
             button.addEventListener( 'click', function() {
-              status.innerText = 'running';
+              $( status ).text( 'running' );
               $.ajax( url ).done( function handle( data ) {
                 if ( data.success ) {
-                  status.innerText = '';
+                  $( status ).text( '' );
                 }
                 else {
-                  status.innerText = 'failed';
+                  $( status ).text( 'failed' );
                 }
                 checkSimSameMaster( [ simName ] );
               } ).fail( function() {
-                status.innerText = 'failed';
+                $( status ).text( 'failed' );
               } );
             } );
             cell( button );
@@ -235,7 +235,7 @@
           function sameAsMasterCell( simName ) {
             var status = document.createElement( 'span' );
             status.className = 'masterStatus';
-            status.innerText = '?';
+            $( status ).text( '?' );
             simSameMasterStatusElements[ simName ] = status;
             cell( status );
           }
