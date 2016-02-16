@@ -13,7 +13,7 @@ var jsonHeaders = {
 };
 
 // root of your GitHub working copy, relative to the name of the directory that the currently-executing script resides in
-var rootDir = path.normalize( __dirname + '/' );
+var rootDir = path.normalize( __dirname + '/../../' );
 
 // callback(), errCallback( code )
 function execute( cmd, args, cwd, callback, errCallback ) {
@@ -53,6 +53,10 @@ function npmInstall( repo, callback, errCallback ) {
 // callback(), errCallback( code )
 function grunt( repo, callback, errCallback ) {
   execute( 'grunt', [ '--no-color' ], rootDir + repo, callback, errCallback );
+}
+
+function isSameAsRemoteMaster( repo, sameCallback, differentCallback ) {
+  execute( 'bash', [ '../phetmarks/phettest/same-as-remote-master.sh' ], rootDir + repo, sameCallback, differentCallback );
 }
 
 function getActiveRepos() {
@@ -116,6 +120,16 @@ function taskSimList( req, res, query ) {
   } ) );
 }
 
+function taskRepoList( req, res, query ) {
+  var activeSims = getActiveRepos();
+
+  res.writeHead( 200, jsonHeaders );
+  res.end( JSON.stringify( {
+    output: activeSims,
+    success: true
+  } ) );
+}
+
 function taskChipperRefresh( req, res, query ) {
   pull( 'chipper', function() {
     npmInstall( 'chipper', function() {
@@ -162,6 +176,21 @@ function taskPullAll( req, res, query ) {
   })();
 }
 
+function taskSameAsRemoteMaster( req, res, query ) {
+  var simName = query.repo;
+
+  if ( !validateSimName( simName ) ) {
+    res.writeHead( 403, jsonHeaders );
+    res.end( JSON.stringify( {
+      output: 'Invalid repo name',
+      success: false
+    } ) );
+    return;
+  }
+
+  isSameAsRemoteMaster( simName, successFunction( req, res, 'same' ), successFunction( req, res, 'different' ) );
+}
+
 function validateSimName( simName ) {
   // validate that it is lower-case with hyphens
   for ( var i = 0; i < simName.length; i++ ) {
@@ -188,6 +217,9 @@ http.createServer( function( req, res ) {
   else if ( path === '/sim-list' ) {
     taskSimList( req, res, query );
   }
+  else if ( path === '/repo-list' ) {
+    taskRepoList( req, res, query );
+  }
   else if ( path === '/chipper-refresh' ) {
     taskChipperRefresh( req, res, query );
   }
@@ -196,6 +228,9 @@ http.createServer( function( req, res ) {
   }
   else if ( path === '/pull' ) {
     taskPull( req, res, query );
+  }
+  else if ( path === '/same-as-remote-master' ) {
+    taskSameAsRemoteMaster( req, res, query );
   }
   else {
     res.writeHead( 403, jsonHeaders );
