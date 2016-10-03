@@ -46,8 +46,8 @@ function pull( repo, callback, errCallback ) {
 }
 
 // callback(), errCallback( code )
-function npmInstall( repo, callback, errCallback ) {
-  execute( 'npm', [ 'install' ], rootDir + repo, callback, errCallback );
+function npmUpdate( repo, callback, errCallback ) {
+  execute( 'npm', [ 'update' ], rootDir + repo, callback, errCallback );
 }
 
 // callback(), errCallback( code )
@@ -103,11 +103,11 @@ function taskBuild( req, res, query ) {
     return;
   }
 
-  npmInstall( simName, function() {
+  npmUpdate( simName, function() {
     grunt( simName,
            successFunction( req, res, 'build ' + simName ),
            errorFunction( req, res, 'grunt ' + simName ) );
-  }, errorFunction( req, res, 'npm install ' + simName ) );
+  }, errorFunction( req, res, 'npm update ' + simName ) );
 }
 
 function taskSimList( req, res, query ) {
@@ -132,11 +132,11 @@ function taskRepoList( req, res, query ) {
 
 function taskChipperRefresh( req, res, query ) {
   pull( 'chipper', function() {
-    npmInstall( 'chipper', function() {
+    npmUpdate( 'chipper', function() {
       execute( rootDir + 'chipper/bin/clone-missing-repos.sh', [], rootDir,
                successFunction( req, res, 'chipper refresh' ),
                errorFunction( req, res, 'chipper clone missing repos') );
-    }, errorFunction( req, res, 'chipper npm install' ) );
+    }, errorFunction( req, res, 'chipper npm update' ) );
   }, errorFunction( req, res, 'pull chipper' ) );
 }
 
