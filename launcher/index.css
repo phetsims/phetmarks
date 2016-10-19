@@ -1,0 +1,41 @@
+button {
+  font-size: 18px;
+  margin-left: 20px;
+}
+
+.title {
+  margin: 10px 10px 10px 10px;
+  font-weight: 500;
+  font-size: 1.75em;
+  font-family: "Century Gothic", "Apple Gothic", AppleGothic, "URW Gothic L", "Avant Garde", Futura, sans-serif;
+}
+
+select option:nth-child(even) {
+  background-color: #f5ffdf;
+}
+
+select option {
+  font-size: 18px;
+}
+
+select {
+  height: 400px;
+  margin: 10px 20px 0 0;
+}
+
+.navbar {
+  position: fixed;
+  background: white;
+  display: block;
+}
+
+.content {
+  padding: 0em 0.25em;
+  background-color: #fff;
+  position: absolute;
+  top: 70px;
+}
+
+.optionsPanel {
+  float: right
+}

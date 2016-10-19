@@ -1,0 +1,49 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>PhET-iO Wrappers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="Description" lang="en" content="PhET-iO Features, examples and documentation">
+  <meta name="author" content="Sam Reid, PhET Interactive Simulations">
+  <meta name="robots" content="none">
+
+  <!-- icons -->
+  <link rel="apple-touch-icon" href="../doc/devguide/assets/img/apple-touch-icon.png">
+  <link rel="shortcut icon" href="../doc/devguide/assets/favicon.ico">
+
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<div class="navbar">
+  <div class="title">PhET-iO Wrappers
+    <button id="launchButton">Launch</button>
+    <button id="loginButton">Log In</button>
+  </div>
+</div>
+
+<div class="content">
+  <label for="simList"></label><select multiple id="simList"> </select>
+  <label for="appList"></label><select multiple id="appList">
+  <option>PhET Brand</option>
+  <option>Formatted Console Output</option>
+  <option>active</option>
+  <option>audio</option>
+  <option>beers-law-lab-load-state</option>
+  <option>classroom-activity</option>
+  <option>lab-book</option>
+  <option>event-log</option>
+  <option>instance-proxies</option>
+  <option>mirror-inputs</option>
+  <option>playback</option>
+  <option>record</option>
+  <option>screenshot</option>
+  <option>state</option>
+</select>
+  <div class="optionsPanel">
+    <label><input type="checkbox" id="showPointerAreasCheckbox" value="value">Show Pointer Areas</label>
+  </div>
+</div>
+<script type="text/javascript" src="index.js"></script>
+</body>
+</html>
