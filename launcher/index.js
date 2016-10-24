@@ -83,7 +83,7 @@
     document.getElementById( 'loginButton' ).addEventListener( 'click', function() {
       var sim = simList.value;
       var wrapper = appList.value;
-      window.location = 'login/login.html?sim=' + sim + '&wrapper=' + wrapper + '&validationRule=validateFromList';
+      window.location = '../../phet-io/wrappers/login/login.html?sim=' + sim + '&wrapper=' + wrapper + '&validationRule=validateFromList';
     } );
 
     // Focus on the sim list so it is highlighted brighter and you can type in the sim name to select it.
