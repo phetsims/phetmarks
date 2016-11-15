@@ -212,7 +212,7 @@ function populate( activeRunnables, activeRepos, activeSims ) {
 function render( activeRunnables, activeRepos, activeSims ) {
   var repoSelect = document.createElement( 'select' );
   repoSelect.style.position = 'absolute';
-  repoSelect.style.right = '0';
+  repoSelect.style.left = '0';
   repoSelect.style.top = '0';
 
   activeRepos.forEach( function( repo ) {
@@ -244,6 +244,12 @@ function render( activeRunnables, activeRepos, activeSims ) {
   choiceDiv.style.left = '0';
   choiceDiv.style.top = '10px';
   choiceDiv.style.textAlign = 'left';
+
+  var queryParametersDiv = document.createElement( 'div' );
+  queryParametersDiv.style.position = 'fixed';
+  queryParametersDiv.style.left = '0';
+  queryParametersDiv.style.top = '10px';
+  queryParametersDiv.style.textAlign = 'left';
 
   var choiceSelect = document.createElement( 'select' );
   choiceSelect.style.textAlign = 'left';
@@ -280,6 +286,7 @@ function render( activeRunnables, activeRepos, activeSims ) {
   } );
 
   document.body.appendChild( choiceDiv );
+  document.body.appendChild( queryParametersDiv );
 
   function getCurrentChoiceName() {
     return choiceSelect.childNodes[ choiceSelect.selectedIndex ].value;
@@ -335,8 +342,9 @@ function render( activeRunnables, activeRepos, activeSims ) {
 
   function layout() {
     var windowWidth = window.innerWidth;
-    repoSelect.style.right = Math.floor( windowWidth / 2 - 5 ) + 'px';
-    choiceDiv.style.left = Math.floor( windowWidth / 2 + 5 ) + 'px';
+    repoSelect.style.left = '0';
+    choiceDiv.style.left = ( repoSelect.clientWidth + 20 ) + 'px';
+    queryParametersDiv.style.left = ( repoSelect.clientWidth + + choiceDiv.clientWidth + 40 ) + 'px';
   }
 
   window.addEventListener( 'resize', layout );
@@ -371,16 +379,16 @@ function render( activeRunnables, activeRepos, activeSims ) {
     return head;
   }
 
-  choiceDiv.appendChild( choiceSelect );
-  choiceDiv.appendChild( document.createElement( 'br' ) );
   choiceDiv.appendChild( launchButton );
   choiceDiv.appendChild( document.createElement( 'br' ) );
-  // choiceDiv.appendChild( header( 'Query Parameters' ) );
-  choiceDiv.appendChild( toggleDiv );
-  choiceDiv.appendChild( document.createTextNode( 'Custom: ' ) );
-  choiceDiv.appendChild( customTextBox );
   choiceDiv.appendChild( document.createElement( 'br' ) );
-  choiceDiv.appendChild( resetButton );
+  choiceDiv.appendChild( choiceSelect );
+  // queryParametersDiv.appendChild( header( 'Query Parameters' ) );
+  queryParametersDiv.appendChild( toggleDiv );
+  queryParametersDiv.appendChild( document.createTextNode( 'Custom: ' ) );
+  queryParametersDiv.appendChild( customTextBox );
+  queryParametersDiv.appendChild( document.createElement( 'br' ) );
+  queryParametersDiv.appendChild( resetButton );
 
   var shiftPressed = false;
   window.addEventListener( 'keydown', function( event ) {
