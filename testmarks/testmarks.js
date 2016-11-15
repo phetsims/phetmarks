@@ -1,3 +1,4 @@
+// TODO: Document (by JO)
 
 console.log( 'loaded' );
 
@@ -11,32 +12,106 @@ function whiteSplit( str ) {
 
 var choiceData = {};
 
+var simQueryParameters = [
+  {
+    value: 'accessibility',
+    text: 'Accessibility'
+  },
+  {
+    value: 'audioVolume=0',
+    text: 'Mute'
+  },
+  {
+    value: 'fuzzMouse',
+    text: 'Fuzz Mouse'
+  },
+  {
+    value: 'dev',
+    text: 'Dev'
+  },
+  {
+    value: 'profiler',
+    text: 'Profiler'
+  },
+  {
+    value: 'showPointers',
+    text: 'Pointers'
+  },
+  {
+    value: 'showPointerAreas',
+    text: 'Pointer Areas'
+  },
+  {
+    value: 'showFittedBlockBounds',
+    text: 'Fitted Block Bounds'
+  },
+  {
+    value: 'showCanvasNodeBounds',
+    text: 'CanvasNode Bounds'
+  },
+  {
+    value: 'webgl=false',
+    text: 'No WebGL'
+  }
+];
+
+var devSimQueryParameters = [
+  {
+    value: 'brand=phet',
+    text: 'PhET Brand',
+    default: true
+  },
+  {
+    value: 'ea',
+    text: 'Assertions',
+    default: true
+  },
+  {
+    value: 'eall',
+    text: 'All Assertions'
+  }
+].concat( simQueryParameters );
+
+var phetIOQueryParameters = [
+  {
+    value: 'brand=phet-io&phet-io.standalone&phet-io.log=lines',
+    text: 'Formatted PhET-IO Console Output'
+  }
+];
+
 function populate( activeRunnables, activeRepos, activeSims ) {
   activeRepos.forEach( function( repo ) {
     var choices = choiceData[ repo ] = [];
+
+    var isPhetIO = _.contains( [ 'beers-law-lab', 'bending-light', 'build-an-atom', 'charges-and-fields', 'color-vision', 'concentration', 'faradays-law', 'molecules-and-light' ], repo );
+    var hasColorProfile = _.contains( [ 'charges-and-fields', 'gravity-and-orbits', 'molecule-shapes', 'molecule-shapes-basics', 'rutherford-scattering', 'states-of-matter' ] );
 
     if ( _.contains( activeRunnables, repo ) ) {
       choices.push( {
         name: 'requirejs',
         text: 'Require.js',
-        url: '../../' + repo + '/' + repo + '_en.html?ea&brand=phet',
-        queryParameters: [ 'ea', 'brand=phet' ] // TODO: how to determine query parameters
+        url: '../../' + repo + '/' + repo + '_en.html',
+        queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( devSimQueryParameters )
       } );
       choices.push( {
         name: 'compiled',
         text: 'Compiled',
-        url: '../../' + repo + '/build/' + repo + '_en.html'
+        url: '../../' + repo + '/build/' + repo + '_en.html',
+        queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+      } );
+    }
+
+    // Color picker UI
+    if ( hasColorProfile ) {
+      choices.push( {
+        name: 'colors',
+        text: 'Color Editor',
+        url: '../../' + repo + '/' + repo + '-colors.html'
       } );
     }
 
     // phet-io wrappers
-    if ( _.contains( [ 'beers-law-lab', 'bending-light', 'build-an-atom', 'charges-and-fields', 'color-vision', 'concentration', 'faradays-law', 'molecules-and-light' ], repo ) ) {
-      // TODO: this is a query parameter?
-      choices.push( {
-        name: 'console-output',
-        text: 'Formatted Console Output',
-        url: '../../' + repo + '/' + repo + '_en.html?ea&brand=phet-io&phet-io.standalone&phet-io.log=lines'
-      } );
+    if ( isPhetIO ) {
       [
         'active',
         'audio',
@@ -55,7 +130,8 @@ function populate( activeRunnables, activeRepos, activeSims ) {
         choices.push( {
           name: wrapper,
           text: wrapper,
-          url: '../../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo
+          url: '../../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo,
+          queryParameters: phetIOQueryParameters.concat( devSimQueryParameters )
         } );
       } );
     }
@@ -72,6 +148,53 @@ function populate( activeRunnables, activeRepos, activeSims ) {
         url: '../../' + repo + '/tests/qunit/compiled-unit-tests.html'
       } );
     }
+    if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-io' ) {
+      choices.push( {
+        name: 'documentation',
+        text: 'Documentation',
+        url: '../../' + repo + '/doc/'
+      } );
+    }
+    if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
+      choices.push( {
+        name: 'examples',
+        text: 'Examples',
+        url: '../../' + repo + '/examples/'
+      } );
+    }
+    if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-core' ) {
+      choices.push( {
+        name: 'playground',
+        text: 'Playground',
+        url: '../../' + repo + '/tests/playground.html'
+      } );
+    }
+    if ( repo === 'phet-io' ) {
+      choices.push( {
+        name: 'wrappers',
+        text: 'Wrappers',
+        url: '../../' + repo + '/html/dev-wrappers.html'
+      } );
+    }
+    if ( repo === 'phetmarks' ) {
+      choices.push( {
+        name: 'launcher',
+        text: 'Launcher',
+        url: '../../phetmarks/launcher'
+      } );
+    }
+    if ( repo === 'chipper' ) {
+      choices.push( {
+        name: 'test-sims',
+        text: 'Test Sims (Fast Build)',
+        url: '../../aqua/test-server/test-sims.html?ea&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse'
+      } );
+      choices.push( {
+        name: 'test-sims-load-only',
+        text: 'Test Sims (Load Only)',
+        url: '../../aqua/test-server/test-sims.html?ea&audioVolume=0&testTask=false&testBuilt=false'
+      } );
+    }
 
     choices.push( {
       name: 'github',
@@ -86,23 +209,29 @@ function populate( activeRunnables, activeRepos, activeSims ) {
   } );
 }
 
-var PADDING = 2;
-
 function render( activeRunnables, activeRepos, activeSims ) {
   var repoSelect = document.createElement( 'select' );
+  repoSelect.style.position = 'absolute';
+  repoSelect.style.right = '0';
+  repoSelect.style.top = '0';
 
   activeRepos.forEach( function( repo ) {
     var repoOption = document.createElement( 'option' );
     repoOption.value = repo;
     repoOption.label = repo;
+    repoOption.innerHTML = repo;
     repoSelect.appendChild( repoOption );
   } );
-  repoSelect.setAttribute( 'size', activeRepos.length );
+  document.body.appendChild( repoSelect );
+  if ( repoSelect.scrollIntoView && navigator.userAgent.indexOf( 'Trident/' ) < 0 ) {
+    repoSelect.setAttribute( 'size', activeRepos.length );
+  }
+  else {
+    repoSelect.setAttribute( 'size', 30 );
+  }
   if ( localStorage.getItem( 'testmarks-repo' ) ) {
     repoSelect.value = localStorage.getItem( 'testmarks-repo' );
   }
-
-  document.body.appendChild( repoSelect );
 
   repoSelect.focus();
 
@@ -112,13 +241,15 @@ function render( activeRunnables, activeRepos, activeSims ) {
 
   var choiceDiv = document.createElement( 'div' );
   choiceDiv.style.position = 'fixed';
-  choiceDiv.style.left = ( repoSelect.clientWidth + PADDING ) + 'px';
-  choiceDiv.style.top = '0';
-  choiceDiv.style.textAlign = 'center';
+  choiceDiv.style.left = '0';
+  choiceDiv.style.top = '10px';
+  choiceDiv.style.textAlign = 'left';
 
   var choiceSelect = document.createElement( 'select' );
+  choiceSelect.style.textAlign = 'left';
 
   var toggleDiv = document.createElement( 'div' );
+  window.toggleDiv = toggleDiv;
 
   function updateChoices() {
     localStorage.setItem( 'testmarks-repo', getCurrentRepo() );
@@ -127,6 +258,7 @@ function render( activeRunnables, activeRepos, activeSims ) {
       var choiceOption = document.createElement( 'option' );
       choiceOption.value = choice.name;
       choiceOption.label = choice.text;
+      choiceOption.innerHTML = choice.text;
       choiceSelect.appendChild( choiceOption );
     } );
     choiceSelect.setAttribute( 'size', choiceData[ getCurrentRepo() ].length );
@@ -134,22 +266,84 @@ function render( activeRunnables, activeRepos, activeSims ) {
     if ( choiceSelect.selectedIndex < 0 ) {
       choiceSelect.selectedIndex = 0;
     }
+
+    updateQueryParameters();
   }
-  updateChoices();
+
+  var customTextBox = document.createElement( 'input' );
+  customTextBox.type = 'text';
+  if ( localStorage.getItem( 'testmarks-customText' ) ) {
+    customTextBox.value = localStorage.getItem( 'testmarks-customText' );
+  }
+  customTextBox.addEventListener( 'input', function() {
+    localStorage.setItem( 'testmarks-customText', customTextBox.value );
+  } );
 
   document.body.appendChild( choiceDiv );
 
   function getCurrentChoiceName() {
     return choiceSelect.childNodes[ choiceSelect.selectedIndex ].value;
   }
-  function getCurrentURL() {
+  function getCurrentChoice() {
     var currentChoiceName = getCurrentChoiceName();
     return _.filter( choiceData[ getCurrentRepo() ], function( choice ) {
       return choice.name === currentChoiceName;
-    } )[ 0 ].url;
+    } )[ 0 ];
   }
 
+  function getQueryParameters() {
+    return _.map( _.filter( $( toggleDiv ).find( ':checkbox' ), function( checkbox ) {
+      return checkbox.checked;
+    } ), function( checkbox ) {
+      return checkbox.name;
+    } ).concat( customTextBox.value.length ? [ customTextBox.value ] : [] ).join( '&' );
+  }
+
+  function getCurrentURL() {
+    var queryParameters = getQueryParameters();
+    return getCurrentChoice().url + ( queryParameters.length ? '?' + queryParameters : '' );
+  }
+
+  function updateQueryParameters() {
+    while ( toggleDiv.childNodes.length ) { toggleDiv.removeChild( toggleDiv.childNodes[ 0 ] ); }
+
+    var queryParameters = getCurrentChoice().queryParameters || [];
+    queryParameters.forEach( function( parameter ) {
+      var label = document.createElement( 'label' );
+      var checkBox = document.createElement( 'input' );
+      checkBox.type = 'checkbox';
+      checkBox.name = parameter.value;
+      label.appendChild( checkBox );
+      label.appendChild( document.createTextNode( parameter.text + ' (' + parameter.value + ')' ) );
+      toggleDiv.appendChild( label );
+      toggleDiv.appendChild( document.createElement( 'br' ) );
+      var checked = localStorage.getItem( 'testmarks-query-' + parameter.value );
+      if ( typeof checked === 'string' ) {
+        checkBox.checked = checked === 'true';
+      }
+      else {
+        checkBox.checked = !!parameter.default;
+      }
+
+      checkBox.addEventListener( 'change', function() {
+        localStorage.setItem( 'testmarks-query-' + parameter.value, checkBox.checked );
+      } );
+    } );
+
+    layout();
+  }
+
+  function layout() {
+    var windowWidth = window.innerWidth;
+    repoSelect.style.right = Math.floor( windowWidth / 2 - 5 ) + 'px';
+    choiceDiv.style.left = Math.floor( windowWidth / 2 + 5 ) + 'px';
+  }
+
+  window.addEventListener( 'resize', layout );
+
   var launchButton = document.createElement( 'button' );
+  launchButton.style.fontSize = '20px';
+  launchButton.style.padding = '0px 15px';
   launchButton.name = 'launch';
   launchButton.innerHTML = 'Launch';
 
@@ -157,11 +351,36 @@ function render( activeRunnables, activeRepos, activeSims ) {
     open( getCurrentURL() );
   } );
 
+  var resetButton = document.createElement( 'button' );
+  resetButton.name = 'reset';
+  resetButton.innerHTML = 'Reset Query Parameters';
+
+  resetButton.addEventListener( 'click', function() {
+    customTextBox.value = '';
+    localStorage.setItem( 'testmarks-customText', '' )
+    _.forEach( $( toggleDiv ).find( ':checkbox' ), function( checkbox ) {
+      var parameter = _.filter( getCurrentChoice().queryParameters, function( param ) { return param.value === checkbox.name; } )[ 0 ];
+      checkbox.checked = !!parameter.default;
+      localStorage.setItem( 'testmarks-query-' + parameter.value, checkbox.checked );
+    } );
+  } );
+
+  function header( str ) {
+    var head = document.createElement( 'h3' );
+    head.appendChild( document.createTextNode( str ) );
+    return head;
+  }
+
   choiceDiv.appendChild( choiceSelect );
   choiceDiv.appendChild( document.createElement( 'br' ) );
-  choiceDiv.appendChild( toggleDiv );
-  choiceDiv.appendChild( document.createElement( 'br' ) );
   choiceDiv.appendChild( launchButton );
+  choiceDiv.appendChild( document.createElement( 'br' ) );
+  // choiceDiv.appendChild( header( 'Query Parameters' ) );
+  choiceDiv.appendChild( toggleDiv );
+  choiceDiv.appendChild( document.createTextNode( 'Custom: ' ) );
+  choiceDiv.appendChild( customTextBox );
+  choiceDiv.appendChild( document.createElement( 'br' ) );
+  choiceDiv.appendChild( resetButton );
 
   var shiftPressed = false;
   window.addEventListener( 'keydown', function( event ) {
@@ -182,10 +401,22 @@ function render( activeRunnables, activeRepos, activeSims ) {
 
   repoSelect.addEventListener( 'change', updateChoices );
 
+  repoSelect.addEventListener( 'change', function() {
+    var element = repoSelect.childNodes[ repoSelect.selectedIndex ];
+    if ( element.scrollIntoViewIfNeeded ) {
+      element.scrollIntoViewIfNeeded();
+    }
+    else if ( element.scrollIntoView ) {
+      element.scrollIntoView();
+    }
+  } );
+
   choiceSelect.addEventListener( 'change', function() {
     localStorage.setItem( 'testmarks-choice', getCurrentChoiceName() );
   } );
 
+  choiceSelect.addEventListener( 'input', updateQueryParameters );
+  updateChoices();
 
   window.addEventListener( 'keydown', function( event ) {
     // Check for enter key
