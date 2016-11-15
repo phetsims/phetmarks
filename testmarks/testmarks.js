@@ -16,6 +16,8 @@
 
   var choiceData = {};
 
+  var schema = window.phet.chipper.queryParameterSchema;
+
   var simQueryParameters = [
     {
       value: 'accessibility',
@@ -58,6 +60,14 @@
       text: 'No WebGL'
     }
   ];
+
+  // TODO: use the schema
+  // for (var key in schema){
+  //   simQueryParameters.push({
+  //     value: key,
+  //     text: key
+  //   });
+  // }
 
   var devSimQueryParameters = [
     {
