@@ -104,12 +104,14 @@
         choices.push( {
           name: 'requirejs',
           text: 'Require.js',
+          description: 'Runs the simulation from the top-level development HTML in require.js mode',
           url: '../' + repo + '/' + repo + '_en.html',
           queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( devSimQueryParameters )
         } );
         choices.push( {
           name: 'compiled',
           text: 'Compiled',
+          description: 'Runs the English simulation from the build/ directory (built from chipper)',
           url: '../' + repo + '/build/' + repo + '_en.html',
           queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
@@ -120,7 +122,77 @@
         choices.push( {
           name: 'colors',
           text: 'Color Editor',
+          description: 'Runs the top-level -colors.html file (allows editing/viewing different profile colors)',
           url: '../' + repo + '/' + repo + '-colors.html'
+        } );
+      }
+
+      if ( repo === 'axon' || repo === 'phet-core' || repo === 'dot' || repo === 'kite' || repo === 'scenery' ) {
+        choices.push( {
+          name: 'unitTestsRequirejs',
+          text: 'Unit Tests (Require.js)',
+          description: 'Runs unit tests in require.js mode',
+          url: '../' + repo + '/tests/qunit/unit-tests.html'
+        } );
+        choices.push( {
+          name: 'unitTestsCompiled',
+          text: 'Unit Tests (Compiled)',
+          description: 'Runs unit tests from a compiled (built) file. Run "grunt build-js" first',
+          url: '../' + repo + '/tests/qunit/compiled-unit-tests.html'
+        } );
+      }
+      if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-io' ) {
+        choices.push( {
+          name: 'documentation',
+          text: 'Documentation',
+          description: 'Browse HTML documentation',
+          url: '../' + repo + '/doc/'
+        } );
+      }
+      if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
+        choices.push( {
+          name: 'examples',
+          text: 'Examples',
+          description: 'Browse Examples',
+          url: '../' + repo + '/examples/'
+        } );
+      }
+      if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-core' ) {
+        choices.push( {
+          name: 'playground',
+          text: 'Playground',
+          description: 'Loads ' + repo + ' and dependencies in the tab, and allows quick testing',
+          url: '../' + repo + '/tests/playground.html'
+        } );
+      }
+      if ( repo === 'phet-io' ) {
+        choices.push( {
+          name: 'wrappers',
+          text: 'Wrappers',
+          description: 'Points to many dev wrappers',
+          url: '../' + repo + '/html/dev-wrappers.html'
+        } );
+      }
+      if ( repo === 'phetmarks' ) {
+        choices.push( {
+          name: 'launcher',
+          text: 'Launcher',
+          description: 'Launcher for phet-io',
+          url: '../phetmarks/launcher'
+        } );
+      }
+      if ( repo === 'chipper' ) {
+        choices.push( {
+          name: 'test-sims',
+          text: 'Test Sims (Fast Build)',
+          description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
+          url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse'
+        } );
+        choices.push( {
+          name: 'test-sims-load-only',
+          text: 'Test Sims (Load Only)',
+          description: 'Runs automated testing that just loads sims (without fuzzing or building)',
+          url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testTask=false&testBuilt=false'
         } );
       }
 
@@ -144,80 +216,23 @@
           choices.push( {
             name: wrapper,
             text: wrapper,
+            description: 'Runs the phet-io wrapper ' + wrapper,
             url: '../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo,
             queryParameters: phetIOQueryParameters.concat( devSimQueryParameters )
           } );
         } );
       }
 
-      if ( repo === 'axon' || repo === 'phet-core' || repo === 'dot' || repo === 'kite' || repo === 'scenery' ) {
-        choices.push( {
-          name: 'unitTestsRequirejs',
-          text: 'Unit Tests (Require.js)',
-          url: '../' + repo + '/tests/qunit/unit-tests.html'
-        } );
-        choices.push( {
-          name: 'unitTestsCompiled',
-          text: 'Unit Tests (Compiled)',
-          url: '../' + repo + '/tests/qunit/compiled-unit-tests.html'
-        } );
-      }
-      if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-io' ) {
-        choices.push( {
-          name: 'documentation',
-          text: 'Documentation',
-          url: '../' + repo + '/doc/'
-        } );
-      }
-      if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
-        choices.push( {
-          name: 'examples',
-          text: 'Examples',
-          url: '../' + repo + '/examples/'
-        } );
-      }
-      if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-core' ) {
-        choices.push( {
-          name: 'playground',
-          text: 'Playground',
-          url: '../' + repo + '/tests/playground.html'
-        } );
-      }
-      if ( repo === 'phet-io' ) {
-        choices.push( {
-          name: 'wrappers',
-          text: 'Wrappers',
-          url: '../' + repo + '/html/dev-wrappers.html'
-        } );
-      }
-      if ( repo === 'phetmarks' ) {
-        choices.push( {
-          name: 'launcher',
-          text: 'Launcher',
-          url: '../phetmarks/launcher'
-        } );
-      }
-      if ( repo === 'chipper' ) {
-        choices.push( {
-          name: 'test-sims',
-          text: 'Test Sims (Fast Build)',
-          url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse'
-        } );
-        choices.push( {
-          name: 'test-sims-load-only',
-          text: 'Test Sims (Load Only)',
-          url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testTask=false&testBuilt=false'
-        } );
-      }
-
       choices.push( {
         name: 'github',
         text: 'GitHub',
+        description: 'Opens to the repository\'s GitHub main page',
         url: 'https://github.com/phetsims/' + repo
       } );
       choices.push( {
         name: 'issues',
         text: 'Issues',
+        description: 'Opens to the repository\'s GitHub issues page',
         url: 'https://github.com/phetsims/' + repo + '/issues'
       } );
     } );
@@ -230,6 +245,7 @@
     repoDiv.style.top = '10px';
 
     var repoSelect = document.createElement( 'select' );
+    repoSelect.autofocus = true;
     activeRepos.forEach( function( repo ) {
       var repoOption = document.createElement( 'option' );
       repoOption.value = repo;
@@ -278,6 +294,7 @@
         var choiceOption = document.createElement( 'option' );
         choiceOption.value = choice.name;
         choiceOption.label = choice.text;
+        choiceOption.title = choice.description;
         choiceOption.innerHTML = choice.text;
         choiceSelect.appendChild( choiceOption );
       } );
