@@ -224,11 +224,12 @@
   }
 
   function render( activeRunnables, activeRepos, activeSims ) {
-    var repoSelect = document.createElement( 'select' );
-    repoSelect.style.position = 'absolute';
-    repoSelect.style.left = '0';
-    repoSelect.style.top = '0';
+    var repoDiv = document.createElement( 'div' );
+    repoDiv.style.position = 'absolute';
+    repoDiv.style.left = '0';
+    repoDiv.style.top = '10px';
 
+    var repoSelect = document.createElement( 'select' );
     activeRepos.forEach( function( repo ) {
       var repoOption = document.createElement( 'option' );
       repoOption.value = repo;
@@ -236,7 +237,6 @@
       repoOption.innerHTML = repo;
       repoSelect.appendChild( repoOption );
     } );
-    document.body.appendChild( repoSelect );
     if ( repoSelect.scrollIntoView && navigator.userAgent.indexOf( 'Trident/' ) < 0 ) {
       repoSelect.setAttribute( 'size', activeRepos.length );
     }
@@ -299,6 +299,7 @@
       localStorage.setItem( 'testmarks-customText', customTextBox.value );
     } );
 
+    document.body.appendChild( repoDiv );
     document.body.appendChild( choiceDiv );
     document.body.appendChild( queryParametersDiv );
 
@@ -394,13 +395,16 @@
       return head;
     }
 
-    choiceDiv.appendChild( launchButton );
-    choiceDiv.appendChild( document.createElement( 'br' ) );
-    choiceDiv.appendChild( document.createElement( 'br' ) );
+    repoDiv.appendChild( header( 'Repositories' ) );
+    repoDiv.appendChild( repoSelect );
+    choiceDiv.appendChild( header( 'Modes' ) );
     choiceDiv.appendChild( choiceSelect );
-    // queryParametersDiv.appendChild( header( 'Query Parameters' ) );
+    choiceDiv.appendChild( document.createElement( 'br' ) );
+    choiceDiv.appendChild( document.createElement( 'br' ) );
+    choiceDiv.appendChild( launchButton );
+    queryParametersDiv.appendChild( header( 'Query Parameters' ) );
     queryParametersDiv.appendChild( toggleDiv );
-    queryParametersDiv.appendChild( document.createTextNode( 'Custom: ' ) );
+    queryParametersDiv.appendChild( document.createTextNode( 'Query Parameters: ' ) );
     queryParametersDiv.appendChild( customTextBox );
     queryParametersDiv.appendChild( document.createElement( 'br' ) );
     queryParametersDiv.appendChild( resetButton );
