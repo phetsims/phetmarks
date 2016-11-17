@@ -14,10 +14,10 @@ phetmarks/ shows a raw-HTML list of bookmarks, that may be replaced in the futur
 
 Contains a phet-io style launcher of sims
 
-# testmarks directory
-
-Contains a phetmarks-style prototype that is automatically generated, see https://github.com/phetsims/phetmarks/issues/6
-
 # phettest directory
 
 HTML interface and Node.js server running on phettest.colorado.edu. Provides an interface to run simulations, pull repositories, see what is out-of-date, and build simulations.
+
+# js directory
+
+Used for the main phetmarks index.html.

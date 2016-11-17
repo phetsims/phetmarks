@@ -104,13 +104,13 @@
         choices.push( {
           name: 'requirejs',
           text: 'Require.js',
-          url: '../../' + repo + '/' + repo + '_en.html',
+          url: '../' + repo + '/' + repo + '_en.html',
           queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( devSimQueryParameters )
         } );
         choices.push( {
           name: 'compiled',
           text: 'Compiled',
-          url: '../../' + repo + '/build/' + repo + '_en.html',
+          url: '../' + repo + '/build/' + repo + '_en.html',
           queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
       }
@@ -120,7 +120,7 @@
         choices.push( {
           name: 'colors',
           text: 'Color Editor',
-          url: '../../' + repo + '/' + repo + '-colors.html'
+          url: '../' + repo + '/' + repo + '-colors.html'
         } );
       }
 
@@ -144,7 +144,7 @@
           choices.push( {
             name: wrapper,
             text: wrapper,
-            url: '../../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo,
+            url: '../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo,
             queryParameters: phetIOQueryParameters.concat( devSimQueryParameters )
           } );
         } );
@@ -154,59 +154,59 @@
         choices.push( {
           name: 'unitTestsRequirejs',
           text: 'Unit Tests (Require.js)',
-          url: '../../' + repo + '/tests/qunit/unit-tests.html'
+          url: '../' + repo + '/tests/qunit/unit-tests.html'
         } );
         choices.push( {
           name: 'unitTestsCompiled',
           text: 'Unit Tests (Compiled)',
-          url: '../../' + repo + '/tests/qunit/compiled-unit-tests.html'
+          url: '../' + repo + '/tests/qunit/compiled-unit-tests.html'
         } );
       }
       if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-io' ) {
         choices.push( {
           name: 'documentation',
           text: 'Documentation',
-          url: '../../' + repo + '/doc/'
+          url: '../' + repo + '/doc/'
         } );
       }
       if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
         choices.push( {
           name: 'examples',
           text: 'Examples',
-          url: '../../' + repo + '/examples/'
+          url: '../' + repo + '/examples/'
         } );
       }
       if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-core' ) {
         choices.push( {
           name: 'playground',
           text: 'Playground',
-          url: '../../' + repo + '/tests/playground.html'
+          url: '../' + repo + '/tests/playground.html'
         } );
       }
       if ( repo === 'phet-io' ) {
         choices.push( {
           name: 'wrappers',
           text: 'Wrappers',
-          url: '../../' + repo + '/html/dev-wrappers.html'
+          url: '../' + repo + '/html/dev-wrappers.html'
         } );
       }
       if ( repo === 'phetmarks' ) {
         choices.push( {
           name: 'launcher',
           text: 'Launcher',
-          url: '../../phetmarks/launcher'
+          url: '../phetmarks/launcher'
         } );
       }
       if ( repo === 'chipper' ) {
         choices.push( {
           name: 'test-sims',
           text: 'Test Sims (Fast Build)',
-          url: '../../aqua/test-server/test-sims.html?ea&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse'
+          url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse'
         } );
         choices.push( {
           name: 'test-sims-load-only',
           text: 'Test Sims (Load Only)',
-          url: '../../aqua/test-server/test-sims.html?ea&audioVolume=0&testTask=false&testBuilt=false'
+          url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testTask=false&testBuilt=false'
         } );
       }
 
@@ -450,17 +450,17 @@
   }
 
   $.ajax( {
-    url: '../../chipper/data/active-runnables'
+    url: '../chipper/data/active-runnables'
   } ).done( function( activeRunnablesString ) {
     var activeRunnables = whiteSplit( activeRunnablesString );
 
     $.ajax( {
-      url: '../../chipper/data/active-repos'
+      url: '../chipper/data/active-repos'
     } ).done( function( activeReposString ) {
       var activeRepos = whiteSplit( activeReposString );
 
       $.ajax( {
-        url: '../../chipper/data/active-sims'
+        url: '../chipper/data/active-sims'
       } ).done( function( activeSimsString ) {
         var activeSims = whiteSplit( activeSimsString );
 
