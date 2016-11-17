@@ -106,14 +106,16 @@
           text: 'Require.js',
           description: 'Runs the simulation from the top-level development HTML in require.js mode',
           url: '../' + repo + '/' + repo + '_en.html',
-          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( devSimQueryParameters )
+          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( devSimQueryParameters ),
+          customQueryParameters: true
         } );
         choices.push( {
           name: 'compiled',
           text: 'Compiled',
           description: 'Runs the English simulation from the build/ directory (built from chipper)',
           url: '../' + repo + '/build/' + repo + '_en.html',
-          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters ),
+          customQueryParameters: true
         } );
       }
 
@@ -186,13 +188,15 @@
           name: 'test-sims',
           text: 'Test Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
-          url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse'
+          url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse',
+          customQueryParameters: true
         } );
         choices.push( {
           name: 'test-sims-load-only',
           text: 'Test Sims (Load Only)',
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
-          url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testTask=false&testBuilt=false'
+          url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testTask=false&testBuilt=false',
+          customQueryParameters: true
         } );
       }
 
@@ -218,7 +222,8 @@
             text: wrapper,
             description: 'Runs the phet-io wrapper ' + wrapper,
             url: '../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo,
-            queryParameters: phetIOQueryParameters.concat( devSimQueryParameters )
+            queryParameters: phetIOQueryParameters.concat( devSimQueryParameters ),
+            customQueryParameters: true
           } );
         } );
       }
@@ -347,6 +352,8 @@
     function updateQueryParameters() {
       while ( toggleDiv.childNodes.length ) { toggleDiv.removeChild( toggleDiv.childNodes[ 0 ] ); }
 
+      queryParametersDiv.style.visibility = getCurrentChoice().customQueryParameters ? 'inherit' : 'hidden';
+
       var queryParameters = getCurrentChoice().queryParameters || [];
       queryParameters.forEach( function( parameter ) {
         var label = document.createElement( 'label' );
@@ -368,6 +375,7 @@
         checkBox.addEventListener( 'change', function() {
           localStorage.setItem( 'testmarks-query-' + parameter.value, checkBox.checked );
         } );
+
       } );
 
       layout();
