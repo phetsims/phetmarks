@@ -321,6 +321,36 @@
       localStorage.setItem( 'testmarks-customText', customTextBox.value );
     } );
 
+    var screensDiv = document.createElement( 'div' );
+    function createScreenRadioButton( name, value, text ) {
+      var label = document.createElement( 'label' );
+      var radio = document.createElement( 'input' );
+      radio.type = 'radio';
+      radio.name = name;
+      radio.value = value;
+      if ( typeof localStorage.getItem( 'testmarks-screens-' + value ) !== 'string' ) {
+        radio.checked = value === 'all';
+        localStorage.setItem( 'testmarks-screens-' + value, radio.checked );
+      }
+      else {
+        radio.checked = localStorage.getItem( 'testmarks-screens-' + value ) === 'true';
+      }
+      radio.addEventListener( 'change', function() {
+        var selectedValue = $( 'input[name=screens]:checked' ).val();
+        [ 'all', '1', '2', '3', '4', '5', '6' ].forEach( function( otherValue ) {
+          localStorage.setItem( 'testmarks-screens-' + otherValue, otherValue === selectedValue );
+        } );
+      } );
+      label.appendChild( radio );
+      label.appendChild( document.createTextNode( text ) );
+      label.style.paddingRight = '8px';
+      return label;
+    }
+    screensDiv.appendChild( createScreenRadioButton( 'screens', 'all', 'All screens' ) );
+    for ( var i = 1; i <= 6; i++ ) {
+      screensDiv.appendChild( createScreenRadioButton( 'screens', '' + i, '' + i ) );
+    }
+
     document.body.appendChild( repoDiv );
     document.body.appendChild( choiceDiv );
     document.body.appendChild( queryParametersDiv );
@@ -337,11 +367,14 @@
     }
 
     function getQueryParameters() {
+      var screensValue = $( 'input[name=screens]:checked' ).val();
       return _.map( _.filter( $( toggleDiv ).find( ':checkbox' ), function( checkbox ) {
         return checkbox.checked;
       } ), function( checkbox ) {
         return checkbox.name;
-      } ).concat( customTextBox.value.length ? [ customTextBox.value ] : [] ).join( '&' );
+      } ).concat( customTextBox.value.length ? [ customTextBox.value ] : [] ).concat(
+        screensValue === 'all' ? [] : [ 'screens=' + screensValue ]
+      ).join( '&' );
     }
 
     function getCurrentURL() {
@@ -429,6 +462,7 @@
     choiceDiv.appendChild( launchButton );
     queryParametersDiv.appendChild( header( 'Query Parameters' ) );
     queryParametersDiv.appendChild( toggleDiv );
+    queryParametersDiv.appendChild( screensDiv );
     queryParametersDiv.appendChild( document.createTextNode( 'Query Parameters: ' ) );
     queryParametersDiv.appendChild( customTextBox );
     queryParametersDiv.appendChild( document.createElement( 'br' ) );
