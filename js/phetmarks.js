@@ -30,7 +30,8 @@
 (function() {
   'use strict';
 
-  var schema = window.phet.chipper.queryParameterSchema;
+  // TODO: Use schema? (commented out for linting)
+  // var schema = window.phet.chipper.queryParameterSchema;
 
   var simQueryParameters = [
     { value: 'accessibility', text: 'Accessibility' },
@@ -393,10 +394,9 @@
   /**
    * @param {Object} modeData - Maps from {string} repository name => {Mode}
    * @param {Object} modeSelector
-   * @param {Object} screenSelector
    * @returns { element: {HTMLSelectElement}, get value(): {string} }
    */
-  function createQueryParameterSelector( modeData, modeSelector, screenSelector ) {
+  function createQueryParameterSelector( modeData, modeSelector ) {
     var screenSelector = createScreenSelector();
 
     var customTextBox = document.createElement( 'input' );
@@ -455,7 +455,7 @@
         screenSelector.reset();
 
         customTextBox.value = '';
-        localStorage.setItem( 'testmarks-customText', '' )
+        localStorage.setItem( 'testmarks-customText', '' );
         _.forEach( $( toggleContainer ).find( ':checkbox' ), function( checkbox ) {
           var parameter = _.filter( modeSelector.mode.queryParameters, function( param ) { return param.value === checkbox.name; } )[ 0 ];
           checkbox.checked = !!parameter.default;
@@ -530,7 +530,6 @@
 
     // Align panels based on width
     function layout() {
-      var windowWidth = window.innerWidth;
       modeDiv.style.left = ( repositorySelector.element.clientWidth + 20 ) + 'px';
       queryParametersDiv.style.left = ( repositorySelector.element.clientWidth + +modeDiv.clientWidth + 40 ) + 'px';
     }
