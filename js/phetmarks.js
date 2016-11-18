@@ -183,7 +183,7 @@
           url: '../phetmarks/launcher'
         } );
       }
-      if ( repo === 'chipper' ) {
+      if ( repo === 'chipper' || repo === 'aqua' ) {
         choices.push( {
           name: 'test-sims',
           text: 'Test Sims (Fast Build)',
