@@ -30,8 +30,6 @@
 (function() {
   'use strict';
 
-  // TODO: Reset should reset the screens selection
-
   var schema = window.phet.chipper.queryParameterSchema;
 
   var simQueryParameters = [
@@ -77,12 +75,30 @@
     'states-of-matter'
   ];
 
+  // Track whether 'shift' key is pressed, so that we can change how windows are opened
+  var shiftPressed = false;
+  window.addEventListener( 'keydown', function( event ) {
+    shiftPressed = event.shiftKey;
+  } );
+  window.addEventListener( 'keyup', function( event ) {
+    shiftPressed = event.shiftKey;
+  } );
+  function openURL( url ) {
+    if ( shiftPressed ) {
+      window.open( url, '_blank' );
+    }
+    else {
+      window.location = url;
+    }
+  }
+
   /**
    * Fills out the modeData map with information about repositories, modes and query parameters.
    *
    * @param {Array.<string>} activeRunnables - from active-runnables
    * @param {Array.<string>} activeRepos - from active-repos
    * @param {Array.<string>} activeSims - from active-sims
+   * @returns {Object} - Maps from {string} repository name => {Mode}
    */
   function populate( activeRunnables, activeRepos, activeSims ) {
     var modeData = {};
@@ -233,72 +249,155 @@
     return modeData;
   }
 
+  function clearChildren( element ) {
+    while ( element.childNodes.length ) { element.removeChild( element.childNodes[ 0 ] ); }
+  }
+
   /**
-   * Create the view and hook everything up
-   *
-   * @param {Object} modeData - Created by populate()
+   * @param {Object} modeData - Maps from {string} repository name => {Mode}
+   * @returns { element: {HTMLSelectElement}, get value(): {string} }
    */
-  function render( modeData ) {
+  function createRepositorySelector( modeData ) {
     var repositories = Object.keys( modeData );
 
-    var repoDiv = document.createElement( 'div' );
-    repoDiv.id = 'repositories';
-
-    var repoSelect = document.createElement( 'select' );
-    repoSelect.autofocus = true;
+    var select = document.createElement( 'select' );
+    select.autofocus = true;
     repositories.forEach( function( repo ) {
-      var repoOption = document.createElement( 'option' );
-      repoOption.value = repo;
-      repoOption.label = repo;
-      repoOption.innerHTML = repo;
-      repoSelect.appendChild( repoOption );
+      var option = document.createElement( 'option' );
+      option.value = option.label = option.innerHTML = repo;
+      select.appendChild( option );
     } );
-    if ( repoSelect.scrollIntoView && navigator.userAgent.indexOf( 'Trident/' ) < 0 ) {
-      repoSelect.setAttribute( 'size', repositories.length );
+
+    // IE or no-scrollIntoView will need to be height-limited
+    if ( select.scrollIntoView && navigator.userAgent.indexOf( 'Trident/' ) < 0 ) {
+      select.setAttribute( 'size', repositories.length );
     }
     else {
-      repoSelect.setAttribute( 'size', 30 );
+      select.setAttribute( 'size', 30 );
     }
+
+    // Select a repository if it's been stored in localStorage before
     if ( localStorage.getItem( 'testmarks-repo' ) ) {
-      repoSelect.value = localStorage.getItem( 'testmarks-repo' );
+      select.value = localStorage.getItem( 'testmarks-repo' );
     }
 
-    repoSelect.focus();
+    select.focus();
 
-    function getCurrentRepo() {
-      return repoSelect.childNodes[ repoSelect.selectedIndex ].value;
-    }
-
-    var choiceDiv = document.createElement( 'div' );
-    choiceDiv.id = 'choices';
-
-    var queryParametersDiv = document.createElement( 'div' );
-    queryParametersDiv.id = 'queryParameters';
-
-    var choiceSelect = document.createElement( 'select' );
-
-    var toggleDiv = document.createElement( 'div' );
-    window.toggleDiv = toggleDiv;
-
-    function updateChoices() {
-      localStorage.setItem( 'testmarks-repo', getCurrentRepo() );
-      while ( choiceSelect.childNodes.length ) { choiceSelect.removeChild( choiceSelect.childNodes[ 0 ] ); }
-      modeData[ getCurrentRepo() ].forEach( function( choice ) {
-        var choiceOption = document.createElement( 'option' );
-        choiceOption.value = choice.name;
-        choiceOption.label = choice.text;
-        choiceOption.title = choice.description;
-        choiceOption.innerHTML = choice.text;
-        choiceSelect.appendChild( choiceOption );
-      } );
-      choiceSelect.setAttribute( 'size', modeData[ getCurrentRepo() ].length );
-      choiceSelect.value = localStorage.getItem( 'testmarks-choice' );
-      if ( choiceSelect.selectedIndex < 0 ) {
-        choiceSelect.selectedIndex = 0;
+    // Scroll to the selected element
+    select.addEventListener( 'change', function() {
+      var element = select.childNodes[ select.selectedIndex ];
+      if ( element.scrollIntoViewIfNeeded ) {
+        element.scrollIntoViewIfNeeded();
       }
+      else if ( element.scrollIntoView ) {
+        element.scrollIntoView();
+      }
+    } );
 
-      updateQueryParameters();
+    return {
+      element: select,
+      get value() {
+        return select.childNodes[ select.selectedIndex ].value;
+      }
+    };
+  }
+
+  /**
+   * @param {Object} modeData - Maps from {string} repository name => {Mode}
+   * @param {Object} repositorySelector
+   * @returns { element: {HTMLSelectElement},
+   *            get value(): {string},
+   *            get mode(): {Mode},
+   *            update: function() }
+   */
+  function createModeSelector( modeData, repositorySelector ) {
+    var select = document.createElement( 'select' );
+
+    var selector = {
+      element: select,
+      get value() {
+        return select.childNodes[ select.selectedIndex ].value;
+      },
+      get mode() {
+        var currentModeName = selector.value;
+        return _.filter( modeData[ repositorySelector.value ], function( mode ) {
+          return mode.name === currentModeName;
+        } )[ 0 ];
+      },
+      update: function() {
+        localStorage.setItem( 'testmarks-repo', repositorySelector.value );
+
+        clearChildren( select );
+        modeData[ repositorySelector.value ].forEach( function( choice ) {
+          var choiceOption = document.createElement( 'option' );
+          choiceOption.value = choice.name;
+          choiceOption.label = choice.text;
+          choiceOption.title = choice.description;
+          choiceOption.innerHTML = choice.text;
+          select.appendChild( choiceOption );
+        } );
+        select.setAttribute( 'size', modeData[ repositorySelector.value ].length );
+        select.value = localStorage.getItem( 'testmarks-choice' );
+        if ( select.selectedIndex < 0 ) {
+          select.selectedIndex = 0;
+        }
+      }
+    };
+
+    select.addEventListener( 'change', function() {
+      localStorage.setItem( 'testmarks-choice', selector.value );
+    } );
+
+    return selector;
+  }
+
+  function createScreenSelector() {
+    if ( typeof localStorage.getItem( 'testmarks-screens' ) !== 'string' ) {
+      localStorage.setItem( 'testmarks-screens', 'all' );
     }
+
+    var div = document.createElement( 'div' );
+    function createScreenRadioButton( name, value, text ) {
+      var label = document.createElement( 'label' );
+      label.className = 'screenLabel';
+      var radio = document.createElement( 'input' );
+      radio.type = 'radio';
+      radio.name = name;
+      radio.value = value;
+      radio.checked = localStorage.getItem( 'testmarks-screens' ) === value;
+      radio.addEventListener( 'change', function() {
+        var selectedValue = $( 'input[name=screens]:checked' ).val();
+        localStorage.setItem( 'testmarks-screens', selectedValue );
+      } );
+      label.appendChild( radio );
+      label.appendChild( document.createTextNode( text ) );
+      return label;
+    }
+    div.appendChild( createScreenRadioButton( 'screens', 'all', 'All screens' ) );
+    for ( var i = 1; i <= 6; i++ ) {
+      div.appendChild( createScreenRadioButton( 'screens', '' + i, '' + i ) );
+    }
+
+    return {
+      element: div,
+      get value() {
+        return $( 'input[name=screens]:checked' ).val();
+      },
+      reset: function() {
+        $( 'input[value=all]' )[0].checked = true;
+        localStorage.setItem( 'testmarks-screens', 'all' );
+      }
+    };
+  }
+
+  /**
+   * @param {Object} modeData - Maps from {string} repository name => {Mode}
+   * @param {Object} modeSelector
+   * @param {Object} screenSelector
+   * @returns { element: {HTMLSelectElement}, get value(): {string} }
+   */
+  function createQueryParameterSelector( modeData, modeSelector, screenSelector ) {
+    var screenSelector = createScreenSelector();
 
     var customTextBox = document.createElement( 'input' );
     customTextBox.type = 'text';
@@ -309,129 +408,88 @@
       localStorage.setItem( 'testmarks-customText', customTextBox.value );
     } );
 
-    var screensDiv = document.createElement( 'div' );
-    function createScreenRadioButton( name, value, text ) {
-      var label = document.createElement( 'label' );
-      label.className = 'screenLabel';
-      var radio = document.createElement( 'input' );
-      radio.type = 'radio';
-      radio.name = name;
-      radio.value = value;
-      if ( typeof localStorage.getItem( 'testmarks-screens-' + value ) !== 'string' ) {
-        radio.checked = value === 'all';
-        localStorage.setItem( 'testmarks-screens-' + value, radio.checked );
-      }
-      else {
-        radio.checked = localStorage.getItem( 'testmarks-screens-' + value ) === 'true';
-      }
-      radio.addEventListener( 'change', function() {
-        var selectedValue = $( 'input[name=screens]:checked' ).val();
-        [ 'all', '1', '2', '3', '4', '5', '6' ].forEach( function( otherValue ) {
-          localStorage.setItem( 'testmarks-screens-' + otherValue, otherValue === selectedValue );
+
+    var toggleContainer = document.createElement( 'div' );
+
+    var selector = {
+      screenElement: screenSelector.element,
+      toggleElement: toggleContainer,
+      customElement: customTextBox,
+      get value() {
+        var screensValue = screenSelector.value;
+        return _.map( _.filter( $( toggleContainer ).find( ':checkbox' ), function( checkbox ) {
+          return checkbox.checked;
+        } ), function( checkbox ) {
+          return checkbox.name;
+        } ).concat( customTextBox.value.length ? [ customTextBox.value ] : [] ).concat(
+          screensValue === 'all' ? [] : [ 'screens=' + screensValue ]
+        ).join( '&' );
+      },
+      update: function() {
+        clearChildren( toggleContainer );
+
+        var queryParameters = modeSelector.mode.queryParameters || [];
+        queryParameters.forEach( function( parameter ) {
+          var label = document.createElement( 'label' );
+          var checkBox = document.createElement( 'input' );
+          checkBox.type = 'checkbox';
+          checkBox.name = parameter.value;
+          label.appendChild( checkBox );
+          label.appendChild( document.createTextNode( parameter.text + ' (' + parameter.value + ')' ) );
+          toggleContainer.appendChild( label );
+          toggleContainer.appendChild( document.createElement( 'br' ) );
+          var checked = localStorage.getItem( 'testmarks-query-' + parameter.value );
+          if ( typeof checked === 'string' ) {
+            checkBox.checked = checked === 'true';
+          }
+          else {
+            checkBox.checked = !!parameter.default;
+          }
+
+          checkBox.addEventListener( 'change', function() {
+            localStorage.setItem( 'testmarks-query-' + parameter.value, checkBox.checked );
+          } );
         } );
-      } );
-      label.appendChild( radio );
-      label.appendChild( document.createTextNode( text ) );
-      return label;
-    }
-    screensDiv.appendChild( createScreenRadioButton( 'screens', 'all', 'All screens' ) );
-    for ( var i = 1; i <= 6; i++ ) {
-      screensDiv.appendChild( createScreenRadioButton( 'screens', '' + i, '' + i ) );
-    }
+      },
+      reset: function() {
+        screenSelector.reset();
 
-    document.body.appendChild( repoDiv );
-    document.body.appendChild( choiceDiv );
-    document.body.appendChild( queryParametersDiv );
+        customTextBox.value = '';
+        localStorage.setItem( 'testmarks-customText', '' )
+        _.forEach( $( toggleContainer ).find( ':checkbox' ), function( checkbox ) {
+          var parameter = _.filter( modeSelector.mode.queryParameters, function( param ) { return param.value === checkbox.name; } )[ 0 ];
+          checkbox.checked = !!parameter.default;
+          localStorage.setItem( 'testmarks-query-' + parameter.value, checkbox.checked );
+        } );
+      }
+    };
 
-    function getCurrentChoiceName() {
-      return choiceSelect.childNodes[ choiceSelect.selectedIndex ].value;
-    }
+    return selector;
+  }
 
-    function getCurrentChoice() {
-      var currentChoiceName = getCurrentChoiceName();
-      return _.filter( modeData[ getCurrentRepo() ], function( choice ) {
-        return choice.name === currentChoiceName;
-      } )[ 0 ];
-    }
-
-    function getQueryParameters() {
-      var screensValue = $( 'input[name=screens]:checked' ).val();
-      return _.map( _.filter( $( toggleDiv ).find( ':checkbox' ), function( checkbox ) {
-        return checkbox.checked;
-      } ), function( checkbox ) {
-        return checkbox.name;
-      } ).concat( customTextBox.value.length ? [ customTextBox.value ] : [] ).concat(
-        screensValue === 'all' ? [] : [ 'screens=' + screensValue ]
-      ).join( '&' );
-    }
+  /**
+   * Create the view and hook everything up.
+   *
+   * @param {Object} modeData - Maps from {string} repository name => {Mode}
+   */
+  function render( modeData ) {
+    var repositorySelector = createRepositorySelector( modeData );
+    var modeSelector = createModeSelector( modeData, repositorySelector );
+    var queryParameterSelector = createQueryParameterSelector( modeData, modeSelector );
 
     function getCurrentURL() {
-      var queryParameters = getQueryParameters();
-      return getCurrentChoice().url + ( queryParameters.length ? '?' + queryParameters : '' );
+      var queryParameters = queryParameterSelector.value;
+      return modeSelector.mode.url + ( queryParameters.length ? '?' + queryParameters : '' );
     }
-
-    function updateQueryParameters() {
-      while ( toggleDiv.childNodes.length ) { toggleDiv.removeChild( toggleDiv.childNodes[ 0 ] ); }
-
-
-      var queryParameters = getCurrentChoice().queryParameters || [];
-      queryParametersDiv.style.visibility = queryParameters.length ? 'inherit' : 'hidden';
-      queryParameters.forEach( function( parameter ) {
-        var label = document.createElement( 'label' );
-        var checkBox = document.createElement( 'input' );
-        checkBox.type = 'checkbox';
-        checkBox.name = parameter.value;
-        label.appendChild( checkBox );
-        label.appendChild( document.createTextNode( parameter.text + ' (' + parameter.value + ')' ) );
-        toggleDiv.appendChild( label );
-        toggleDiv.appendChild( document.createElement( 'br' ) );
-        var checked = localStorage.getItem( 'testmarks-query-' + parameter.value );
-        if ( typeof checked === 'string' ) {
-          checkBox.checked = checked === 'true';
-        }
-        else {
-          checkBox.checked = !!parameter.default;
-        }
-
-        checkBox.addEventListener( 'change', function() {
-          localStorage.setItem( 'testmarks-query-' + parameter.value, checkBox.checked );
-        } );
-
-      } );
-
-      layout();
-    }
-
-    function layout() {
-      var windowWidth = window.innerWidth;
-      choiceDiv.style.left = ( repoSelect.clientWidth + 20 ) + 'px';
-      queryParametersDiv.style.left = ( repoSelect.clientWidth + +choiceDiv.clientWidth + 40 ) + 'px';
-    }
-
-    window.addEventListener( 'resize', layout );
 
     var launchButton = document.createElement( 'button' );
     launchButton.id = 'launchButton';
     launchButton.name = 'launch';
     launchButton.innerHTML = 'Launch';
 
-    launchButton.addEventListener( 'click', function() {
-      open( getCurrentURL() );
-    } );
-
     var resetButton = document.createElement( 'button' );
     resetButton.name = 'reset';
     resetButton.innerHTML = 'Reset Query Parameters';
-
-    resetButton.addEventListener( 'click', function() {
-      customTextBox.value = '';
-      localStorage.setItem( 'testmarks-customText', '' )
-      _.forEach( $( toggleDiv ).find( ':checkbox' ), function( checkbox ) {
-        var parameter = _.filter( getCurrentChoice().queryParameters, function( param ) { return param.value === checkbox.name; } )[ 0 ];
-        checkbox.checked = !!parameter.default;
-        localStorage.setItem( 'testmarks-query-' + parameter.value, checkbox.checked );
-      } );
-    } );
 
     function header( str ) {
       var head = document.createElement( 'h3' );
@@ -439,63 +497,73 @@
       return head;
     }
 
+    // Divs for our three columns
+    var repoDiv = document.createElement( 'div' );
+    repoDiv.id = 'repositories';
+    var modeDiv = document.createElement( 'div' );
+    modeDiv.id = 'choices';
+    var queryParametersDiv = document.createElement( 'div' );
+    queryParametersDiv.id = 'queryParameters';
+
+    // Layout of all of the major elements
     repoDiv.appendChild( header( 'Repositories' ) );
-    repoDiv.appendChild( repoSelect );
-    choiceDiv.appendChild( header( 'Modes' ) );
-    choiceDiv.appendChild( choiceSelect );
-    choiceDiv.appendChild( document.createElement( 'br' ) );
-    choiceDiv.appendChild( document.createElement( 'br' ) );
-    choiceDiv.appendChild( launchButton );
+    repoDiv.appendChild( repositorySelector.element );
+    modeDiv.appendChild( header( 'Modes' ) );
+    modeDiv.appendChild( modeSelector.element );
+    modeDiv.appendChild( document.createElement( 'br' ) );
+    modeDiv.appendChild( document.createElement( 'br' ) );
+    modeDiv.appendChild( launchButton );
     queryParametersDiv.appendChild( header( 'Query Parameters' ) );
-    queryParametersDiv.appendChild( toggleDiv );
-    queryParametersDiv.appendChild( screensDiv );
+    queryParametersDiv.appendChild( queryParameterSelector.toggleElement );
+    queryParametersDiv.appendChild( queryParameterSelector.screenElement );
     queryParametersDiv.appendChild( document.createTextNode( 'Query Parameters: ' ) );
-    queryParametersDiv.appendChild( customTextBox );
+    queryParametersDiv.appendChild( queryParameterSelector.customElement );
     queryParametersDiv.appendChild( document.createElement( 'br' ) );
     queryParametersDiv.appendChild( resetButton );
+    document.body.appendChild( repoDiv );
+    document.body.appendChild( modeDiv );
+    document.body.appendChild( queryParametersDiv );
 
-    var shiftPressed = false;
-    window.addEventListener( 'keydown', function( event ) {
-      shiftPressed = event.shiftKey;
-    } );
-    window.addEventListener( 'keyup', function( event ) {
-      shiftPressed = event.shiftKey;
-    } );
-
-    function open( url ) {
-      if ( shiftPressed ) {
-        window.open( url, '_blank' );
-      }
-      else {
-        window.location = url;
-      }
+    function updateQueryParameterVisibility() {
+      queryParametersDiv.style.visibility = modeSelector.mode.queryParameters ? 'inherit' : 'hidden';
     }
 
-    repoSelect.addEventListener( 'change', updateChoices );
+    // Align panels based on width
+    function layout() {
+      var windowWidth = window.innerWidth;
+      modeDiv.style.left = ( repositorySelector.element.clientWidth + 20 ) + 'px';
+      queryParametersDiv.style.left = ( repositorySelector.element.clientWidth + +modeDiv.clientWidth + 40 ) + 'px';
+    }
+    window.addEventListener( 'resize', layout );
 
-    repoSelect.addEventListener( 'change', function() {
-      var element = repoSelect.childNodes[ repoSelect.selectedIndex ];
-      if ( element.scrollIntoViewIfNeeded ) {
-        element.scrollIntoViewIfNeeded();
-      }
-      else if ( element.scrollIntoView ) {
-        element.scrollIntoView();
-      }
-    } );
+    // Hook updates to change listeners
+    function onRepositoryChanged() {
+      modeSelector.update();
+      onModeChanged();
+    }
+    function onModeChanged() {
+      queryParameterSelector.update();
+      updateQueryParameterVisibility();
+      layout();
+    }
+    repositorySelector.element.addEventListener( 'change', onRepositoryChanged );
+    modeSelector.element.addEventListener( 'input', onModeChanged );
+    onRepositoryChanged();
 
-    choiceSelect.addEventListener( 'change', function() {
-      localStorage.setItem( 'testmarks-choice', getCurrentChoiceName() );
-    } );
-
-    choiceSelect.addEventListener( 'input', updateQueryParameters );
-    updateChoices();
-
+    // Clicking 'Launch' or pressing 'enter' opens the URL
+    function openCurrentURL() {
+      openURL( getCurrentURL() );
+    }
     window.addEventListener( 'keydown', function( event ) {
       // Check for enter key
       if ( event.which === 13 ) {
-        open( getCurrentURL() );
+        openCurrentURL();
       }
     }, false );
+    launchButton.addEventListener( 'click', openCurrentURL );
+
+    // Reset
+    resetButton.addEventListener( 'click', queryParameterSelector.reset );
   }
 
   // Splits file strings (such as chipper/data/active-runnables) into a list of entries, ignoring blank lines.
