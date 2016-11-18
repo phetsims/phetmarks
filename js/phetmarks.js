@@ -64,6 +64,7 @@
     'color-vision',
     'concentration',
     'faradays-law',
+    'forces-and-motion-basics',
     'molecules-and-light'
   ];
 
@@ -209,25 +210,29 @@
       // phet-io wrappers
       if ( isPhetIO ) {
         [
+          'index',
+          'instance-proxies',
+          'console',
+          'mirror-inputs',
+          'state',
           'active',
           'audio',
           'classroom-activity',
           'wrapper-template',
-          'index',
           'lab-book',
           'event-log',
-          'instance-proxies',
-          'mirror-inputs',
           'playback',
           'record',
-          'screenshot',
-          'state'
+          'screenshot'
         ].forEach( function( wrapper ) {
+          var url = wrapper === 'console' ?
+                    '../' + repo + '/' + repo + '_en.html?brand=phet-io&phet-io.log=console' :
+                    '../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo;
           modes.push( {
             name: wrapper,
             text: wrapper,
             description: 'Runs the phet-io wrapper ' + wrapper,
-            url: '../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo,
+            url: url,
             queryParameters: devSimQueryParameters.concat( phetIOQueryParameters )
           } );
         } );
@@ -358,6 +363,7 @@
     }
 
     var div = document.createElement( 'div' );
+
     function createScreenRadioButton( name, value, text ) {
       var label = document.createElement( 'label' );
       label.className = 'screenLabel';
@@ -374,6 +380,7 @@
       label.appendChild( document.createTextNode( text ) );
       return label;
     }
+
     div.appendChild( createScreenRadioButton( 'screens', 'all', 'All screens' ) );
     for ( var i = 1; i <= 6; i++ ) {
       div.appendChild( createScreenRadioButton( 'screens', '' + i, '' + i ) );
@@ -385,7 +392,7 @@
         return $( 'input[name=screens]:checked' ).val();
       },
       reset: function() {
-        $( 'input[value=all]' )[0].checked = true;
+        $( 'input[value=all]' )[ 0 ].checked = true;
         localStorage.setItem( 'testmarks-screens', 'all' );
       }
     };
@@ -533,6 +540,7 @@
       modeDiv.style.left = ( repositorySelector.element.clientWidth + 20 ) + 'px';
       queryParametersDiv.style.left = ( repositorySelector.element.clientWidth + +modeDiv.clientWidth + 40 ) + 'px';
     }
+
     window.addEventListener( 'resize', layout );
 
     // Hook updates to change listeners
@@ -540,11 +548,13 @@
       modeSelector.update();
       onModeChanged();
     }
+
     function onModeChanged() {
       queryParameterSelector.update();
       updateQueryParameterVisibility();
       layout();
     }
+
     repositorySelector.element.addEventListener( 'change', onRepositoryChanged );
     modeSelector.element.addEventListener( 'input', onModeChanged );
     onRepositoryChanged();
@@ -553,6 +563,7 @@
     function openCurrentURL() {
       openURL( getCurrentURL() );
     }
+
     window.addEventListener( 'keydown', function( event ) {
       // Check for enter key
       if ( event.which === 13 ) {
