@@ -243,9 +243,7 @@
 
   function render( activeRunnables, activeRepos, activeSims ) {
     var repoDiv = document.createElement( 'div' );
-    repoDiv.style.position = 'absolute';
-    repoDiv.style.left = '0';
-    repoDiv.style.top = '10px';
+    repoDiv.id = 'repositories';
 
     var repoSelect = document.createElement( 'select' );
     repoSelect.autofocus = true;
@@ -273,19 +271,12 @@
     }
 
     var choiceDiv = document.createElement( 'div' );
-    choiceDiv.style.position = 'fixed';
-    choiceDiv.style.left = '0';
-    choiceDiv.style.top = '10px';
-    choiceDiv.style.textAlign = 'left';
+    choiceDiv.id = 'choices';
 
     var queryParametersDiv = document.createElement( 'div' );
-    queryParametersDiv.style.position = 'fixed';
-    queryParametersDiv.style.left = '0';
-    queryParametersDiv.style.top = '10px';
-    queryParametersDiv.style.textAlign = 'left';
+    queryParametersDiv.id = 'queryParameters';
 
     var choiceSelect = document.createElement( 'select' );
-    choiceSelect.style.textAlign = 'left';
 
     var toggleDiv = document.createElement( 'div' );
     window.toggleDiv = toggleDiv;
@@ -322,6 +313,7 @@
     var screensDiv = document.createElement( 'div' );
     function createScreenRadioButton( name, value, text ) {
       var label = document.createElement( 'label' );
+      label.className = 'screenLabel';
       var radio = document.createElement( 'input' );
       radio.type = 'radio';
       radio.name = name;
@@ -341,7 +333,6 @@
       } );
       label.appendChild( radio );
       label.appendChild( document.createTextNode( text ) );
-      label.style.paddingRight = '8px';
       return label;
     }
     screensDiv.appendChild( createScreenRadioButton( 'screens', 'all', 'All screens' ) );
@@ -414,7 +405,6 @@
 
     function layout() {
       var windowWidth = window.innerWidth;
-      repoSelect.style.left = '0';
       choiceDiv.style.left = ( repoSelect.clientWidth + 20 ) + 'px';
       queryParametersDiv.style.left = ( repoSelect.clientWidth + +choiceDiv.clientWidth + 40 ) + 'px';
     }
@@ -422,8 +412,7 @@
     window.addEventListener( 'resize', layout );
 
     var launchButton = document.createElement( 'button' );
-    launchButton.style.fontSize = '20px';
-    launchButton.style.padding = '0px 15px';
+    launchButton.id = 'launchButton';
     launchButton.name = 'launch';
     launchButton.innerHTML = 'Launch';
 
