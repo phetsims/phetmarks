@@ -1,127 +1,118 @@
 // Copyright 2016, University of Colorado Boulder
-// TODO: Document (by JO)
+
+/*
+ * Page for quickly launching phet-related tasks, such as simulations, automated/unit tests, or other utilities.
+ *
+ * Displays three columns:
+ *
+ * - Repositories: A list of repositories to select from, each one of which has a number of modes.
+ * - Modes: Based on the repository selected. Decides what type of URL is loaded when "Launch" or the enter key is
+ *          pressed.
+ * - Query Parameters: If available, controls what optional query parameters will be added to the end of the URL.
+ *
+ * Mode has the format:
+ * {
+ *   name: {string} - Internal unique value (for looking up which option was chosen, and storing in localStorage),
+ *   text: {string} - Shown in the mode list,
+ *   description: {string} - Shown when hovering over the mode in the list,
+ *   url: {string} - The base URL to visit (without added query parameters) when the mode is chosen,
+ *   queryParameters: {Array.<QueryParameter>}
+ * }
+ *
+ * QueryParameter has the format:
+ * {
+ *   value: {string} - The actual query parameter included in the URL,
+ *   text: {string} - Shown in the query parameter list,
+ *   [default]: {boolean} - If true, the query parameter will be true by default
+ * }
+ */
 
 (function() {
   'use strict';
 
-  console.log( 'loaded' );
-
-  function whiteSplit( str ) {
-    return str.split( '\n' ).map( function( line ) {
-      return line.replace( '\r', '' );
-    } ).filter( function( line ) {
-      return line.length > 0;
-    } );
-  }
-
-  var choiceData = {};
+  // TODO: Reset should reset the screens selection
 
   var schema = window.phet.chipper.queryParameterSchema;
 
   var simQueryParameters = [
-    {
-      value: 'accessibility',
-      text: 'Accessibility'
-    },
-    {
-      value: 'audioVolume=0',
-      text: 'Mute'
-    },
-    {
-      value: 'fuzzMouse',
-      text: 'Fuzz Mouse'
-    },
-    {
-      value: 'dev',
-      text: 'Dev'
-    },
-    {
-      value: 'profiler',
-      text: 'Profiler'
-    },
-    {
-      value: 'showPointers',
-      text: 'Pointers'
-    },
-    {
-      value: 'showPointerAreas',
-      text: 'Pointer Areas'
-    },
-    {
-      value: 'showFittedBlockBounds',
-      text: 'Fitted Block Bounds'
-    },
-    {
-      value: 'showCanvasNodeBounds',
-      text: 'CanvasNode Bounds'
-    },
-    {
-      value: 'webgl=false',
-      text: 'No WebGL'
-    }
+    { value: 'accessibility', text: 'Accessibility' },
+    { value: 'audioVolume=0', text: 'Mute' },
+    { value: 'fuzzMouse', text: 'Fuzz Mouse' },
+    { value: 'dev', text: 'Dev' },
+    { value: 'profiler', text: 'Profiler' },
+    { value: 'showPointers', text: 'Pointers' },
+    { value: 'showPointerAreas', text: 'Pointer Areas' },
+    { value: 'showFittedBlockBounds', text: 'Fitted Block Bounds' },
+    { value: 'showCanvasNodeBounds', text: 'CanvasNode Bounds' },
+    { value: 'webgl=false', text: 'No WebGL' }
   ];
-
-  // TODO: use the schema
-  // for (var key in schema){
-  //   simQueryParameters.push({
-  //     value: key,
-  //     text: key
-  //   });
-  // }
 
   var devSimQueryParameters = [
-    {
-      value: 'brand=phet',
-      text: 'PhET Brand',
-      default: true
-    },
-    {
-      value: 'ea',
-      text: 'Assertions',
-      default: true
-    },
-    {
-      value: 'eall',
-      text: 'All Assertions'
-    }
-  ].concat( simQueryParameters );
-
-  var phetIOQueryParameters = [
-    {
-      value: 'brand=phet-io&phet-io.standalone&phet-io.log=lines',
-      text: 'Formatted PhET-IO Console Output'
-    }
+    { value: 'brand=phet', text: 'PhET Brand', default: true },
+    { value: 'ea', text: 'Assertions', default: true },
+    { value: 'eall', text: 'All Assertions' }
   ];
 
-  function populate( activeRunnables, activeRepos, activeSims ) {
-    activeRepos.forEach( function( repo ) {
-      var choices = choiceData[ repo ] = [];
+  var phetIOQueryParameters = [
+    { value: 'brand=phet-io&phet-io.standalone&phet-io.log=lines', text: 'Formatted PhET-IO Console Output' }
+  ];
 
-      var isPhetIO = _.contains( [ 'beers-law-lab', 'bending-light', 'build-an-atom', 'charges-and-fields', 'color-vision', 'concentration', 'faradays-law', 'molecules-and-light' ], repo );
-      var hasColorProfile = _.contains( [ 'charges-and-fields', 'gravity-and-orbits', 'molecule-shapes', 'molecule-shapes-basics', 'rutherford-scattering', 'states-of-matter' ] );
+  var phetIORepos = [
+    'beers-law-lab',
+    'bending-light',
+    'build-an-atom',
+    'charges-and-fields',
+    'color-vision',
+    'concentration',
+    'faradays-law',
+    'molecules-and-light'
+  ];
+
+  var colorProfileRepos = [
+    'charges-and-fields',
+    'gravity-and-orbits',
+    'molecule-shapes',
+    'molecule-shapes-basics',
+    'rutherford-scattering',
+    'states-of-matter'
+  ];
+
+  /**
+   * Fills out the modeData map with information about repositories, modes and query parameters.
+   *
+   * @param {Array.<string>} activeRunnables - from active-runnables
+   * @param {Array.<string>} activeRepos - from active-repos
+   * @param {Array.<string>} activeSims - from active-sims
+   */
+  function populate( activeRunnables, activeRepos, activeSims ) {
+    var modeData = {};
+
+    activeRepos.forEach( function( repo ) {
+      var modes = modeData[ repo ] = [];
+
+      var isPhetIO = _.contains( phetIORepos, repo );
+      var hasColorProfile = _.contains( colorProfileRepos );
 
       if ( _.contains( activeRunnables, repo ) ) {
-        choices.push( {
+        modes.push( {
           name: 'requirejs',
           text: 'Require.js',
           description: 'Runs the simulation from the top-level development HTML in require.js mode',
           url: '../' + repo + '/' + repo + '_en.html',
-          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( devSimQueryParameters ),
-          customQueryParameters: true
+          queryParameters: devSimQueryParameters.concat( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
-        choices.push( {
+        modes.push( {
           name: 'compiled',
           text: 'Compiled',
           description: 'Runs the English simulation from the build/ directory (built from chipper)',
           url: '../' + repo + '/build/' + repo + '_en.html',
-          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters ),
-          customQueryParameters: true
+          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
       }
 
       // Color picker UI
       if ( hasColorProfile ) {
-        choices.push( {
+        modes.push( {
           name: 'colors',
           text: 'Color Editor',
           description: 'Runs the top-level -colors.html file (allows editing/viewing different profile colors)',
@@ -130,13 +121,13 @@
       }
 
       if ( repo === 'axon' || repo === 'phet-core' || repo === 'dot' || repo === 'kite' || repo === 'scenery' ) {
-        choices.push( {
+        modes.push( {
           name: 'unitTestsRequirejs',
           text: 'Unit Tests (Require.js)',
           description: 'Runs unit tests in require.js mode',
           url: '../' + repo + '/tests/qunit/unit-tests.html'
         } );
-        choices.push( {
+        modes.push( {
           name: 'unitTestsCompiled',
           text: 'Unit Tests (Compiled)',
           description: 'Runs unit tests from a compiled (built) file. Run "grunt build-js" first',
@@ -144,7 +135,7 @@
         } );
       }
       if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-io' ) {
-        choices.push( {
+        modes.push( {
           name: 'documentation',
           text: 'Documentation',
           description: 'Browse HTML documentation',
@@ -152,7 +143,7 @@
         } );
       }
       if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
-        choices.push( {
+        modes.push( {
           name: 'examples',
           text: 'Examples',
           description: 'Browse Examples',
@@ -160,7 +151,7 @@
         } );
       }
       if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-core' ) {
-        choices.push( {
+        modes.push( {
           name: 'playground',
           text: 'Playground',
           description: 'Loads ' + repo + ' and dependencies in the tab, and allows quick testing',
@@ -168,7 +159,7 @@
         } );
       }
       if ( repo === 'phet-io' ) {
-        choices.push( {
+        modes.push( {
           name: 'wrappers',
           text: 'Wrappers',
           description: 'Points to many dev wrappers',
@@ -176,7 +167,7 @@
         } );
       }
       if ( repo === 'phetmarks' ) {
-        choices.push( {
+        modes.push( {
           name: 'launcher',
           text: 'Launcher',
           description: 'Launcher for phet-io',
@@ -184,13 +175,13 @@
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
-        choices.push( {
+        modes.push( {
           name: 'test-sims',
           text: 'Test Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse'
         } );
-        choices.push( {
+        modes.push( {
           name: 'test-sims-load-only',
           text: 'Test Sims (Load Only)',
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
@@ -215,39 +206,47 @@
           'screenshot',
           'state'
         ].forEach( function( wrapper ) {
-          choices.push( {
+          modes.push( {
             name: wrapper,
             text: wrapper,
             description: 'Runs the phet-io wrapper ' + wrapper,
             url: '../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo,
-            queryParameters: phetIOQueryParameters.concat( devSimQueryParameters ),
-            customQueryParameters: true
+            queryParameters: devSimQueryParameters.concat( phetIOQueryParameters )
           } );
         } );
       }
 
-      choices.push( {
+      modes.push( {
         name: 'github',
         text: 'GitHub',
         description: 'Opens to the repository\'s GitHub main page',
         url: 'https://github.com/phetsims/' + repo
       } );
-      choices.push( {
+      modes.push( {
         name: 'issues',
         text: 'Issues',
         description: 'Opens to the repository\'s GitHub issues page',
         url: 'https://github.com/phetsims/' + repo + '/issues'
       } );
     } );
+
+    return modeData;
   }
 
-  function render( activeRunnables, activeRepos, activeSims ) {
+  /**
+   * Create the view and hook everything up
+   *
+   * @param {Object} modeData - Created by populate()
+   */
+  function render( modeData ) {
+    var repositories = Object.keys( modeData );
+
     var repoDiv = document.createElement( 'div' );
     repoDiv.id = 'repositories';
 
     var repoSelect = document.createElement( 'select' );
     repoSelect.autofocus = true;
-    activeRepos.forEach( function( repo ) {
+    repositories.forEach( function( repo ) {
       var repoOption = document.createElement( 'option' );
       repoOption.value = repo;
       repoOption.label = repo;
@@ -255,7 +254,7 @@
       repoSelect.appendChild( repoOption );
     } );
     if ( repoSelect.scrollIntoView && navigator.userAgent.indexOf( 'Trident/' ) < 0 ) {
-      repoSelect.setAttribute( 'size', activeRepos.length );
+      repoSelect.setAttribute( 'size', repositories.length );
     }
     else {
       repoSelect.setAttribute( 'size', 30 );
@@ -284,7 +283,7 @@
     function updateChoices() {
       localStorage.setItem( 'testmarks-repo', getCurrentRepo() );
       while ( choiceSelect.childNodes.length ) { choiceSelect.removeChild( choiceSelect.childNodes[ 0 ] ); }
-      choiceData[ getCurrentRepo() ].forEach( function( choice ) {
+      modeData[ getCurrentRepo() ].forEach( function( choice ) {
         var choiceOption = document.createElement( 'option' );
         choiceOption.value = choice.name;
         choiceOption.label = choice.text;
@@ -292,7 +291,7 @@
         choiceOption.innerHTML = choice.text;
         choiceSelect.appendChild( choiceOption );
       } );
-      choiceSelect.setAttribute( 'size', choiceData[ getCurrentRepo() ].length );
+      choiceSelect.setAttribute( 'size', modeData[ getCurrentRepo() ].length );
       choiceSelect.value = localStorage.getItem( 'testmarks-choice' );
       if ( choiceSelect.selectedIndex < 0 ) {
         choiceSelect.selectedIndex = 0;
@@ -350,7 +349,7 @@
 
     function getCurrentChoice() {
       var currentChoiceName = getCurrentChoiceName();
-      return _.filter( choiceData[ getCurrentRepo() ], function( choice ) {
+      return _.filter( modeData[ getCurrentRepo() ], function( choice ) {
         return choice.name === currentChoiceName;
       } )[ 0 ];
     }
@@ -374,9 +373,9 @@
     function updateQueryParameters() {
       while ( toggleDiv.childNodes.length ) { toggleDiv.removeChild( toggleDiv.childNodes[ 0 ] ); }
 
-      queryParametersDiv.style.visibility = getCurrentChoice().customQueryParameters ? 'inherit' : 'hidden';
 
       var queryParameters = getCurrentChoice().queryParameters || [];
+      queryParametersDiv.style.visibility = queryParameters.length ? 'inherit' : 'hidden';
       queryParameters.forEach( function( parameter ) {
         var label = document.createElement( 'label' );
         var checkBox = document.createElement( 'input' );
@@ -499,6 +498,16 @@
     }, false );
   }
 
+  // Splits file strings (such as chipper/data/active-runnables) into a list of entries, ignoring blank lines.
+  function whiteSplit( str ) {
+    return str.split( '\n' ).map( function( line ) {
+      return line.replace( '\r', '' );
+    } ).filter( function( line ) {
+      return line.length > 0;
+    } );
+  }
+
+  // Load files serially, populate then render
   $.ajax( {
     url: '../chipper/data/active-runnables'
   } ).done( function( activeRunnablesString ) {
@@ -514,8 +523,7 @@
       } ).done( function( activeSimsString ) {
         var activeSims = whiteSplit( activeSimsString );
 
-        populate( activeRunnables, activeRepos, activeSims );
-        render( activeRunnables, activeRepos, activeSims );
+        render( populate( activeRunnables, activeRepos, activeSims ) );
       } );
     } );
   } );
