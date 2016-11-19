@@ -64,7 +64,7 @@
       if ( wrapper === 'Formatted Console Output' ) {
 
         // Launch the simulation with console output (no iframe)
-        window.location = '../../' + sim + '/' + sim + '_en.html?ea&brand=phet-io&phet-io.standalone&phet-io.log=lines';
+        window.location = '../../' + sim + '/' + sim + '_en.html?ea&brand=phet-io&phetioStandalone&phetioLog=lines';
       }
       else if ( wrapper === 'PhET Brand' ) {
 

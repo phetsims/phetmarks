@@ -53,7 +53,7 @@
   ];
 
   var phetIOQueryParameters = [
-    { value: 'brand=phet-io&phet-io.standalone&phet-io.log=lines', text: 'Formatted PhET-IO Console Output' }
+    { value: 'brand=phet-io&phetioStandalone&phetioLog=lines', text: 'Formatted PhET-IO Console Output' }
   ];
 
   var phetIORepos = [
@@ -226,7 +226,7 @@
           'screenshot'
         ].forEach( function( wrapper ) {
           var url = wrapper === 'console' ?
-                    '../' + repo + '/' + repo + '_en.html?brand=phet-io&phet-io.log=console' :
+                    '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioLog=console' :
                     '../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo;
           modes.push( {
             name: wrapper,
