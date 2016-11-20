@@ -184,14 +184,6 @@
           url: '../' + repo + '/html/dev-wrappers.html'
         } );
       }
-      if ( repo === 'phetmarks' ) {
-        modes.push( {
-          name: 'launcher',
-          text: 'Launcher',
-          description: 'Launcher for phet-io',
-          url: '../phetmarks/launcher'
-        } );
-      }
       if ( repo === 'chipper' || repo === 'aqua' ) {
         modes.push( {
           name: 'test-sims',
