@@ -218,7 +218,7 @@
           'screenshot'
         ].forEach( function( wrapper ) {
           var url = wrapper === 'console' ?
-                    '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioLog=lines&phetioStandalone' :
+                    '../' + repo + '/' + repo + '_en.html?ea&brand=phet-io&phetioLog=lines&phetioStandalone' :
                     '../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo;
           modes.push( {
             name: wrapper,
