@@ -478,7 +478,9 @@
 
     function getCurrentURL() {
       var queryParameters = queryParameterSelector.value;
-      return modeSelector.mode.url + ( queryParameters.length ? '?' + queryParameters : '' );
+      var url = modeSelector.mode.url;
+      var separator = url.indexOf( '?' ) < 0 ? '?' : '&';
+      return url + ( queryParameters.length ? separator + queryParameters : '' );
     }
 
     var launchButton = document.createElement( 'button' );
