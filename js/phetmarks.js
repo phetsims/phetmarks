@@ -31,7 +31,7 @@
   'use strict';
 
   // TODO: Use schema? (commented out for linting)
-  // var schema = window.phet.chipper.queryParameterSchema;
+  // var schema = window.phet.chipper.queryParametersSchema;
 
   var simQueryParameters = [
     { value: 'accessibility', text: 'Accessibility' },
