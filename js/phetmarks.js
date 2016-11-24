@@ -126,6 +126,12 @@
           url: '../' + repo + '/build/' + repo + '_en.html',
           queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
+        modes.push( {
+          name: 'spot',
+          text: 'Spot (dev)',
+          description: 'Loads the location on www.colorado.edu (spot.colorado.edu) with versions for each dev deploy',
+          url: 'http://www.colorado.edu/physics/phet/dev/html/' + repo
+        } );
       }
 
       // Color picker UI
