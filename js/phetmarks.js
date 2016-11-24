@@ -127,8 +127,15 @@
           queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
+          name: 'production',
+          text: 'Production',
+          description: 'Runs the latest English simulation from the production server',
+          url: 'https://phet.colorado.edu/sims/html/' + repo + '/latest/' + repo + '_en.html',
+          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+        } );
+        modes.push( {
           name: 'spot',
-          text: 'Spot (dev)',
+          text: 'Dev (spot)',
           description: 'Loads the location on www.colorado.edu (spot.colorado.edu) with versions for each dev deploy',
           url: 'http://www.colorado.edu/physics/phet/dev/html/' + repo
         } );
