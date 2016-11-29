@@ -65,6 +65,7 @@
     'concentration',
     'faradays-law',
     'forces-and-motion-basics',
+    'gravity-force-lab',
     'molecules-and-light'
   ];
 
