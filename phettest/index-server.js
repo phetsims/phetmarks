@@ -1,3 +1,5 @@
+// Copyright 2016, University of Colorado Boulder
+
 var http = require( 'http' );
 var spawn = require( 'child_process' ).spawn;
 var path = require( 'path' );
