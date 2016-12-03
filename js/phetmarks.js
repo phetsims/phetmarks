@@ -63,6 +63,7 @@
     'charges-and-fields',
     'color-vision',
     'concentration',
+    'energy-skate-park-basics',
     'faradays-law',
     'forces-and-motion-basics',
     'gravity-force-lab',
