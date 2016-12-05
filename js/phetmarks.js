@@ -56,11 +56,16 @@
     { value: 'brand=phet-io&phetioStandalone&phetioLog=lines', text: 'Formatted PhET-IO Console Output' }
   ];
 
+  // These are getting instrumented, but may not be completed
+  // As well as sims in the process of instrumentation, the
+  // completed list of sims can be found here:
+  // https://docs.google.com/spreadsheets/d/1ToW8wc9zOFpMglIf63jB1j8YA9Qmh2dxNLH2Sm4qxEo/edit#gid=0
   var phetIORepos = [
     'balloons-and-static-electricity',
     'beers-law-lab',
     'bending-light',
     'build-an-atom',
+    'capacitor-lab-basics',
     'charges-and-fields',
     'color-vision',
     'concentration',
