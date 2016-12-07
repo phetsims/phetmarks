@@ -255,7 +255,9 @@
             text: wrapper,
             description: 'Runs the phet-io wrapper ' + wrapper,
             url: url,
-            queryParameters: devSimQueryParameters.concat( phetIOQueryParameters )
+            queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
+              return queryParameter.value !== 'brand=phet';
+            } )
           } );
         } );
       }
