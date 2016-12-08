@@ -63,7 +63,6 @@
   var phetIORepos = [
     'balloons-and-static-electricity',
     'beers-law-lab',
-    'bending-light',
     'build-an-atom',
     'capacitor-lab-basics',
     'charges-and-fields',
