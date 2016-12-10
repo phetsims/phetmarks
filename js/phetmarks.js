@@ -241,6 +241,7 @@
           'classroom-activity',
           'wrapper-template',
           'lab-book',
+          'login',
           'event-log',
           'playback',
           'record',
