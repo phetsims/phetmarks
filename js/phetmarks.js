@@ -56,25 +56,6 @@
     { value: 'brand=phet-io&phetioStandalone&phetioLog=lines', text: 'Formatted PhET-IO Console Output' }
   ];
 
-  // These are getting instrumented, but may not be completed
-  // As well as sims in the process of instrumentation, the
-  // completed list of sims can be found here:
-  // https://docs.google.com/spreadsheets/d/1ToW8wc9zOFpMglIf63jB1j8YA9Qmh2dxNLH2Sm4qxEo/edit#gid=0
-  var phetIORepos = [
-    'balloons-and-static-electricity',
-    'beers-law-lab',
-    'build-an-atom',
-    'capacitor-lab-basics',
-    'charges-and-fields',
-    'color-vision',
-    'concentration',
-    'energy-skate-park-basics',
-    'faradays-law',
-    'forces-and-motion-basics',
-    'gravity-force-lab',
-    'molecules-and-light'
-  ];
-
   var colorProfileRepos = [
     'charges-and-fields',
     'gravity-and-orbits',
@@ -82,13 +63,6 @@
     'molecule-shapes-basics',
     'rutherford-scattering',
     'states-of-matter'
-  ];
-
-  var phetIOTestQueryParameters = [
-    {
-      value: 'brand=phet-io&phetioStandalone&testSims=' + phetIORepos.join( ',' ),
-      text: 'Test PhET-IO sims'
-    }
   ];
 
   // Track whether 'shift' key is pressed, so that we can change how windows are opened
@@ -114,15 +88,23 @@
    * @param {Array.<string>} activeRunnables - from active-runnables
    * @param {Array.<string>} activeRepos - from active-repos
    * @param {Array.<string>} activeSims - from active-sims
+   * @param {Array.<string>} phetioSims - from test-phetio
    * @returns {Object} - Maps from {string} repository name => {Mode}
    */
-  function populate( activeRunnables, activeRepos, activeSims ) {
+  function populate( activeRunnables, activeRepos, activeSims, phetioSims ) {
     var modeData = {};
+
+    var phetIOTestQueryParameters = [
+      {
+        value: 'brand=phet-io&phetioStandalone&testSims=' + phetioSims.join( ',' ),
+        text: 'Test PhET-IO sims'
+      }
+    ];
 
     activeRepos.forEach( function( repo ) {
       var modes = modeData[ repo ] = [];
 
-      var isPhetIO = _.contains( phetIORepos, repo );
+      var isPhetIO = _.contains( phetioSims, repo );
       var hasColorProfile = _.contains( colorProfileRepos );
 
       if ( _.contains( activeRunnables, repo ) ) {
@@ -229,38 +211,35 @@
       }
 
       // phet-io wrappers
-      if ( isPhetIO ) {
-        [
-          'index',
-          'instance-proxies',
-          'console',
-          'mirror-inputs',
-          'state',
-          'active',
-          'audio',
-          'classroom-activity',
-          'wrapper-template',
-          'lab-book',
-          'login',
-          'event-log',
-          'playback',
-          'record',
-          'screenshot'
-        ].forEach( function( wrapper ) {
-          var url = wrapper === 'console' ?
-                    '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioLog=lines&phetioStandalone' :
-                    '../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo;
-          modes.push( {
-            name: wrapper,
-            text: wrapper,
-            description: 'Runs the phet-io wrapper ' + wrapper,
-            url: url,
-            queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
-              return queryParameter.value !== 'brand=phet';
-            } )
-          } );
+      [
+        'index',
+        'instance-proxies',
+        'console',
+        'mirror-inputs',
+        'state',
+        'active',
+        'audio',
+        'classroom-activity',
+        'wrapper-template',
+        'lab-book',
+        'event-log',
+        'playback',
+        'record',
+        'screenshot'
+      ].forEach( function( wrapper ) {
+        var url = wrapper === 'console' ?
+                  '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioLog=lines&phetioStandalone' :
+                  '../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo;
+        modes.push( {
+          name: wrapper,
+          text: wrapper,
+          description: 'Runs the phet-io wrapper ' + wrapper,
+          url: url,
+          queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
+            return queryParameter.value !== 'brand=phet';
+          } )
         } );
-      }
+      } );
 
       modes.push( {
         name: 'github',
@@ -627,7 +606,13 @@
       } ).done( function( activeSimsString ) {
         var activeSims = whiteSplit( activeSimsString );
 
-        render( populate( activeRunnables, activeRepos, activeSims ) );
+        $.ajax( {
+          url: '../chipper/data/test-phetio'
+        } ).done( function( testPhetioString ) {
+          var phetioSims = whiteSplit( testPhetioString );
+
+          render( populate( activeRunnables, activeRepos, activeSims, phetioSims ) );
+        } );
       } );
     } );
   } );
