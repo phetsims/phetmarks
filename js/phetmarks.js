@@ -89,11 +89,10 @@
    *
    * @param {Array.<string>} activeRunnables - from active-runnables
    * @param {Array.<string>} activeRepos - from active-repos
-   * @param {Array.<string>} activeSims - from active-sims
    * @param {Array.<string>} phetioSims - from test-phetio
    * @returns {Object} - Maps from {string} repository name => {Mode}
    */
-  function populate( activeRunnables, activeRepos, activeSims, phetioSims ) {
+  function populate( activeRunnables, activeRepos, phetioSims ) {
     var modeData = {};
 
     var phetIOTestQueryParameters = [
@@ -266,12 +265,10 @@
   }
 
   /**
-   * @param {Object} modeData - Maps from {string} repository name => {Mode}
+   * @param {Array.<string>} repositories - All repository names
    * @returns { element: {HTMLSelectElement}, get value(): {string} }
    */
-  function createRepositorySelector( modeData ) {
-    var repositories = Object.keys( modeData );
-
+  function createRepositorySelector( repositories ) {
     var select = document.createElement( 'select' );
     select.autofocus = true;
     repositories.forEach( function( repo ) {
@@ -405,11 +402,10 @@
   }
 
   /**
-   * @param {Object} modeData - Maps from {string} repository name => {Mode}
    * @param {Object} modeSelector
    * @returns { element: {HTMLSelectElement}, get value(): {string} }
    */
-  function createQueryParameterSelector( modeData, modeSelector ) {
+  function createQueryParameterSelector( modeSelector ) {
     var screenSelector = createScreenSelector();
 
     var customTextBox = document.createElement( 'input' );
@@ -489,9 +485,9 @@
    * @param {Object} modeData - Maps from {string} repository name => {Mode}
    */
   function render( modeData ) {
-    var repositorySelector = createRepositorySelector( modeData );
+    var repositorySelector = createRepositorySelector( Object.keys( modeData ) );
     var modeSelector = createModeSelector( modeData, repositorySelector );
-    var queryParameterSelector = createQueryParameterSelector( modeData, modeSelector );
+    var queryParameterSelector = createQueryParameterSelector( modeSelector );
 
     function getCurrentURL() {
       var queryParameters = queryParameterSelector.value;
@@ -608,17 +604,11 @@
       var activeRepos = whiteSplit( activeReposString );
 
       $.ajax( {
-        url: '../chipper/data/active-sims'
-      } ).done( function( activeSimsString ) {
-        var activeSims = whiteSplit( activeSimsString );
+        url: '../chipper/data/test-phetio'
+      } ).done( function( testPhetioString ) {
+        var phetioSims = whiteSplit( testPhetioString );
 
-        $.ajax( {
-          url: '../chipper/data/test-phetio'
-        } ).done( function( testPhetioString ) {
-          var phetioSims = whiteSplit( testPhetioString );
-
-          render( populate( activeRunnables, activeRepos, activeSims, phetioSims ) );
-        } );
+        render( populate( activeRunnables, activeRepos, phetioSims ) );
       } );
     } );
   } );
