@@ -228,7 +228,8 @@
         'event-log',
         'playback',
         'record',
-        'screenshot'
+        'screenshot',
+        'login'
       ].forEach( function( wrapper ) {
         var url = wrapper === 'console' ?
                   '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioLog=lines&phetioStandalone' :
