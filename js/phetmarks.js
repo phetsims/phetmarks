@@ -66,6 +66,18 @@
     'states-of-matter'
   ];
 
+  /**
+   * Returns a local-storage key that has additional information included, to prevent collision with other applications (or in the future, previous
+   * versions of phetmarks).
+   * @public
+   *
+   * @param {string} key
+   * @returns {string}
+   */
+  function storageKey( key ) {
+    return 'phetmarks-' + key;
+  }
+
   // Track whether 'shift' key is pressed, so that we can change how windows are opened.  If shift is pressed, the
   // page is launched in a separate tab.
   var shiftPressed = false;
@@ -103,7 +115,8 @@
     ];
 
     activeRepos.forEach( function( repo ) {
-      var modes = modeData[ repo ] = [];
+      var modes = [];
+      modeData[ repo ] = modes;
 
       var isPhetIO = _.contains( phetioSims, repo );
       var hasColorProfile = _.contains( colorProfileRepos );
@@ -286,8 +299,9 @@
     }
 
     // Select a repository if it's been stored in localStorage before
-    if ( localStorage.getItem( 'testmarks-repo' ) ) {
-      select.value = localStorage.getItem( 'testmarks-repo' );
+    var repoKey = storageKey( 'repo' );
+    if ( localStorage.getItem( repoKey ) ) {
+      select.value = localStorage.getItem( repoKey );
     }
 
     select.focus();
@@ -334,7 +348,7 @@
         } )[ 0 ];
       },
       update: function() {
-        localStorage.setItem( 'testmarks-repo', repositorySelector.value );
+        localStorage.setItem( storageKey( 'repo' ), repositorySelector.value );
 
         clearChildren( select );
         modeData[ repositorySelector.value ].forEach( function( choice ) {
@@ -346,7 +360,7 @@
           select.appendChild( choiceOption );
         } );
         select.setAttribute( 'size', modeData[ repositorySelector.value ].length );
-        select.value = localStorage.getItem( 'testmarks-choice' );
+        select.value = localStorage.getItem( storageKey( 'choice' ) );
         if ( select.selectedIndex < 0 ) {
           select.selectedIndex = 0;
         }
@@ -354,15 +368,16 @@
     };
 
     select.addEventListener( 'change', function() {
-      localStorage.setItem( 'testmarks-choice', selector.value );
+      localStorage.setItem( storageKey( 'choice' ), selector.value );
     } );
 
     return selector;
   }
 
   function createScreenSelector() {
-    if ( typeof localStorage.getItem( 'testmarks-screens' ) !== 'string' ) {
-      localStorage.setItem( 'testmarks-screens', 'all' );
+    var screensStorageKey = storageKey( 'screens' );
+    if ( typeof localStorage.getItem( screensStorageKey ) !== 'string' ) {
+      localStorage.setItem( screensStorageKey, 'all' );
     }
 
     var div = document.createElement( 'div' );
@@ -374,10 +389,10 @@
       radio.type = 'radio';
       radio.name = name;
       radio.value = value;
-      radio.checked = localStorage.getItem( 'testmarks-screens' ) === value;
+      radio.checked = localStorage.getItem( screensStorageKey ) === value;
       radio.addEventListener( 'change', function() {
         var selectedValue = $( 'input[name=screens]:checked' ).val();
-        localStorage.setItem( 'testmarks-screens', selectedValue );
+        localStorage.setItem( screensStorageKey, selectedValue );
       } );
       label.appendChild( radio );
       label.appendChild( document.createTextNode( text ) );
@@ -396,7 +411,7 @@
       },
       reset: function() {
         $( 'input[value=all]' )[ 0 ].checked = true;
-        localStorage.setItem( 'testmarks-screens', 'all' );
+        localStorage.setItem( screensStorageKey, 'all' );
       }
     };
   }
@@ -407,14 +422,15 @@
    */
   function createQueryParameterSelector( modeSelector ) {
     var screenSelector = createScreenSelector();
+    var customStorageKey = storageKey( 'customText' );
 
     var customTextBox = document.createElement( 'input' );
     customTextBox.type = 'text';
-    if ( localStorage.getItem( 'testmarks-customText' ) ) {
-      customTextBox.value = localStorage.getItem( 'testmarks-customText' );
+    if ( localStorage.getItem( customStorageKey ) ) {
+      customTextBox.value = localStorage.getItem( customStorageKey );
     }
     customTextBox.addEventListener( 'input', function() {
-      localStorage.setItem( 'testmarks-customText', customTextBox.value );
+      localStorage.setItem( customStorageKey, customTextBox.value );
     } );
 
 
@@ -450,7 +466,7 @@
           label.appendChild( document.createTextNode( parameter.text + ' (' + parameter.value + ')' ) );
           toggleContainer.appendChild( label );
           toggleContainer.appendChild( document.createElement( 'br' ) );
-          var checked = localStorage.getItem( 'testmarks-query-' + parameter.value );
+          var checked = localStorage.getItem( storageKey( 'query-' + parameter.value ) );
           if ( typeof checked === 'string' ) {
             checkBox.checked = checked === 'true';
           }
@@ -459,7 +475,7 @@
           }
 
           checkBox.addEventListener( 'change', function() {
-            localStorage.setItem( 'testmarks-query-' + parameter.value, checkBox.checked );
+            localStorage.setItem( storageKey( 'query-' + parameter.value ), checkBox.checked );
           } );
         } );
       },
@@ -467,11 +483,18 @@
         screenSelector.reset();
 
         customTextBox.value = '';
-        localStorage.setItem( 'testmarks-customText', '' );
+        localStorage.setItem( customStorageKey, '' );
+
+        // For each checkbox, set it to its default
         _.forEach( $( toggleContainer ).find( ':checkbox' ), function( checkbox ) {
+          // Grab the parameter object
           var parameter = _.filter( modeSelector.mode.queryParameters, function( param ) { return param.value === checkbox.name; } )[ 0 ];
+
+          // Handle when the default isn't defined (it would be false)
           checkbox.checked = !!parameter.default;
-          localStorage.setItem( 'testmarks-query-' + parameter.value, checkbox.checked );
+
+          // Update local storage too
+          localStorage.setItem( storageKey( 'query-' + parameter.value ), checkbox.checked );
         } );
       }
     };
