@@ -66,6 +66,18 @@
     'states-of-matter'
   ];
 
+  /**
+   * Returns a local-storage key that has additional information included, to prevent collision with other applications (or in the future, previous
+   * versions of phetmarks).
+   * @public
+   *
+   * @param {string} key
+   * @returns {string}
+   */
+  function storageKey( key ) {
+    return 'phetmarks-' + key;
+  }
+
   // Track whether 'shift' key is pressed, so that we can change how windows are opened.  If shift is pressed, the
   // page is launched in a separate tab.
   var shiftPressed = false;
@@ -89,11 +101,10 @@
    *
    * @param {Array.<string>} activeRunnables - from active-runnables
    * @param {Array.<string>} activeRepos - from active-repos
-   * @param {Array.<string>} activeSims - from active-sims
    * @param {Array.<string>} phetioSims - from test-phetio
    * @returns {Object} - Maps from {string} repository name => {Mode}
    */
-  function populate( activeRunnables, activeRepos, activeSims, phetioSims ) {
+  function populate( activeRunnables, activeRepos, phetioSims ) {
     var modeData = {};
 
     var phetIOTestQueryParameters = [
@@ -104,7 +115,8 @@
     ];
 
     activeRepos.forEach( function( repo ) {
-      var modes = modeData[ repo ] = [];
+      var modes = [];
+      modeData[ repo ] = modes;
 
       var isPhetIO = _.contains( phetioSims, repo );
       var hasColorProfile = _.contains( colorProfileRepos );
@@ -267,12 +279,10 @@
   }
 
   /**
-   * @param {Object} modeData - Maps from {string} repository name => {Mode}
+   * @param {Array.<string>} repositories - All repository names
    * @returns { element: {HTMLSelectElement}, get value(): {string} }
    */
-  function createRepositorySelector( modeData ) {
-    var repositories = Object.keys( modeData );
-
+  function createRepositorySelector( repositories ) {
     var select = document.createElement( 'select' );
     select.autofocus = true;
     repositories.forEach( function( repo ) {
@@ -290,8 +300,9 @@
     }
 
     // Select a repository if it's been stored in localStorage before
-    if ( localStorage.getItem( 'testmarks-repo' ) ) {
-      select.value = localStorage.getItem( 'testmarks-repo' );
+    var repoKey = storageKey( 'repo' );
+    if ( localStorage.getItem( repoKey ) ) {
+      select.value = localStorage.getItem( repoKey );
     }
 
     select.focus();
@@ -338,7 +349,7 @@
         } )[ 0 ];
       },
       update: function() {
-        localStorage.setItem( 'testmarks-repo', repositorySelector.value );
+        localStorage.setItem( storageKey( 'repo' ), repositorySelector.value );
 
         clearChildren( select );
         modeData[ repositorySelector.value ].forEach( function( choice ) {
@@ -350,7 +361,7 @@
           select.appendChild( choiceOption );
         } );
         select.setAttribute( 'size', modeData[ repositorySelector.value ].length );
-        select.value = localStorage.getItem( 'testmarks-choice' );
+        select.value = localStorage.getItem( storageKey( 'choice' ) );
         if ( select.selectedIndex < 0 ) {
           select.selectedIndex = 0;
         }
@@ -358,15 +369,16 @@
     };
 
     select.addEventListener( 'change', function() {
-      localStorage.setItem( 'testmarks-choice', selector.value );
+      localStorage.setItem( storageKey( 'choice' ), selector.value );
     } );
 
     return selector;
   }
 
   function createScreenSelector() {
-    if ( typeof localStorage.getItem( 'testmarks-screens' ) !== 'string' ) {
-      localStorage.setItem( 'testmarks-screens', 'all' );
+    var screensStorageKey = storageKey( 'screens' );
+    if ( typeof localStorage.getItem( screensStorageKey ) !== 'string' ) {
+      localStorage.setItem( screensStorageKey, 'all' );
     }
 
     var div = document.createElement( 'div' );
@@ -378,10 +390,10 @@
       radio.type = 'radio';
       radio.name = name;
       radio.value = value;
-      radio.checked = localStorage.getItem( 'testmarks-screens' ) === value;
+      radio.checked = localStorage.getItem( screensStorageKey ) === value;
       radio.addEventListener( 'change', function() {
         var selectedValue = $( 'input[name=screens]:checked' ).val();
-        localStorage.setItem( 'testmarks-screens', selectedValue );
+        localStorage.setItem( screensStorageKey, selectedValue );
       } );
       label.appendChild( radio );
       label.appendChild( document.createTextNode( text ) );
@@ -400,26 +412,26 @@
       },
       reset: function() {
         $( 'input[value=all]' )[ 0 ].checked = true;
-        localStorage.setItem( 'testmarks-screens', 'all' );
+        localStorage.setItem( screensStorageKey, 'all' );
       }
     };
   }
 
   /**
-   * @param {Object} modeData - Maps from {string} repository name => {Mode}
    * @param {Object} modeSelector
    * @returns { element: {HTMLSelectElement}, get value(): {string} }
    */
-  function createQueryParameterSelector( modeData, modeSelector ) {
+  function createQueryParameterSelector( modeSelector ) {
     var screenSelector = createScreenSelector();
+    var customStorageKey = storageKey( 'customText' );
 
     var customTextBox = document.createElement( 'input' );
     customTextBox.type = 'text';
-    if ( localStorage.getItem( 'testmarks-customText' ) ) {
-      customTextBox.value = localStorage.getItem( 'testmarks-customText' );
+    if ( localStorage.getItem( customStorageKey ) ) {
+      customTextBox.value = localStorage.getItem( customStorageKey );
     }
     customTextBox.addEventListener( 'input', function() {
-      localStorage.setItem( 'testmarks-customText', customTextBox.value );
+      localStorage.setItem( customStorageKey, customTextBox.value );
     } );
 
 
@@ -431,13 +443,16 @@
       customElement: customTextBox,
       get value() {
         var screensValue = screenSelector.value;
-        return _.map( _.filter( $( toggleContainer ).find( ':checkbox' ), function( checkbox ) {
+        var checkboxes = $( toggleContainer ).find( ':checkbox' );
+        var checkedCheckboxes = _.filter( checkboxes, function( checkbox ) {
           return checkbox.checked;
-        } ), function( checkbox ) {
+        } );
+        var checkboxQueryParameters = _.map( checkedCheckboxes, function( checkbox ) {
           return checkbox.name;
-        } ).concat( customTextBox.value.length ? [ customTextBox.value ] : [] ).concat(
-          screensValue === 'all' ? [] : [ 'screens=' + screensValue ]
-        ).join( '&' );
+        } );
+        var customQueryParameters = customTextBox.value.length ? [ customTextBox.value ] : [];
+        var screenQueryParameters = screensValue === 'all' ? [] : [ 'screens=' + screensValue ];
+        return checkboxQueryParameters.concat( customQueryParameters ).concat( screenQueryParameters ).join( '&' );
       },
       update: function() {
         clearChildren( toggleContainer );
@@ -452,7 +467,7 @@
           label.appendChild( document.createTextNode( parameter.text + ' (' + parameter.value + ')' ) );
           toggleContainer.appendChild( label );
           toggleContainer.appendChild( document.createElement( 'br' ) );
-          var checked = localStorage.getItem( 'testmarks-query-' + parameter.value );
+          var checked = localStorage.getItem( storageKey( 'query-' + parameter.value ) );
           if ( typeof checked === 'string' ) {
             checkBox.checked = checked === 'true';
           }
@@ -461,7 +476,7 @@
           }
 
           checkBox.addEventListener( 'change', function() {
-            localStorage.setItem( 'testmarks-query-' + parameter.value, checkBox.checked );
+            localStorage.setItem( storageKey( 'query-' + parameter.value ), checkBox.checked );
           } );
         } );
       },
@@ -469,11 +484,18 @@
         screenSelector.reset();
 
         customTextBox.value = '';
-        localStorage.setItem( 'testmarks-customText', '' );
+        localStorage.setItem( customStorageKey, '' );
+
+        // For each checkbox, set it to its default
         _.forEach( $( toggleContainer ).find( ':checkbox' ), function( checkbox ) {
+          // Grab the parameter object
           var parameter = _.filter( modeSelector.mode.queryParameters, function( param ) { return param.value === checkbox.name; } )[ 0 ];
+
+          // Handle when the default isn't defined (it would be false)
           checkbox.checked = !!parameter.default;
-          localStorage.setItem( 'testmarks-query-' + parameter.value, checkbox.checked );
+
+          // Update local storage too
+          localStorage.setItem( storageKey( 'query-' + parameter.value ), checkbox.checked );
         } );
       }
     };
@@ -487,9 +509,9 @@
    * @param {Object} modeData - Maps from {string} repository name => {Mode}
    */
   function render( modeData ) {
-    var repositorySelector = createRepositorySelector( modeData );
+    var repositorySelector = createRepositorySelector( Object.keys( modeData ) );
     var modeSelector = createModeSelector( modeData, repositorySelector );
-    var queryParameterSelector = createQueryParameterSelector( modeData, modeSelector );
+    var queryParameterSelector = createQueryParameterSelector( modeSelector );
 
     function getCurrentURL() {
       var queryParameters = queryParameterSelector.value;
@@ -606,17 +628,11 @@
       var activeRepos = whiteSplit( activeReposString );
 
       $.ajax( {
-        url: '../chipper/data/active-sims'
-      } ).done( function( activeSimsString ) {
-        var activeSims = whiteSplit( activeSimsString );
+        url: '../chipper/data/test-phetio'
+      } ).done( function( testPhetioString ) {
+        var phetioSims = whiteSplit( testPhetioString );
 
-        $.ajax( {
-          url: '../chipper/data/test-phetio'
-        } ).done( function( testPhetioString ) {
-          var phetioSims = whiteSplit( testPhetioString );
-
-          render( populate( activeRunnables, activeRepos, activeSims, phetioSims ) );
-        } );
+        render( populate( activeRunnables, activeRepos, phetioSims ) );
       } );
     } );
   } );
