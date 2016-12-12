@@ -30,9 +30,6 @@
 (function() {
   'use strict';
 
-  // TODO: Use schema? (commented out for linting)
-  // var schema = window.phet.chipper.queryParametersSchema;
-
   var simQueryParameters = [
     { value: 'accessibility', text: 'Accessibility' },
     { value: 'audioVolume=0', text: 'Mute' },
