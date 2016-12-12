@@ -30,6 +30,7 @@
 (function() {
   'use strict';
 
+  // Query parameters used for the following modes: requirejs, compiled, production
   var simQueryParameters = [
     { value: 'accessibility', text: 'Accessibility' },
     { value: 'audioVolume=0', text: 'Mute' },
@@ -43,16 +44,19 @@
     { value: 'webgl=false', text: 'No WebGL' }
   ];
 
+  // Query parameters used for requirejs and PhET-iO wrappers
   var devSimQueryParameters = [
     { value: 'brand=phet', text: 'PhET Brand', default: true },
     { value: 'ea', text: 'Assertions', default: true },
     { value: 'eall', text: 'All Assertions' }
   ];
 
+  // Query parameters for the PhET-iO modes
   var phetIOQueryParameters = [
     { value: 'brand=phet-io&phetioStandalone&phetioLog=lines', text: 'Formatted PhET-IO Console Output' }
   ];
 
+  // Some simulations have a supplemental html file that controls the colors for the simulation.
   var colorProfileRepos = [
     'charges-and-fields',
     'gravity-and-orbits',
@@ -62,7 +66,8 @@
     'states-of-matter'
   ];
 
-  // Track whether 'shift' key is pressed, so that we can change how windows are opened
+  // Track whether 'shift' key is pressed, so that we can change how windows are opened.  If shift is pressed, the
+  // page is launched in a separate tab.
   var shiftPressed = false;
   window.addEventListener( 'keydown', function( event ) {
     shiftPressed = event.shiftKey;
