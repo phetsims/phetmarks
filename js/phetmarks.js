@@ -430,13 +430,16 @@
       customElement: customTextBox,
       get value() {
         var screensValue = screenSelector.value;
-        return _.map( _.filter( $( toggleContainer ).find( ':checkbox' ), function( checkbox ) {
+        var checkboxes = $( toggleContainer ).find( ':checkbox' );
+        var checkedCheckboxes = _.filter( checkboxes, function( checkbox ) {
           return checkbox.checked;
-        } ), function( checkbox ) {
+        } );
+        var checkboxQueryParameters = _.map( checkedCheckboxes, function( checkbox ) {
           return checkbox.name;
-        } ).concat( customTextBox.value.length ? [ customTextBox.value ] : [] ).concat(
-          screensValue === 'all' ? [] : [ 'screens=' + screensValue ]
-        ).join( '&' );
+        } );
+        var customQueryParameters = customTextBox.value.length ? [ customTextBox.value ] : [];
+        var screenQueryParameters = screensValue === 'all' ? [] : [ 'screens=' + screensValue ];
+        return checkboxQueryParameters.concat( customQueryParameters ).concat( screenQueryParameters ).join( '&' );
       },
       update: function() {
         clearChildren( toggleContainer );
