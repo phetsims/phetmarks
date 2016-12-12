@@ -108,8 +108,9 @@
 
       var isPhetIO = _.contains( phetioSims, repo );
       var hasColorProfile = _.contains( colorProfileRepos );
+      var isRunnable = _.contains( activeRunnables, repo );
 
-      if ( _.contains( activeRunnables, repo ) ) {
+      if ( isRunnable ) {
         modes.push( {
           name: 'requirejs',
           text: 'Require.js',
