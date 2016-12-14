@@ -172,7 +172,7 @@
         modes.push( {
           name: 'unitTestsCompiled',
           text: 'Unit Tests (Compiled)',
-          description: 'Runs unit tests from a compiled (built) file. Run "grunt build-js" first',
+          description: 'Runs unit tests from a compiled (built) file. Run "grunt build" first',
           url: '../' + repo + '/tests/qunit/compiled-unit-tests.html'
         } );
       }
