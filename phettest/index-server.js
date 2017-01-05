@@ -1,7 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 var http = require( 'http' );
-var spawn = require( 'child_process' ).spawn;
+var spawn = require( 'child_process' ).spawn; // eslint-disable-line
 var path = require( 'path' );
 var url = require( 'url' );
 var fs = require( 'fs' );
@@ -15,10 +15,12 @@ var jsonHeaders = {
 };
 
 // root of your GitHub working copy, relative to the name of the directory that the currently-executing script resides in
-var rootDir = path.normalize( __dirname + '/../../' );
+var rootDir = path.normalize( __dirname + '/../../' ); // eslint-disable-line
 
 // callback(), errCallback( code )
 function execute( cmd, args, cwd, callback, errCallback ) {
+  'use strict';
+
   var process = spawn( cmd, args, {
     cwd: cwd
   } );
@@ -44,36 +46,50 @@ function execute( cmd, args, cwd, callback, errCallback ) {
 
 // callback(), errCallback( code )
 function pull( repo, callback, errCallback ) {
+  'use strict';
+  
   execute( 'git', [ 'pull' ], rootDir + repo, callback, errCallback );
 }
 
 // callback(), errCallback( code )
 function npmUpdate( repo, callback, errCallback ) {
+  'use strict';
+  
   execute( 'npm', [ 'update' ], rootDir + repo, callback, errCallback );
 }
 
 // callback(), errCallback( code )
 function grunt( repo, callback, errCallback ) {
+  'use strict';
+  
   execute( 'grunt', [ '--no-color' ], rootDir + repo, callback, errCallback );
 }
 
 function isSameAsRemoteMaster( repo, sameCallback, differentCallback ) {
+  'use strict';
+  
   execute( 'bash', [ '../phetmarks/phettest/same-as-remote-master.sh' ], rootDir + repo, sameCallback, differentCallback );
 }
 
 function getActiveRepos() {
+  'use strict';
+  
   return fs.readFileSync( rootDir + 'chipper/data/active-repos', 'utf8' )
            .split( '\n' )
            .filter( function( name ) { return name.length > 0; } );
 }
 
 function getActiveSims() {
+  'use strict';
+  
   return fs.readFileSync( rootDir + 'chipper/data/active-sims', 'utf8' )
            .split( '\n' )
            .filter( function( name ) { return name.length > 0; } );
 }
 
 function successFunction( req, res, name ) {
+  'use strict';
+  
   return function() {
     res.writeHead( 200, jsonHeaders );
     res.end( JSON.stringify( {
@@ -84,6 +100,8 @@ function successFunction( req, res, name ) {
 }
 
 function errorFunction( req, res, name ) {
+  'use strict';
+  
   return function( code ) {
     res.writeHead( 500, jsonHeaders );
     res.end( JSON.stringify( {
@@ -94,6 +112,8 @@ function errorFunction( req, res, name ) {
 }
 
 function taskBuild( req, res, query ) {
+  'use strict';
+  
   var simName = query.sim;
 
   if ( !validateSimName( simName ) ) {
@@ -113,6 +133,8 @@ function taskBuild( req, res, query ) {
 }
 
 function taskSimList( req, res, query ) {
+  'use strict';
+  
   var activeSims = getActiveSims();
 
   res.writeHead( 200, jsonHeaders );
@@ -123,6 +145,8 @@ function taskSimList( req, res, query ) {
 }
 
 function taskRepoList( req, res, query ) {
+  'use strict';
+  
   var activeSims = getActiveRepos();
 
   res.writeHead( 200, jsonHeaders );
@@ -133,6 +157,8 @@ function taskRepoList( req, res, query ) {
 }
 
 function taskChipperRefresh( req, res, query ) {
+  'use strict';
+  
   pull( 'chipper', function() {
     npmUpdate( 'chipper', function() {
       execute( rootDir + 'chipper/bin/clone-missing-repos.sh', [], rootDir,
@@ -143,6 +169,8 @@ function taskChipperRefresh( req, res, query ) {
 }
 
 function taskPull( req, res, query ) {
+  'use strict';
+  
   var simName = query.sim;
 
   if ( !validateSimName( simName ) ) {
@@ -158,6 +186,8 @@ function taskPull( req, res, query ) {
 }
 
 function taskPullAll( req, res, query ) {
+  'use strict';
+  
   var repos = getActiveRepos();
 
   (function step() {
@@ -179,6 +209,8 @@ function taskPullAll( req, res, query ) {
 }
 
 function taskSameAsRemoteMaster( req, res, query ) {
+  'use strict';
+  
   var simName = query.repo;
 
   if ( !validateSimName( simName ) ) {
@@ -194,6 +226,8 @@ function taskSameAsRemoteMaster( req, res, query ) {
 }
 
 function validateSimName( simName ) {
+  'use strict';
+  
   // validate that it is lower-case with hyphens
   for ( var i = 0; i < simName.length; i++ ) {
     var charCode = simName.charCodeAt( i );
@@ -205,6 +239,8 @@ function validateSimName( simName ) {
 }
 
 http.createServer( function( req, res ) {
+  'use strict';
+  
   // req.url
   // req.method
   // req.headers
@@ -242,7 +278,7 @@ http.createServer( function( req, res ) {
     } ) );
   }
 
-  var simName = req.url.slice( 1 );
+  // var simName = req.url.slice( 1 );
 
 
 
