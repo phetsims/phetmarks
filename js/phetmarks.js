@@ -308,7 +308,7 @@
     select.focus();
 
     // Scroll to the selected element
-    select.addEventListener( 'change', function() {
+    function tryScroll() {
       var element = select.childNodes[ select.selectedIndex ];
       if ( element.scrollIntoViewIfNeeded ) {
         element.scrollIntoViewIfNeeded();
@@ -316,7 +316,11 @@
       else if ( element.scrollIntoView ) {
         element.scrollIntoView();
       }
-    } );
+    }
+    select.addEventListener( 'change', tryScroll );
+    // We need to wait for things to load fully before scrolling (in Chrome).
+    // See https://github.com/phetsims/phetmarks/issues/13
+    setTimeout( tryScroll, 0 );
 
     return {
       element: select,
