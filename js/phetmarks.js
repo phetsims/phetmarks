@@ -118,9 +118,9 @@
       var modes = [];
       modeData[ repo ] = modes;
 
-      var isPhetIO = _.contains( phetioSims, repo );
-      var hasColorProfile = _.contains( colorProfileRepos );
-      var isRunnable = _.contains( activeRunnables, repo );
+      var isPhetIO = _.includes( phetioSims, repo );
+      var hasColorProfile = _.includes( colorProfileRepos );
+      var isRunnable = _.includes( activeRunnables, repo );
 
       if ( isRunnable ) {
         modes.push( {

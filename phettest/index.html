@@ -255,7 +255,7 @@
         $.ajax( 'http://' + domain + ':45362/repo-list' ).done( function( data ) {
           var repos = data.output;
           commonRepos = repos.filter( function( repo ) {
-            return !_.contains( sims, repo );
+            return !_.includes( sims, repo );
           } );
 
           checkCommonSameMaster();
