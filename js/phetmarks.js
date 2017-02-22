@@ -62,6 +62,7 @@
     'gravity-and-orbits',
     'molecule-shapes',
     'molecule-shapes-basics',
+    'proportion-playground',
     'rutherford-scattering',
     'states-of-matter'
   ];
@@ -119,7 +120,7 @@
       modeData[ repo ] = modes;
 
       var isPhetIO = _.includes( phetioSims, repo );
-      var hasColorProfile = _.includes( colorProfileRepos );
+      var hasColorProfile = _.includes( colorProfileRepos, repo );
       var isRunnable = _.includes( activeRunnables, repo );
 
       if ( isRunnable ) {
