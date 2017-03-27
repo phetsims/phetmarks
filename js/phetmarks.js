@@ -228,21 +228,22 @@
 
       // phet-io wrappers
       [
-        'index',
-        'instance-proxies',
-        'console',
-        'mirror-inputs',
-        'state',
         'active',
         'audio',
         'classroom-activity',
-        'wrapper-template',
-        'lab-book',
+        'console',
         'event-log',
+        'index',
+        'instance-proxies',
+        'lab-book',
+        'login',
+        'mirror-inputs',
         'playback',
         'record',
         'screenshot',
-        'login'
+        'sonification',
+        'state',
+        'wrapper-template'
       ].forEach( function( wrapper ) {
         var url = wrapper === 'console' ?
                   '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioLog=lines&phetioStandalone' :
