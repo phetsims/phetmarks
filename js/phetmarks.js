@@ -230,24 +230,21 @@
       [
         'active',
         'audio',
-        'classroom-activity',
         'console',
         'event-log',
         'index',
         'instance-proxies',
-        'lab-book',
         'login',
         'mirror-inputs',
         'playback',
         'record',
         'screenshot',
-        'sonification',
         'state',
         'wrapper-template'
       ].forEach( function( wrapper ) {
         var url = wrapper === 'console' ?
                   '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioLog=lines&phetioStandalone' :
-                  '../phet-io/wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo;
+                  '../phet-io-wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo;
         modes.push( {
           name: wrapper,
           text: wrapper,
@@ -258,6 +255,26 @@
           } )
         } );
       } );
+
+      // phet-io wrappers with their own repo
+      [
+        'classroom-activity',
+        'lab-book',
+        'sonification'
+      ].forEach( function( wrapper ) {
+        var url = wrapper === 'sonification'  ? '../phet-io-wrapper-' + wrapper + '/' + repo + '-sonification.html?sim=' + repo :
+                  '../phet-io-wrapper-' + wrapper + '/' + wrapper + '.html?sim=' + repo;
+        modes.push( {
+          name: wrapper,
+          text: wrapper,
+          description: 'Runs the phet-io wrapper ' + wrapper,
+          url: url,
+          queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
+            return queryParameter.value !== 'brand=phet';
+          } )
+        } );
+      } );
+
 
       modes.push( {
         name: 'github',
