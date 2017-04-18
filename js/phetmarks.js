@@ -79,6 +79,23 @@
     return 'phetmarks-' + key;
   }
 
+  /**
+   * From the wrapper path in chipper/data/wrappers, get the name of the wrapper.
+   * @param {string} wrapper
+   * @returns {string} - the name of the wrapper
+   */
+  var getWrapperName = function( wrapper ) {
+
+    // If the wrapper has its own individual repo, then get the name 'classroom-activity' from 'phet-io-wrapper-classroom-activity'
+    // Maintain compatibility for wrappers in 'phet-io-wrappers-'
+    var wrapperParts = wrapper.split( 'phet-io-wrapper-' );
+    var wrapperName = wrapperParts.length === 1 ? wrapperParts[ 0 ] : wrapperParts[ 1 ];
+
+    // If the wrapper still has slashes in it, then it looks like 'phet-io-wrappers/active'
+    var splitOnSlash = wrapperName.split( '/' );
+    return splitOnSlash[ splitOnSlash.length - 1 ];
+  };
+
   // Track whether 'shift' key is pressed, so that we can change how windows are opened.  If shift is pressed, the
   // page is launched in a separate tab.
   var shiftPressed = false;
@@ -103,9 +120,10 @@
    * @param {Array.<string>} activeRunnables - from active-runnables
    * @param {Array.<string>} activeRepos - from active-repos
    * @param {Array.<string>} phetioSims - from test-phetio
+   * @param {Array.<string>} wrappers - from wrappers
    * @returns {Object} - Maps from {string} repository name => {Mode}
    */
-  function populate( activeRunnables, activeRepos, phetioSims ) {
+  function populate( activeRunnables, activeRepos, phetioSims, wrappers ) {
     var modeData = {};
 
     var phetIOTestQueryParameters = [
@@ -226,55 +244,51 @@
         } );
       }
 
-      // phet-io wrappers
-      [
-        'active',
-        'audio',
-        'console',
-        'event-log',
-        'index',
-        'instance-proxies',
-        'login',
-        'mirror-inputs',
-        'playback',
-        'record',
-        'screenshot',
-        'state',
-        'wrapper-template'
-      ].forEach( function( wrapper ) {
-        var url = wrapper === 'console' ?
+      // if a phet-io sim, then add the wrappers to them
+      if ( phetioSims.indexOf( repo ) >= 0 ) {
+
+        // phet-io wrappers
+        wrappers.forEach( function( wrapper ) {
+
+          var wrapperName = getWrapperName( wrapper );
+
+
+          var url = '';
+
+          // Process for dedicated wrapper repos
+          if ( wrapper.indexOf( 'phet-io-wrapper-' ) === 0 ) {
+
+            // Special use case for the sonification wrapper
+            url = wrapperName === 'sonification' ? '../phet-io-wrapper-' + wrapperName + '/' + repo + '-sonification.html?sim=' + repo :
+                  '../' + wrapper + '/' + wrapperName + '.html?sim=' + repo;
+            modes.push( {
+              name: wrapperName,
+              text: wrapperName,
+              description: 'Runs the phet-io wrapper ' + wrapperName,
+              url: url,
+              queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
+                return queryParameter.value !== 'brand=phet';
+              } )
+            } );
+          }
+
+          // Load the wrapper urls for the phet-io-wrappers/
+          else {
+            url = wrapper === 'console' ?
                   '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioLog=lines&phetioStandalone' :
-                  '../phet-io-wrappers/' + wrapper + '/' + wrapper + '.html?sim=' + repo;
-        modes.push( {
-          name: wrapper,
-          text: wrapper,
-          description: 'Runs the phet-io wrapper ' + wrapper,
-          url: url,
-          queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
-            return queryParameter.value !== 'brand=phet';
-          } )
+                  '../' + wrapper + '/' + wrapperName + '.html?sim=' + repo;
+            modes.push( {
+              name: wrapperName,
+              text: wrapperName,
+              description: 'Runs the phet-io wrapper ' + wrapperName,
+              url: url,
+              queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
+                return queryParameter.value !== 'brand=phet';
+              } )
+            } );
+          }
         } );
-      } );
-
-      // phet-io wrappers with their own repo
-      [
-        'classroom-activity',
-        'lab-book',
-        'sonification'
-      ].forEach( function( wrapper ) {
-        var url = wrapper === 'sonification'  ? '../phet-io-wrapper-' + wrapper + '/' + repo + '-sonification.html?sim=' + repo :
-                  '../phet-io-wrapper-' + wrapper + '/' + wrapper + '.html?sim=' + repo;
-        modes.push( {
-          name: wrapper,
-          text: wrapper,
-          description: 'Runs the phet-io wrapper ' + wrapper,
-          url: url,
-          queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
-            return queryParameter.value !== 'brand=phet';
-          } )
-        } );
-      } );
-
+      }
 
       modes.push( {
         name: 'github',
@@ -336,6 +350,7 @@
         element.scrollIntoView();
       }
     }
+
     select.addEventListener( 'change', tryScroll );
     // We need to wait for things to load fully before scrolling (in Chrome).
     // See https://github.com/phetsims/phetmarks/issues/13
@@ -655,7 +670,13 @@
       } ).done( function( testPhetioString ) {
         var phetioSims = whiteSplit( testPhetioString );
 
-        render( populate( activeRunnables, activeRepos, phetioSims ) );
+        $.ajax( {
+          url: '../chipper/data/wrappers'
+        } ).done( function( wrappersString ) {
+          var wrappers = whiteSplit( wrappersString );
+
+          render( populate( activeRunnables, activeRepos, phetioSims, wrappers ) );
+        } );
       } );
     } );
   } );
