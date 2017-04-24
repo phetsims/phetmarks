@@ -242,6 +242,12 @@
           url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testTask=false&testBuilt=false',
           queryParameters: phetIOTestQueryParameters
         } );
+        modes.push( {
+          name: 'continuous-testing',
+          text: 'Continuous Testing',
+          description: 'Link to the continuous testing on Bayes.',
+          url: 'https://bayes.colorado.edu/continuous-testing/aqua/html/continuous-report.html'
+        } );
       }
 
       // if a phet-io sim, then add the wrappers to them
