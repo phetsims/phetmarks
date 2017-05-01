@@ -280,9 +280,7 @@
 
           // Load the wrapper urls for the phet-io-wrappers/
           else {
-            url = wrapper === 'console' ?
-                  '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioLog=lines&phetioStandalone' :
-                  '../' + wrapper + '/' + wrapperName + '.html?sim=' + repo;
+            url = '../' + wrapper + '/' + wrapperName + '.html?sim=' + repo;
             modes.push( {
               name: wrapperName,
               text: wrapperName,
@@ -293,6 +291,17 @@
               } )
             } );
           }
+        } );
+
+        // Add the console logging, not a wrapper but nice to have
+        modes.push( {
+          name: 'console',
+          text: 'console',
+          description: 'Show the event log in the console of the stand alone sim.',
+          url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioLog=lines&phetioStandalone',
+          queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
+            return queryParameter.value !== 'brand=phet';
+          } )
         } );
       }
 
