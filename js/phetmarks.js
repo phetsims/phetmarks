@@ -58,6 +58,7 @@
 
   // Some simulations have a supplemental html file that controls the colors for the simulation.
   var colorProfileRepos = [
+    'area-model-multiplication',
     'charges-and-fields',
     'gravity-and-orbits',
     'molecule-shapes',
