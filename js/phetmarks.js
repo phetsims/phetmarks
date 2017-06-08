@@ -12,7 +12,7 @@
  *
  * Mode has the format:
  * {
- *   name: {string} - Internal unique value (for looking up which option was chosen, and storing in localStorage),
+ *   name: {string} - Internal unique value (for looking up which option was chosen),
  *   text: {string} - Shown in the mode list,
  *   description: {string} - Shown when hovering over the mode in the list,
  *   url: {string} - The base URL to visit (without added query parameters) when the mode is chosen,
@@ -415,26 +415,16 @@
           select.appendChild( choiceOption );
         } );
         select.setAttribute( 'size', modeData[ repositorySelector.value ].length );
-        select.value = localStorage.getItem( storageKey( 'choice' ) );
         if ( select.selectedIndex < 0 ) {
           select.selectedIndex = 0;
         }
       }
     };
 
-    select.addEventListener( 'change', function() {
-      localStorage.setItem( storageKey( 'choice' ), selector.value );
-    } );
-
     return selector;
   }
 
   function createScreenSelector() {
-    var screensStorageKey = storageKey( 'screens' );
-    if ( typeof localStorage.getItem( screensStorageKey ) !== 'string' ) {
-      localStorage.setItem( screensStorageKey, 'all' );
-    }
-
     var div = document.createElement( 'div' );
 
     function createScreenRadioButton( name, value, text ) {
@@ -444,11 +434,7 @@
       radio.type = 'radio';
       radio.name = name;
       radio.value = value;
-      radio.checked = localStorage.getItem( screensStorageKey ) === value;
-      radio.addEventListener( 'change', function() {
-        var selectedValue = $( 'input[name=screens]:checked' ).val();
-        localStorage.setItem( screensStorageKey, selectedValue );
-      } );
+      radio.checked = value === 'all';
       label.appendChild( radio );
       label.appendChild( document.createTextNode( text ) );
       return label;
@@ -466,7 +452,6 @@
       },
       reset: function() {
         $( 'input[value=all]' )[ 0 ].checked = true;
-        localStorage.setItem( screensStorageKey, 'all' );
       }
     };
   }
@@ -477,17 +462,9 @@
    */
   function createQueryParameterSelector( modeSelector ) {
     var screenSelector = createScreenSelector();
-    var customStorageKey = storageKey( 'customText' );
 
     var customTextBox = document.createElement( 'input' );
     customTextBox.type = 'text';
-    if ( localStorage.getItem( customStorageKey ) ) {
-      customTextBox.value = localStorage.getItem( customStorageKey );
-    }
-    customTextBox.addEventListener( 'input', function() {
-      localStorage.setItem( customStorageKey, customTextBox.value );
-    } );
-
 
     var toggleContainer = document.createElement( 'div' );
 
@@ -521,24 +498,13 @@
           label.appendChild( document.createTextNode( parameter.text + ' (' + parameter.value + ')' ) );
           toggleContainer.appendChild( label );
           toggleContainer.appendChild( document.createElement( 'br' ) );
-          var checked = localStorage.getItem( storageKey( 'query-' + parameter.value ) );
-          if ( typeof checked === 'string' ) {
-            checkBox.checked = checked === 'true';
-          }
-          else {
-            checkBox.checked = !!parameter.default;
-          }
-
-          checkBox.addEventListener( 'change', function() {
-            localStorage.setItem( storageKey( 'query-' + parameter.value ), checkBox.checked );
-          } );
+          checkBox.checked = !!parameter.default;
         } );
       },
       reset: function() {
         screenSelector.reset();
 
         customTextBox.value = '';
-        localStorage.setItem( customStorageKey, '' );
 
         // For each checkbox, set it to its default
         _.forEach( $( toggleContainer ).find( ':checkbox' ), function( checkbox ) {
@@ -547,9 +513,6 @@
 
           // Handle when the default isn't defined (it would be false)
           checkbox.checked = !!parameter.default;
-
-          // Update local storage too
-          localStorage.setItem( storageKey( 'query-' + parameter.value ), checkbox.checked );
         } );
       }
     };
