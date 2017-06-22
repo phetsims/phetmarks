@@ -268,6 +268,7 @@
             // Special use case for the sonification wrapper
             url = wrapperName === 'sonification' ? '../phet-io-wrapper-' + wrapperName + '/' + repo + '-sonification.html?sim=' + repo :
                   '../' + wrapper + '/' + wrapperName + '.html?sim=' + repo;
+
             modes.push( {
               name: wrapperName,
               text: wrapperName,
@@ -282,6 +283,10 @@
           // Load the wrapper urls for the phet-io-wrappers/
           else {
             url = '../' + wrapper + '/' + wrapperName + '.html?sim=' + repo;
+
+            // Add a validateTandems checkbox to the index wrapper, see https://github.com/phetsims/phet-io/issues/620
+            url = wrapperName === 'index' ? url + '&toggleValidateTandems' : url;
+
             modes.push( {
               name: wrapperName,
               text: wrapperName,
