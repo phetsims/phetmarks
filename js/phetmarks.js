@@ -252,13 +252,21 @@
       }
 
       // if a phet-io sim, then add the wrappers to them
-      if ( phetioSims.indexOf( repo ) >= 0 ) {
+      if ( isPhetIO ) {
+
+        // Add a link to the compiled index wrapper;
+        modes.push( {
+          name: 'compiled-index',
+          text: 'Compiled Index',
+          description: 'Runs the PhET-iO index wrapper from build/ directory (built from chipper)',
+          url: '../' + repo + '/build/wrappers/index',
+          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+        } );
 
         // phet-io wrappers
         wrappers.forEach( function( wrapper ) {
 
           var wrapperName = getWrapperName( wrapper );
-
 
           var url = '';
 
