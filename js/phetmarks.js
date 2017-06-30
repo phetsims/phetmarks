@@ -120,7 +120,7 @@
    *
    * @param {Array.<string>} activeRunnables - from active-runnables
    * @param {Array.<string>} activeRepos - from active-repos
-   * @param {Array.<string>} phetioSims - from test-phetio
+   * @param {Array.<string>} phetioSims - from phet-io
    * @param {Array.<string>} wrappers - from wrappers
    * @returns {Object} - Maps from {string} repository name => {Mode}
    */
@@ -658,7 +658,7 @@
       var activeRepos = whiteSplit( activeReposString );
 
       $.ajax( {
-        url: '../chipper/data/test-phetio'
+        url: '../chipper/data/phet-io'
       } ).done( function( testPhetioString ) {
         var phetioSims = whiteSplit( testPhetioString );
 
