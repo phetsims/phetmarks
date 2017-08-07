@@ -182,6 +182,15 @@
         } );
       }
 
+      if ( repo === 'scenery' ) {
+        modes.push( {
+          name: 'inspector',
+          text: 'Inspector',
+          description: 'Displays saved Scenery snapshots',
+          url: '../' + repo + '/tests/inspector.html'
+        } );
+      }
+
       if ( repo === 'axon' || repo === 'phet-core' || repo === 'dot' || repo === 'kite' || repo === 'scenery' ) {
         modes.push( {
           name: 'unitTestsRequirejs',
