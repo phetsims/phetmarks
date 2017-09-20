@@ -106,6 +106,7 @@
   window.addEventListener( 'keyup', function( event ) {
     shiftPressed = event.shiftKey;
   } );
+
   function openURL( url ) {
     if ( shiftPressed ) {
       window.open( url, '_blank' );
@@ -675,6 +676,10 @@
           url: '../chipper/data/wrappers'
         } ).done( function( wrappersString ) {
           var wrappers = whiteSplit( wrappersString );
+
+          // Add documentation wrapper here, but we don't yet want to publish this wrapper with all wrappers.
+          wrappers.push( 'phet-io-wrappers/documentation' );
+          wrappers.sort();
 
           render( populate( activeRunnables, activeRepos, phetioSims, wrappers ) );
         } );
