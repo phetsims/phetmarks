@@ -122,10 +122,11 @@
    * @param {Array.<string>} activeRunnables - from active-runnables
    * @param {Array.<string>} activeRepos - from active-repos
    * @param {Array.<string>} phetioSims - from phet-io
+   * @param {Array.<string>} accessibleSims - from accessibility
    * @param {Array.<string>} wrappers - from wrappers
    * @returns {Object} - Maps from {string} repository name => {Mode}
    */
-  function populate( activeRunnables, activeRepos, phetioSims, wrappers ) {
+  function populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers ) {
     var modeData = {};
 
     var phetIOTestQueryParameters = [
@@ -142,6 +143,7 @@
       var isPhetIO = _.includes( phetioSims, repo );
       var hasColorProfile = _.includes( colorProfileRepos, repo );
       var isRunnable = _.includes( activeRunnables, repo );
+      var isAccessible = _.includes( accessibleSims, repo );
 
       if ( isRunnable ) {
         modes.push( {
@@ -258,6 +260,16 @@
           text: 'Continuous Testing',
           description: 'Link to the continuous testing on Bayes.',
           url: 'https://bayes.colorado.edu/continuous-testing/aqua/html/continuous-report.html'
+        } );
+      }
+
+      if ( isAccessible ) {
+        modes.push( {
+          name: 'a11y-view',
+          text: 'A11y View',
+          description: 'Runs the simulation in an iframe next to a copy of the PDOM tot easily inspect accessible content.',
+          url: '../' + repo + '/' + repo + '-a11y-view.html',
+          queryParameters: simQueryParameters
         } );
       }
 
@@ -673,15 +685,21 @@
         var phetioSims = whiteSplit( testPhetioString );
 
         $.ajax( {
-          url: '../chipper/data/wrappers'
-        } ).done( function( wrappersString ) {
-          var wrappers = whiteSplit( wrappersString );
+          url: '../chipper/data/accessibility'
+        } ).done( function( accessibleSimsString ) {
+          var accessibleSims = whiteSplit( accessibleSimsString );
 
-          // Add documentation wrapper here, but we don't yet want to publish this wrapper with all wrappers.
-          wrappers.push( 'phet-io-wrappers/documentation' );
-          wrappers.sort();
+          $.ajax( {
+            url: '../chipper/data/wrappers'
+          } ).done( function( wrappersString ) {
+            var wrappers = whiteSplit( wrappersString );
 
-          render( populate( activeRunnables, activeRepos, phetioSims, wrappers ) );
+            // Add documentation wrapper here, but we don't yet want to publish this wrapper with all wrappers.
+            wrappers.push( 'phet-io-wrappers/documentation' );
+            wrappers.sort();
+
+            render( populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers ) );
+          } );
         } );
       } );
     } );
