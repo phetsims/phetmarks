@@ -158,14 +158,14 @@
           text: 'Compiled',
           description: 'Runs the English simulation from the build/ directory (built from chipper)',
           url: '../' + repo + '/build/' + repo + '_en.html',
-          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: (isPhetIO ? phetIOQueryParameters : []).concat( simQueryParameters )
         } );
         modes.push( {
           name: 'production',
           text: 'Production',
           description: 'Runs the latest English simulation from the production server',
           url: 'https://phet.colorado.edu/sims/html/' + repo + '/latest/' + repo + '_en.html',
-          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: (isPhetIO ? phetIOQueryParameters : []).concat( simQueryParameters )
         } );
         modes.push( {
           name: 'spot',
@@ -234,10 +234,10 @@
       }
       if ( repo === 'phet-io' ) {
         modes.push( {
-          name: 'wrappers',
-          text: 'Wrappers',
-          description: 'Points to many dev wrappers',
-          url: '../' + repo + '/html/dev-wrappers.html'
+          name: 'test-iframe-api',
+          text: 'Test the iframe API',
+          description: 'Runs the ifram API test suite',
+          url: '../' + repo + '/tests/test-iframe-api'
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
@@ -282,7 +282,7 @@
           text: 'Compiled Index',
           description: 'Runs the PhET-iO index wrapper from build/ directory (built from chipper)',
           url: '../' + repo + '/build/wrappers/index',
-          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: (isPhetIO ? phetIOQueryParameters : []).concat( simQueryParameters )
         } );
 
         // phet-io wrappers
@@ -569,7 +569,7 @@
       var queryParameters = queryParameterSelector.value;
       var url = modeSelector.mode.url;
       var separator = url.indexOf( '?' ) < 0 ? '?' : '&';
-      return url + ( queryParameters.length ? separator + queryParameters : '' );
+      return url + (queryParameters.length ? separator + queryParameters : '');
     }
 
     var launchButton = document.createElement( 'button' );
@@ -620,8 +620,8 @@
 
     // Align panels based on width
     function layout() {
-      modeDiv.style.left = ( repositorySelector.element.clientWidth + 20 ) + 'px';
-      queryParametersDiv.style.left = ( repositorySelector.element.clientWidth + +modeDiv.clientWidth + 40 ) + 'px';
+      modeDiv.style.left = (repositorySelector.element.clientWidth + 20) + 'px';
+      queryParametersDiv.style.left = (repositorySelector.element.clientWidth + +modeDiv.clientWidth + 40) + 'px';
     }
 
     window.addEventListener( 'resize', layout );
