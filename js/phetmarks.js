@@ -245,14 +245,14 @@
           name: 'test-sims',
           text: 'Test Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
-          url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse',
+          url: '../aqua/test-server/test-sims.html?ea&brand=phet&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse',
           queryParameters: phetIOTestQueryParameters
         } );
         modes.push( {
           name: 'test-sims-load-only',
           text: 'Test Sims (Load Only)',
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
-          url: '../aqua/test-server/test-sims.html?ea&audioVolume=0&testTask=false&testBuilt=false',
+          url: '../aqua/test-server/test-sims.html?ea&brand=phet&audioVolume=0&testTask=false&testBuilt=false',
           queryParameters: phetIOTestQueryParameters
         } );
         modes.push( {
