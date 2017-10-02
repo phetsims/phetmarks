@@ -129,13 +129,6 @@
   function populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers ) {
     var modeData = {};
 
-    var phetIOTestQueryParameters = [
-      {
-        value: 'brand=phet-io&phetioStandalone&testSims=' + phetioSims.join( ',' ),
-        text: 'Test PhET-IO sims'
-      }
-    ];
-
     activeRepos.forEach( function( repo ) {
       var modes = [];
       modeData[ repo ] = modes;
@@ -241,19 +234,31 @@
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
+        var testParameters = [ {
+          value: 'ea&brand=phet&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse',
+          text: 'Test PhET sims',
+          default: true
+        },
+          {
+            value: 'ea&brand=phet-io&phetioStandalone&testSims=' + phetioSims.join( ',' ),
+            text: 'Test PhET-IO sims',
+            default: false
+          }
+        ];
+
         modes.push( {
           name: 'test-sims',
           text: 'Test Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
-          url: '../aqua/test-server/test-sims.html?ea&brand=phet&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse',
-          queryParameters: phetIOTestQueryParameters
+          url: '../aqua/test-server/test-sims.html?',
+          queryParameters: testParameters
         } );
         modes.push( {
           name: 'test-sims-load-only',
           text: 'Test Sims (Load Only)',
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
           url: '../aqua/test-server/test-sims.html?ea&brand=phet&audioVolume=0&testTask=false&testBuilt=false',
-          queryParameters: phetIOTestQueryParameters
+          queryParameters: testParameters
         } );
         modes.push( {
           name: 'continuous-testing',
