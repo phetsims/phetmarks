@@ -240,7 +240,7 @@
           default: true
         },
           {
-            value: 'ea&brand=phet-io&phetioStandalone&testSims=' + phetioSims.join( ',' ),
+            value: 'ea&brand=phet-io&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse&phetioStandalone&testSims=' + phetioSims.join( ',' ),
             text: 'Test PhET-IO sims',
             default: false
           }
@@ -250,14 +250,14 @@
           name: 'test-sims',
           text: 'Test Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
-          url: '../aqua/test-server/test-sims.html?',
+          url: '../aqua/test-server/test-sims.html',
           queryParameters: testParameters
         } );
         modes.push( {
           name: 'test-sims-load-only',
           text: 'Test Sims (Load Only)',
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
-          url: '../aqua/test-server/test-sims.html?ea&brand=phet&audioVolume=0&testTask=false&testBuilt=false',
+          url: '../aqua/test-server/test-sims.html',
           queryParameters: testParameters
         } );
         modes.push( {
