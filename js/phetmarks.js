@@ -231,8 +231,7 @@
           name: 'test-iframe-api',
           text: 'Test the iframe API',
           description: 'Runs the ifram API test suite',
-          url: '../' + repo + '/tests/test-iframe-api',
-          generalTest: true
+          url: '../' + repo + '/tests/test-iframe-api'
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
