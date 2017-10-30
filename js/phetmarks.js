@@ -198,8 +198,7 @@
           name: 'unitTestsCompiled',
           text: 'Unit Tests (Compiled)',
           description: 'Runs unit tests from a compiled (built) file. Run "grunt build" first',
-          url: '../' + repo + '/tests/qunit/compiled-unit-tests.html',
-          generalTest: repo === 'scenery' ? true : undefined // only add general test once
+          url: '../' + repo + '/tests/qunit/compiled-unit-tests.html'
         } );
       }
       if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-io' ) {
@@ -238,14 +237,12 @@
         var testParameters = [ {
           value: 'ea&brand=phet&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse',
           text: 'Test PhET sims',
-          default: true,
-          generalTest: true
+          default: true
         },
           {
             value: 'ea&brand=phet-io&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse&phetioStandalone&testSims=' + phetioSims.join( ',' ),
             text: 'Test PhET-IO sims',
-            default: false,
-            generalTest: true
+            default: false
           }
         ];
 
@@ -254,7 +251,6 @@
           text: 'Test Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
-          generalTest: repo === 'aqua' ? true : undefined, // only add general test once
           queryParameters: testParameters
         } );
         modes.push( {
@@ -564,23 +560,6 @@
     return selector;
   }
 
-  function getAllGeneralTestModes( modeData ) {
-    var generalTestModes = [];
-
-    var repos = Object.keys( modeData );
-    for ( var i = 0; i < repos.length; i++ ) {
-      var modes = modeData[ repos[ i ] ];
-      for ( var j = 0; j < modes.length; j++ ) {
-        var mode = modes[ j ];
-        if ( mode.generalTest ) {
-          generalTestModes.push( mode );
-        }
-      }
-    }
-
-    return generalTestModes;
-  }
-
   /**
    * Create the view and hook everything up.
    *
@@ -591,26 +570,17 @@
     var modeSelector = createModeSelector( modeData, repositorySelector );
     var queryParameterSelector = createQueryParameterSelector( modeSelector );
 
-    function getURL( url, queryParameters ) {
-      var separator = url.indexOf( '?' ) < 0 ? '?' : '&';
-      return url + (queryParameters.length ? separator + queryParameters : '');
-    }
-
     function getCurrentURL() {
       var queryParameters = queryParameterSelector.value;
       var url = modeSelector.mode.url;
-      return getURL( url, queryParameters );
+      var separator = url.indexOf( '?' ) < 0 ? '?' : '&';
+      return url + (queryParameters.length ? separator + queryParameters : '');
     }
 
     var launchButton = document.createElement( 'button' );
     launchButton.id = 'launchButton';
     launchButton.name = 'launch';
     launchButton.innerHTML = 'Launch';
-
-    var generalTest = document.createElement( 'button' );
-    generalTest.id = 'generalTest';
-    generalTest.name = 'launch';
-    generalTest.innerHTML = 'General Test';
 
     var resetButton = document.createElement( 'button' );
     resetButton.name = 'reset';
@@ -638,9 +608,6 @@
     modeDiv.appendChild( document.createElement( 'br' ) );
     modeDiv.appendChild( document.createElement( 'br' ) );
     modeDiv.appendChild( launchButton );
-    modeDiv.appendChild( document.createElement( 'br' ) );
-    modeDiv.appendChild( document.createElement( 'br' ) );
-    modeDiv.appendChild( generalTest );
     queryParametersDiv.appendChild( header( 'Query Parameters' ) );
     queryParametersDiv.appendChild( queryParameterSelector.toggleElement );
     queryParametersDiv.appendChild( queryParameterSelector.screenElement );
@@ -691,27 +658,6 @@
         openCurrentURL();
       }
     }, false );
-    generalTest.addEventListener( 'click', function() {
-      var generalTestModes = getAllGeneralTestModes( modeData );
-      generalTestModes.forEach( function( mode ) {
-        var urlsForMode = [];
-        if ( mode.queryParameters ) {
-          mode.queryParameters.forEach( function( queryParameter ) {
-            if ( queryParameter.generalTest ) {
-              urlsForMode.push( getURL( mode.url, queryParameter.value ) );
-            }
-          } );
-        }
-        else {
-          urlsForMode.push( getURL( mode.url, '' ) );
-        }
-
-        urlsForMode.forEach( function( url ) {
-          window.open( url, '', 'PopUp' );
-        } );
-
-      } );
-    } );
     launchButton.addEventListener( 'click', openCurrentURL );
 
     // Reset
