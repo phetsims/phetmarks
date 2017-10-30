@@ -564,12 +564,6 @@
     return selector;
   }
 
-  /**
-   * Parse through all of the modes for all repos, and get all modes that have the flag "generalTest". This marker opts in to
-   * the general test launch button feature.
-   * @param {Object.<Array.<Object>>} modeData
-   * @returns {Array}
-   */
   function getAllGeneralTestModes( modeData ) {
     var generalTestModes = [];
 
@@ -698,61 +692,25 @@
       }
     }, false );
     generalTest.addEventListener( 'click', function() {
-
-      // get all of the mode objects that want to be included in the general test popup
       var generalTestModes = getAllGeneralTestModes( modeData );
-
-      var urlsToTest = [];
       generalTestModes.forEach( function( mode ) {
+        var urlsForMode = [];
         if ( mode.queryParameters ) {
-
-          // TODO: support a url with query parameters, but none of the query parameters selected, or all query parameters in 1 url link like ?ea&fuzzMouse.
           mode.queryParameters.forEach( function( queryParameter ) {
             if ( queryParameter.generalTest ) {
-
-              // A url with a specific query parameter, like aqua using the 'Test PhET-iO' query parameter combo
-              urlsToTest.push( getURL( mode.url, queryParameter.value ) );
+              urlsForMode.push( getURL( mode.url, queryParameter.value ) );
             }
           } );
         }
         else {
-
-          // If no query parameters available
-          urlsToTest.push( getURL( mode.url, '' ) );
+          urlsForMode.push( getURL( mode.url, '' ) );
         }
-      } );
 
-      var popup = window.open( '', 'General Test', 'PopUp, scrollable=true' );
-      if ( popup ) {
-        popup.document.write( '<html><head></head><body><h3>General Testing</h3></body></html>' );
-
-        urlsToTest.forEach( function( item ) {
-          var iframe = popup.document.createElement( 'iframe' );
-          iframe.src = item;
-          iframe.style.width = '90%';
-          iframe.style.height = '40%';
-          iframe.style.marginBottom = '5px';
-          var heading = popup.document.createElement( 'p' );
-          heading.innerHTML = item;
-          popup.document.body.appendChild( heading );
-          popup.document.body.appendChild( iframe );
+        urlsForMode.forEach( function( url ) {
+          window.open( url, '', 'PopUp' );
         } );
 
-        // center the popup
-        popup.moveTo( 150, 100 );
-
-        // resize the popup to the desired dimensions
-        var m = 7 / 8; // multiplier
-        popup.resizeTo( m * window.screen.availWidth, m * window.screen.availHeight );
-
-        // Call the resize function again on delay to trigger the scoll bar to refresh, in this case adding it on.
-        setTimeout( function() {
-          popup.resizeTo( m * window.screen.availWidth, m * window.screen.availHeight );
-        }, 1000 );
-      }
-      else {
-        console.log( 'Could not create pop up to test general links in one window.' );
-      }
+      } );
     } );
     launchButton.addEventListener( 'click', openCurrentURL );
 
