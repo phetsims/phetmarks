@@ -192,7 +192,7 @@
           name: 'unitTestsRequirejs',
           text: 'Unit Tests (Require.js)',
           description: 'Runs unit tests in require.js mode',
-          url: '../' + repo + '/tests/qunit/unit-tests.html'
+          url: '../' + repo + '/' + repo + '-tests.html'
         } );
         modes.push( {
           name: 'unitTestsCompiled',
