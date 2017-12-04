@@ -81,7 +81,7 @@
   }
 
   /**
-   * From the wrapper path in chipper/data/wrappers, get the name of the wrapper.
+   * From the wrapper path in perennial/data/wrappers, get the name of the wrapper.
    * @param {string} wrapper
    * @returns {string} - the name of the wrapper
    */
@@ -675,27 +675,27 @@
 
   // Load files serially, populate then render
   $.ajax( {
-    url: '../chipper/data/active-runnables'
+    url: '../perennial/data/active-runnables'
   } ).done( function( activeRunnablesString ) {
     var activeRunnables = whiteSplit( activeRunnablesString );
 
     $.ajax( {
-      url: '../chipper/data/active-repos'
+      url: '../perennial/data/active-repos'
     } ).done( function( activeReposString ) {
       var activeRepos = whiteSplit( activeReposString );
 
       $.ajax( {
-        url: '../chipper/data/phet-io'
+        url: '../perennial/data/phet-io'
       } ).done( function( testPhetioString ) {
         var phetioSims = whiteSplit( testPhetioString );
 
         $.ajax( {
-          url: '../chipper/data/accessibility'
+          url: '../perennial/data/accessibility'
         } ).done( function( accessibleSimsString ) {
           var accessibleSims = whiteSplit( accessibleSimsString );
 
           $.ajax( {
-            url: '../chipper/data/wrappers'
+            url: '../perennial/data/wrappers'
           } ).done( function( wrappersString ) {
             var wrappers = whiteSplit( wrappersString );
 
