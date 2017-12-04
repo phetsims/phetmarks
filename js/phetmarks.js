@@ -664,7 +664,7 @@
     resetButton.addEventListener( 'click', queryParameterSelector.reset );
   }
 
-  // Splits file strings (such as chipper/data/active-runnables) into a list of entries, ignoring blank lines.
+  // Splits file strings (such as perennial/data/active-runnables) into a list of entries, ignoring blank lines.
   function whiteSplit( str ) {
     return str.split( '\n' ).map( function( line ) {
       return line.replace( '\r', '' );

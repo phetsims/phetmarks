@@ -74,7 +74,7 @@ function isSameAsRemoteMaster( repo, sameCallback, differentCallback ) {
 function getActiveRepos() {
   'use strict';
   
-  return fs.readFileSync( rootDir + 'chipper/data/active-repos', 'utf8' )
+  return fs.readFileSync( rootDir + 'perennial/data/active-repos', 'utf8' )
            .split( '\n' )
            .filter( function( name ) { return name.length > 0; } );
 }
@@ -82,7 +82,7 @@ function getActiveRepos() {
 function getActiveSims() {
   'use strict';
   
-  return fs.readFileSync( rootDir + 'chipper/data/active-sims', 'utf8' )
+  return fs.readFileSync( rootDir + 'perennial/data/active-sims', 'utf8' )
            .split( '\n' )
            .filter( function( name ) { return name.length > 0; } );
 }
