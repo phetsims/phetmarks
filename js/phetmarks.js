@@ -27,7 +27,7 @@
  * }
  */
 
-(function() {
+( function() {
   'use strict';
 
   // Query parameters used for the following modes: requirejs, compiled, production
@@ -151,14 +151,14 @@
           text: 'Compiled',
           description: 'Runs the English simulation from the build/ directory (built from chipper)',
           url: '../' + repo + '/build/' + repo + '_en.html',
-          queryParameters: (isPhetIO ? phetIOQueryParameters : []).concat( simQueryParameters )
+          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
           name: 'production',
           text: 'Production',
           description: 'Runs the latest English simulation from the production server',
           url: 'https://phet.colorado.edu/sims/html/' + repo + '/latest/' + repo + '_en.html',
-          queryParameters: (isPhetIO ? phetIOQueryParameters : []).concat( simQueryParameters )
+          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
           name: 'spot',
@@ -234,31 +234,48 @@
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
-        var testParameters = [ {
-          value: 'ea&brand=phet&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse',
+        var generalTestParams = 'ea&audioVolume=0&testDuration=10000&testConcurrentBuilds=4';
+        var fuzzMouseTestParameter = [ {
+          value: generalTestParams + '&brand=phet&fuzzMouse',
           text: 'Test PhET sims',
           default: true
-        },
-          {
-            value: 'ea&brand=phet-io&audioVolume=0&testDuration=10000&testConcurrentBuilds=4&fuzzMouse&phetioStandalone&testSims=' + phetioSims.join( ',' ),
-            text: 'Test PhET-IO sims',
-            default: false
-          }
-        ];
+        } ];
 
         modes.push( {
-          name: 'test-sims',
-          text: 'Test Sims (Fast Build)',
+          name: 'test-phet-sims',
+          text: 'Test PhET Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
-          queryParameters: testParameters
+          queryParameters: fuzzMouseTestParameter
+        } );
+        modes.push( {
+          name: 'test-phet-io-sims',
+          text: 'Test PhET-iO Sims (Fast Build)',
+          description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
+          url: '../aqua/test-server/test-sims.html',
+          queryParameters: [ {
+            value: generalTestParams + '&brand=phet-io&fuzzMouse&phetioStandalone&testSims=' + phetioSims.join( ',' ),
+            text: 'Test PhET-IO sims',
+            default: true
+          } ]
+        } );
+        modes.push( {
+          name: 'test-a11y-keyboard-sims',
+          text: 'Test A11y Keyboard on PhET Sims',
+          description: 'Runs automated testing with a11y keyboard fuzzing, 10 second timer, and 4 concurrent builds',
+          url: '../aqua/test-server/test-sims.html',
+          queryParameters: [ {
+            value: generalTestParams + '&brand=phet&fuzzBoard&accessibility',
+            text: 'A11y Keyboard Test PhET sims',
+            default: true
+          } ]
         } );
         modes.push( {
           name: 'test-sims-load-only',
           text: 'Test Sims (Load Only)',
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
           url: '../aqua/test-server/test-sims.html',
-          queryParameters: testParameters
+          queryParameters: fuzzMouseTestParameter
         } );
         modes.push( {
           name: 'continuous-testing',
@@ -287,7 +304,7 @@
           text: 'Compiled Index',
           description: 'Runs the PhET-iO index wrapper from build/ directory (built from chipper)',
           url: '../' + repo + '/build/wrappers/index',
-          queryParameters: (isPhetIO ? phetIOQueryParameters : []).concat( simQueryParameters )
+          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
 
         // phet-io wrappers
@@ -574,7 +591,7 @@
       var queryParameters = queryParameterSelector.value;
       var url = modeSelector.mode.url;
       var separator = url.indexOf( '?' ) < 0 ? '?' : '&';
-      return url + (queryParameters.length ? separator + queryParameters : '');
+      return url + ( queryParameters.length ? separator + queryParameters : '' );
     }
 
     var launchButton = document.createElement( 'button' );
@@ -625,8 +642,8 @@
 
     // Align panels based on width
     function layout() {
-      modeDiv.style.left = (repositorySelector.element.clientWidth + 20) + 'px';
-      queryParametersDiv.style.left = (repositorySelector.element.clientWidth + +modeDiv.clientWidth + 40) + 'px';
+      modeDiv.style.left = ( repositorySelector.element.clientWidth + 20 ) + 'px';
+      queryParametersDiv.style.left = ( repositorySelector.element.clientWidth + +modeDiv.clientWidth + 40 ) + 'px';
     }
 
     window.addEventListener( 'resize', layout );
@@ -710,4 +727,4 @@
     } );
   } );
 
-})();
+} )();
