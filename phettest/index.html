@@ -67,7 +67,7 @@
 
 <body>
 
-  <h1>PhET Test (Mendeleev)</h1>
+  <h1>PhET Test (Turing)</h1>
 
   <div class="testlink">
     <a href="http://www.colorado.edu/physics/phet/dev/html/">PhET Dev (HTML)</a>
@@ -78,10 +78,10 @@
   </div>
 
   <button id="pullAll">Pull All</button>
-  <button id="chipperRefresh">Refresh Chipper</button>
+  <button id="perennialRefresh">Refresh Perennial</button>
 
   <div id="pullStatus"></div>
-  <div id="chipperStatus"></div>
+  <div id="perennialStatus"></div>
   <div id="commonSameAsRemoteMasterStatus"></div>
 
   <table id="sims">
@@ -174,15 +174,15 @@
       } );
     } );
 
-    document.getElementById( 'chipperRefresh' ).addEventListener( 'click', function() {
-      var status = document.getElementById( 'chipperStatus' );
-      $( status ).text( 'refreshing chipper' );
-      $.ajax( 'http://' + domain + ':45362/chipper-refresh' ).done( function( data ) {
+    document.getElementById( 'perennialRefresh' ).addEventListener( 'click', function() {
+      var status = document.getElementById( 'perennialStatus' );
+      $( status ).text( 'refreshing perennial' );
+      $.ajax( 'http://' + domain + ':45362/perennial-refresh' ).done( function( data ) {
         $( status ).text( '' );
 
         updateSims();
       } ).fail( function() {
-        $( status ).text( 'chipper refresh failed' );
+        $( status ).text( 'perennial refresh failed' );
       } );
     } );
 
