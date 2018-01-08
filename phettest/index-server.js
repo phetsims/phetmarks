@@ -188,24 +188,9 @@ function taskPull( req, res, query ) {
 function taskPullAll( req, res, query ) {
   'use strict';
 
-  var repos = getActiveRepos();
-
-  (function step() {
-    if ( repos.length ) {
-      var repo = repos.shift();
-
-      pull( repo, function() {
-        step();
-      }, errorFunction( req, res, 'pull ' + repo ) );
-    }
-    else {
-      res.writeHead( 200, jsonHeaders );
-      res.end( JSON.stringify( {
-        output: 'pulled',
-        success: true
-      } ) );
-    }
-  })();
+  execute( rootDir + 'perennial/bin/pull-all.sh', [ '-p' ], rootDir,
+           successFunction( req, res, 'pulled' ),
+           errorFunction( req, res, 'pull failed') );
 }
 
 function taskSameAsRemoteMaster( req, res, query ) {
