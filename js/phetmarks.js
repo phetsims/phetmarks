@@ -548,14 +548,14 @@
         var queryParameters = modeSelector.mode.queryParameters || [];
         queryParameters.forEach( function( parameter ) {
           var label = document.createElement( 'label' );
-          var checkBox = document.createElement( 'input' );
-          checkBox.type = 'checkbox';
-          checkBox.name = parameter.value;
-          label.appendChild( checkBox );
+          var checkbox = document.createElement( 'input' );
+          checkbox.type = 'checkbox';
+          checkbox.name = parameter.value;
+          label.appendChild( checkbox );
           label.appendChild( document.createTextNode( parameter.text + ' (' + parameter.value + ')' ) );
           toggleContainer.appendChild( label );
           toggleContainer.appendChild( document.createElement( 'br' ) );
-          checkBox.checked = !!parameter.default;
+          checkbox.checked = !!parameter.default;
         } );
       },
       reset: function() {
