@@ -150,7 +150,7 @@
           name: 'compiled',
           text: 'Compiled',
           description: 'Runs the English simulation from the build/ directory (built from chipper)',
-          url: '../' + repo + '/build/' + repo + '_en.html',
+          url: '../' + repo + '/build/phet/' + repo + '_en_phet.html',
           queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
@@ -303,7 +303,7 @@
           name: 'compiled-index',
           text: 'Compiled Index',
           description: 'Runs the PhET-iO index wrapper from build/ directory (built from chipper)',
-          url: '../' + repo + '/build/wrappers/index',
+          url: '../' + repo + '/build/phet-io/wrappers/index',
           queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
 
