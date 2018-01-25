@@ -290,7 +290,7 @@
           name: 'a11y-view',
           text: 'A11y View',
           description: 'Runs the simulation in an iframe next to a copy of the PDOM tot easily inspect accessible content.',
-          url: '../' + repo + '/' + repo + '-a11y-view.html',
+          url: '../' + repo + '/' + repo + '_a11y_view.html',
           queryParameters: devSimQueryParameters.concat( simQueryParameters )
         } );
       }
