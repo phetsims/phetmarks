@@ -230,7 +230,7 @@
           name: 'test-iframe-api',
           text: 'Test the iframe API',
           description: 'Runs the ifram API test suite',
-          url: '../' + repo + '/tests/test-iframe-api'
+          url: '../' + repo + '/phet-io-tests.html'
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
