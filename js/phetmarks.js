@@ -275,7 +275,7 @@
           }, {
             value: 'testSims=' + accessibleSims.join( ',' ),
             text: 'Test only A11y sims',
-            default: false
+            default: true
           } ]
         } );
         modes.push( {
