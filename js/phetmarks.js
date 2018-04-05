@@ -250,7 +250,7 @@
         } );
         modes.push( {
           name: 'test-phet-io-sims',
-          text: 'Test PhET-iO Sims (Fast Build)',
+          text: 'Fuzz Test PhET-iO Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
