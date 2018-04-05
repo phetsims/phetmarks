@@ -243,7 +243,7 @@
 
         modes.push( {
           name: 'test-phet-sims',
-          text: 'Test PhET Sims (Fast Build)',
+          text: 'Fuzz Test PhET Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: fuzzMouseTestParameter
@@ -255,19 +255,27 @@
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
             value: generalTestParams + '&brand=phet-io&fuzzMouse&phetioStandalone&testSims=' + phetioSims.join( ',' ),
-            text: 'Test PhET-IO sims',
+            text: 'Fuzz Test PhET-IO sims',
             default: true
           } ]
         } );
         modes.push( {
-          name: 'test-a11y-keyboard-sims',
-          text: 'Test A11y Keyboard on PhET Sims',
-          description: 'Runs automated testing with a11y keyboard fuzzing, 10 second timer, and 4 concurrent builds',
+          name: 'test-a11y-sims',
+          text: 'Fuzz Test Accessibility Sims (Fast Build)',
+          description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
-            value: generalTestParams + '&brand=phet&fuzzBoard&accessibility',
-            text: 'A11y Keyboard Test PhET sims',
+            value: generalTestParams + '&brand=phet&fuzzMouse&accessibility',
+            text: 'Fuzz Mouse Test sims',
             default: true
+          }, {
+            value: generalTestParams + '&brand=phet&fuzzBoard&accessibility',
+            text: 'Keyboard Fuzz Test sims',
+            default: false
+          }, {
+            value: 'testSims=' + accessibleSims.join( ',' ),
+            text: 'Test only A11y sims',
+            default: false
           } ]
         } );
         modes.push( {
