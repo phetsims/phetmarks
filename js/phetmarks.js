@@ -192,7 +192,8 @@
           name: 'unitTestsRequirejs',
           text: 'Unit Tests (Require.js)',
           description: 'Runs unit tests in require.js mode',
-          url: '../' + repo + '/' + repo + '-tests.html'
+          url: '../' + repo + '/' + repo + '-tests.html',
+          queryParameters: [ { value: 'ea', text: 'Assertions', default: true } ]
         } );
         modes.push( {
           name: 'unitTestsCompiled',
