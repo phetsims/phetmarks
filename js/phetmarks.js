@@ -723,11 +723,7 @@
           $.ajax( {
             url: '../perennial/data/wrappers'
           } ).done( function( wrappersString ) {
-            var wrappers = whiteSplit( wrappersString );
-
-            // Add documentation wrapper here, but we don't yet want to publish this wrapper with all wrappers.
-            wrappers.push( 'phet-io-wrappers/documentation' );
-            wrappers.sort();
+            var wrappers = whiteSplit( wrappersString ).sort();
 
             render( populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers ) );
           } );
