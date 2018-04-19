@@ -226,12 +226,12 @@
           url: '../' + repo + '/tests/playground.html'
         } );
       }
-      if ( repo === 'phet-io' ) {
+      if ( repo === 'phet-io' || repo === 'phet-io-wrappers' ) {
         modes.push( {
           name: 'test-iframe-api',
-          text: 'Test the iframe API',
-          description: 'Runs the ifram API test suite',
-          url: '../' + repo + '/phet-io-tests.html'
+          text: 'Test Wrappers and API',
+          description: 'test phet-io interface and wrappers',
+          url: '../phet-io-wrappers/phet-io-wrappers-tests.html'
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
