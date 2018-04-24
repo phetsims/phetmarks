@@ -187,19 +187,13 @@
         } );
       }
 
-      if ( repo === 'axon' || repo === 'phet-core' || repo === 'dot' || repo === 'kite' || repo === 'scenery' ) {
+      if ( repo === 'axon' || repo === 'phet-core' || repo === 'dot' || repo === 'kite' || repo === 'scenery' || repo === 'area-model-common' ) {
         modes.push( {
           name: 'unitTestsRequirejs',
           text: 'Unit Tests (Require.js)',
           description: 'Runs unit tests in require.js mode',
           url: '../' + repo + '/' + repo + '-tests.html',
           queryParameters: [ { value: 'ea', text: 'Assertions', default: true } ]
-        } );
-        modes.push( {
-          name: 'unitTestsCompiled',
-          text: 'Unit Tests (Compiled)',
-          description: 'Runs unit tests from a compiled (built) file. Run "grunt build" first',
-          url: '../' + repo + '/tests/qunit/compiled-unit-tests.html'
         } );
       }
       if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-io' ) {
