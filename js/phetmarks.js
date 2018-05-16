@@ -53,7 +53,7 @@
 
   // Query parameters for the PhET-iO modes
   var phetIOQueryParameters = [
-    { value: 'brand=phet-io&phetioStandalone&phetioLog=lines', text: 'Formatted PhET-IO Console Output' }
+    { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' }
   ];
 
   // Some simulations have a supplemental html file that controls the colors for the simulation.
@@ -359,7 +359,7 @@
           name: 'console',
           text: 'console',
           description: 'Show the event log in the console of the stand alone sim.',
-          url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioLog=lines&phetioStandalone',
+          url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioConsoleLog=colorized&phetioStandalone',
           queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
             return queryParameter.value !== 'brand=phet';
           } )
