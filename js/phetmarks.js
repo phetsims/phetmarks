@@ -356,9 +356,9 @@
 
         // Add the console logging, not a wrapper but nice to have
         modes.push( {
-          name: 'console',
-          text: 'console',
-          description: 'Show the event log in the console of the stand alone sim.',
+          name: 'colorized',
+          text: 'console: colorized',
+          description: 'Show the colorized event log in the console of the stand alone sim.',
           url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioConsoleLog=colorized&phetioStandalone',
           queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
             return queryParameter.value !== 'brand=phet';
