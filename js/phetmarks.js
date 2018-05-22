@@ -56,18 +56,6 @@
     { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' }
   ];
 
-  // Some simulations have a supplemental html file that controls the colors for the simulation.
-  var colorProfileRepos = [
-    'area-model-multiplication',
-    'charges-and-fields',
-    'gravity-and-orbits',
-    'molecule-shapes',
-    'molecule-shapes-basics',
-    'proportion-playground',
-    'rutherford-scattering',
-    'states-of-matter'
-  ];
-
   /**
    * Returns a local-storage key that has additional information included, to prevent collision with other applications (or in the future, previous
    * versions of phetmarks).
@@ -124,9 +112,11 @@
    * @param {Array.<string>} phetioSims - from phet-io
    * @param {Array.<string>} accessibleSims - from accessibility
    * @param {Array.<string>} wrappers - from wrappers
+   * @param {Array.<string>} colorProfileRepos - Has a color profile
+   * @param {Array.<string>} unitTestsRepos - Has unit tests
    * @returns {Object} - Maps from {string} repository name => {Mode}
    */
-  function populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers ) {
+  function populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers, colorProfileRepos, unitTestsRepos ) {
     var modeData = {};
 
     activeRepos.forEach( function( repo ) {
@@ -135,6 +125,7 @@
 
       var isPhetIO = _.includes( phetioSims, repo );
       var hasColorProfile = _.includes( colorProfileRepos, repo );
+      var hasUnitTests = _.includes( unitTestsRepos, repo );
       var isRunnable = _.includes( activeRunnables, repo );
       var isAccessible = _.includes( accessibleSims, repo );
 
@@ -187,7 +178,7 @@
         } );
       }
 
-      if ( repo === 'axon' || repo === 'phet-core' || repo === 'dot' || repo === 'kite' || repo === 'scenery' || repo === 'area-model-common' ) {
+      if ( hasUnitTests ) {
         modes.push( {
           name: 'unitTestsRequirejs',
           text: 'Unit Tests (Require.js)',
@@ -719,7 +710,19 @@
           } ).done( function( wrappersString ) {
             var wrappers = whiteSplit( wrappersString ).sort();
 
-            render( populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers ) );
+            $.ajax( {
+              url: '../perennial/data/color-profiles'
+            } ).done( function( colorProfilesString ) {
+              var colorProfileRepos = whiteSplit( colorProfilesString ).sort();
+
+              $.ajax( {
+                url: '../perennial/data/unit-tests'
+              } ).done( function( unitTestsStrings ) {
+                var unitTestsRepos = whiteSplit( unitTestsStrings ).sort();
+
+                render( populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers, colorProfileRepos, unitTestsRepos ) );
+              } );
+            } );
           } );
         } );
       } );
