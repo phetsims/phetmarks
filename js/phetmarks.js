@@ -330,9 +330,6 @@
           else {
             url = '../' + wrapper + '/' + wrapperName + '.html?sim=' + repo;
 
-            // Add a validateTandems checkbox to the index wrapper, see https://github.com/phetsims/phet-io/issues/620
-            url = wrapperName === 'index' ? url + '&toggleValidateTandems' : url;
-
             modes.push( {
               name: wrapperName,
               text: wrapperName,
