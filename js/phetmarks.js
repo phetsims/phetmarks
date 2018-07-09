@@ -33,7 +33,7 @@
   // Query parameters used for the following modes: requirejs, compiled, production
   var simQueryParameters = [
     { value: 'accessibility', text: 'Accessibility' },
-    { value: 'sonification', text: 'Sonification' },
+    { value: 'tambo', text: 'Tambo' },
     { value: 'hasEnhancedSounds', text: 'Has Enhanced Sounds' },
     { value: 'audioVolume=0', text: 'Mute' },
     { value: 'fuzzMouse', text: 'Fuzz Mouse' },
