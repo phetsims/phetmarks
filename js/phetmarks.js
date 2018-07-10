@@ -34,7 +34,7 @@
   var simQueryParameters = [
     { value: 'accessibility', text: 'Accessibility' },
     { value: 'tambo', text: 'Tambo' },
-    { value: 'hasEnhancedSounds', text: 'Has Enhanced Sounds' },
+    { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
     { value: 'audioVolume=0', text: 'Mute' },
     { value: 'fuzzMouse', text: 'Fuzz Mouse' },
     { value: 'dev', text: 'Dev' },
