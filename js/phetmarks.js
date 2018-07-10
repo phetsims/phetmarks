@@ -180,12 +180,19 @@
         } );
       }
 
-      if ( hasUnitTests ) {
+      if ( hasUnitTests || repo === 'phet-io' ) {
+
+        var url = '../' + repo + '/' + repo + '-tests.html';
+
+        // phet-io - "all-sims' runnable to run phet-io wrapper unit tests on every phet-io outfitted simulation.
+        if ( repo === 'phet-io' || repo === 'phet-io-wrappers' ) {
+          url = '../phet-io-wrappers/phet-io-wrappers-all-sims-tests.html';
+        }
         modes.push( {
           name: 'unitTestsRequirejs',
           text: 'Unit Tests (Require.js)',
           description: 'Runs unit tests in require.js mode',
-          url: '../' + repo + '/' + repo + '-tests.html',
+          url: url,
           queryParameters: [ { value: 'ea', text: 'Assertions', default: true } ]
         } );
       }
@@ -211,14 +218,6 @@
           text: 'Playground',
           description: 'Loads ' + repo + ' and dependencies in the tab, and allows quick testing',
           url: '../' + repo + '/tests/playground.html'
-        } );
-      }
-      if ( repo === 'phet-io' || repo === 'phet-io-wrappers' ) {
-        modes.push( {
-          name: 'test-iframe-api',
-          text: 'Test Wrappers and API',
-          description: 'test phet-io interface and wrappers',
-          url: '../phet-io-wrappers/phet-io-wrappers-tests.html'
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
@@ -294,13 +293,27 @@
       // if a phet-io sim, then add the wrappers to them
       if ( isPhetIO ) {
 
+        // omit the phet brand query parameter, but take everything else
+        var noPhetBrandQP = devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
+          return queryParameter.value !== 'brand=phet';
+        } );
+
+        // Add the console logging, not a wrapper but nice to have
+        modes.push( {
+          name: 'one-sim-wrapper-tests',
+          text: 'Wrapper Unit Tests',
+          description: 'Test the PhET-iO API for this sim.',
+          url: '../phet-io-wrappers/phet-io-wrappers-tests.html?sim=' + repo,
+          queryParameters: noPhetBrandQP
+        } );
+
         // Add a link to the compiled index wrapper;
         modes.push( {
           name: 'compiled-index',
           text: 'Compiled Index',
           description: 'Runs the PhET-iO index wrapper from build/ directory (built from chipper)',
           url: '../' + repo + '/build/phet-io/wrappers/index',
-          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: noPhetBrandQP
         } );
 
         // phet-io wrappers
@@ -317,31 +330,19 @@
             url = wrapperName === 'sonification' ? '../phet-io-wrapper-' + wrapperName + '/' + repo + '-sonification.html?sim=' + repo :
                   '../' + wrapper + '/' + wrapperName + '.html?sim=' + repo;
 
-            modes.push( {
-              name: wrapperName,
-              text: wrapperName,
-              description: 'Runs the phet-io wrapper ' + wrapperName,
-              url: url,
-              queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
-                return queryParameter.value !== 'brand=phet';
-              } )
-            } );
           }
-
           // Load the wrapper urls for the phet-io-wrappers/
           else {
             url = '../' + wrapper + '/' + wrapperName + '.html?sim=' + repo;
 
-            modes.push( {
-              name: wrapperName,
-              text: wrapperName,
-              description: 'Runs the phet-io wrapper ' + wrapperName,
-              url: url,
-              queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
-                return queryParameter.value !== 'brand=phet';
-              } )
-            } );
           }
+          modes.push( {
+            name: wrapperName,
+            text: wrapperName,
+            description: 'Runs the phet-io wrapper ' + wrapperName,
+            url: url,
+            queryParameters: noPhetBrandQP
+          } );
         } );
 
         // Add the console logging, not a wrapper but nice to have
@@ -350,9 +351,7 @@
           text: 'console: colorized',
           description: 'Show the colorized event log in the console of the stand alone sim.',
           url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioConsoleLog=colorized&phetioStandalone',
-          queryParameters: devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
-            return queryParameter.value !== 'brand=phet';
-          } )
+          queryParameters: noPhetBrandQP
         } );
       }
 
