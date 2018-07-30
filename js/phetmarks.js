@@ -312,7 +312,7 @@
           name: 'compiled-index',
           text: 'Compiled Index',
           description: 'Runs the PhET-iO index wrapper from build/ directory (built from chipper)',
-          url: '../' + repo + '/build/phet-io/wrappers/index',
+          url: '../' + repo + '/build/phet-io/',
           queryParameters: noPhetBrandQP
         } );
 
