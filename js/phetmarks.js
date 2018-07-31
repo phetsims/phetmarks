@@ -142,8 +142,15 @@
         modes.push( {
           name: 'compiled',
           text: 'Compiled',
-          description: 'Runs the English simulation from the build/ directory (built from chipper)',
+          description: 'Runs the English simulation from the build/phet/ directory (built from chipper)',
           url: '../' + repo + '/build/phet/' + repo + '_en_phet.html',
+          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+        } );
+        modes.push( {
+          name: 'compiledXHTML',
+          text: 'Compiled XHTML',
+          description: 'Runs the English simulation from the build/phet/xhtml directory (built from chipper)',
+          url: '../' + repo + '/build/phet/xhtml/' + repo + '_en_phet.html',
           queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
