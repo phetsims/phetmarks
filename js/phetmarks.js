@@ -71,7 +71,7 @@
   }
 
   /**
-   * From the wrapper path in perennial/data/wrappers, get the name of the wrapper.
+   * From the wrapper path in chipper/data/wrappers, get the name of the wrapper.
    * @param {string} wrapper
    * @returns {string} - the name of the wrapper
    */
