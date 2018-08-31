@@ -711,7 +711,7 @@
           var accessibleSims = whiteSplit( accessibleSimsString );
 
           $.ajax( {
-            url: '../perennial/data/wrappers'
+            url: '../chipper/data/wrappers'
           } ).done( function( wrappersString ) {
             var wrappers = whiteSplit( wrappersString ).sort();
 
