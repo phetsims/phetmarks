@@ -187,19 +187,13 @@
         } );
       }
 
-      if ( hasUnitTests || repo === 'phet-io' ) {
+      if ( hasUnitTests ) {
 
-        var url = '../' + repo + '/' + repo + '-tests.html';
-
-        // phet-io - "all-sims' runnable to run phet-io wrapper unit tests on every phet-io outfitted simulation.
-        if ( repo === 'phet-io' || repo === 'phet-io-wrappers' ) {
-          url = '../phet-io-wrappers/phet-io-wrappers-all-sims-tests.html';
-        }
         modes.push( {
           name: 'unitTestsRequirejs',
           text: 'Unit Tests (Require.js)',
           description: 'Runs unit tests in require.js mode',
-          url: url,
+          url: '../' + repo + '/' + repo + '-tests.html',
           queryParameters: [ { value: 'ea', text: 'Assertions', default: true } ]
         } );
       }
