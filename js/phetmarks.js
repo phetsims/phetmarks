@@ -334,8 +334,7 @@
           }
           // Load the wrapper urls for the phet-io-wrappers/
           else {
-            url = '../' + wrapper + '/' + wrapperName + '.html?sim=' + repo;
-
+            url = '../' + wrapper + '/?sim=' + repo;
           }
           modes.push( {
             name: wrapperName,
