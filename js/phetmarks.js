@@ -163,8 +163,8 @@
         modes.push( {
           name: 'spot',
           text: 'Dev (spot)',
-          description: 'Loads the location on www.colorado.edu (spot.colorado.edu) with versions for each dev deploy',
-          url: 'http://www.colorado.edu/physics/phet/dev/html/' + repo
+          description: 'Loads the location on phet-dev.colorado.edu with versions for each dev deploy',
+          url: 'https://phet-dev.colorado.edu/html/' + repo
         } );
       }
 
