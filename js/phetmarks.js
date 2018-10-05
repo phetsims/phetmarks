@@ -222,7 +222,7 @@
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
-        var generalTestParams = 'ea&audioVolume=0&testDuration=10000&testConcurrentBuilds=4';
+        var generalTestParams = 'ea&audioVolume=0&sound=disabled&testDuration=10000&testConcurrentBuilds=4';
         var fuzzMouseTestParameter = [ {
           value: generalTestParams + '&brand=phet&fuzzMouse',
           text: 'Test PhET sims',
