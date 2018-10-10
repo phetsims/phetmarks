@@ -54,7 +54,7 @@
   ];
 
   // Query parameters for the PhET-iO modes
-  var phetIOQueryParameters = [
+  var phetioQueryParameters = [
     { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' }
   ];
 
@@ -137,28 +137,28 @@
           text: 'Require.js',
           description: 'Runs the simulation from the top-level development HTML in require.js mode',
           url: '../' + repo + '/' + repo + '_en.html',
-          queryParameters: devSimQueryParameters.concat( isPhetio ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: devSimQueryParameters.concat( isPhetio ? phetioQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
           name: 'compiled',
           text: 'Compiled',
           description: 'Runs the English simulation from the build/phet/ directory (built from chipper)',
           url: '../' + repo + '/build/phet/' + repo + '_en_phet.html',
-          queryParameters: ( isPhetio ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: ( isPhetio ? phetioQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
           name: 'compiledXHTML',
           text: 'Compiled XHTML',
           description: 'Runs the English simulation from the build/phet/xhtml directory (built from chipper)',
           url: '../' + repo + '/build/phet/xhtml/' + repo + '_en_phet.html',
-          queryParameters: ( isPhetio ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: ( isPhetio ? phetioQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
           name: 'production',
           text: 'Production',
           description: 'Runs the latest English simulation from the production server',
           url: 'https://phet.colorado.edu/sims/html/' + repo + '/latest/' + repo + '_en.html',
-          queryParameters: ( isPhetio ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: ( isPhetio ? phetioQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
           name: 'spot',
@@ -295,7 +295,7 @@
       if ( isPhetio ) {
 
         // omit the phet brand query parameter, but take everything else
-        var noPhetBrandQP = devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
+        var noPhetBrandQP = devSimQueryParameters.concat( phetioQueryParameters ).filter( function( queryParameter ) {
           return queryParameter.value !== 'brand=phet';
         } );
 
