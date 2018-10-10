@@ -125,7 +125,7 @@
       var modes = [];
       modeData[ repo ] = modes;
 
-      var isPhetIO = _.includes( phetioSims, repo );
+      var isPhetio = _.includes( phetioSims, repo );
       var hasColorProfile = _.includes( colorProfileRepos, repo );
       var hasUnitTests = _.includes( unitTestsRepos, repo );
       var isRunnable = _.includes( activeRunnables, repo );
@@ -137,28 +137,28 @@
           text: 'Require.js',
           description: 'Runs the simulation from the top-level development HTML in require.js mode',
           url: '../' + repo + '/' + repo + '_en.html',
-          queryParameters: devSimQueryParameters.concat( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: devSimQueryParameters.concat( isPhetio ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
           name: 'compiled',
           text: 'Compiled',
           description: 'Runs the English simulation from the build/phet/ directory (built from chipper)',
           url: '../' + repo + '/build/phet/' + repo + '_en_phet.html',
-          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: ( isPhetio ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
           name: 'compiledXHTML',
           text: 'Compiled XHTML',
           description: 'Runs the English simulation from the build/phet/xhtml directory (built from chipper)',
           url: '../' + repo + '/build/phet/xhtml/' + repo + '_en_phet.html',
-          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: ( isPhetio ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
           name: 'production',
           text: 'Production',
           description: 'Runs the latest English simulation from the production server',
           url: 'https://phet.colorado.edu/sims/html/' + repo + '/latest/' + repo + '_en.html',
-          queryParameters: ( isPhetIO ? phetIOQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: ( isPhetio ? phetIOQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
           name: 'spot',
@@ -292,7 +292,7 @@
       }
 
       // if a phet-io sim, then add the wrappers to them
-      if ( isPhetIO ) {
+      if ( isPhetio ) {
 
         // omit the phet brand query parameter, but take everything else
         var noPhetBrandQP = devSimQueryParameters.concat( phetIOQueryParameters ).filter( function( queryParameter ) {
