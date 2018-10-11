@@ -653,7 +653,7 @@
     }
 
     repositorySelector.element.addEventListener( 'change', onRepositoryChanged );
-    modeSelector.element.addEventListener( 'input', onModeChanged );
+    modeSelector.element.addEventListener( 'change', onModeChanged );
     onRepositoryChanged();
 
     // Clicking 'Launch' or pressing 'enter' opens the URL
