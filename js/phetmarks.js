@@ -36,7 +36,7 @@
     { value: 'supportsSound', text: 'Supports Sound' },
     { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
     { value: 'audioVolume=0', text: 'Mute' },
-    { value: 'fuzzMouse', text: 'Fuzz Mouse' },
+    { value: 'fuzz', text: 'Fuzz' },
     { value: 'dev', text: 'Dev' },
     { value: 'profiler', text: 'Profiler' },
     { value: 'showPointers', text: 'Pointers' },
@@ -223,8 +223,8 @@
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
         var generalTestParams = 'ea&audioVolume=0&sound=disabled&testDuration=10000&testConcurrentBuilds=4';
-        var fuzzMouseTestParameter = [ {
-          value: generalTestParams + '&brand=phet&fuzzMouse',
+        var fuzzTestParameter = [ {
+          value: generalTestParams + '&brand=phet&fuzz',
           text: 'Test PhET sims',
           default: true
         } ];
@@ -234,7 +234,7 @@
           text: 'Fuzz Test PhET Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
-          queryParameters: fuzzMouseTestParameter
+          queryParameters: fuzzTestParameter
         } );
         modes.push( {
           name: 'test-phet-io-sims',
@@ -242,7 +242,7 @@
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
-            value: generalTestParams + '&brand=phet-io&fuzzMouse&phetioStandalone&testSims=' + phetioSims.join( ',' ),
+            value: generalTestParams + '&brand=phet-io&fuzz&phetioStandalone&testSims=' + phetioSims.join( ',' ),
             text: 'Fuzz Test PhET-IO sims',
             default: true
           } ]
@@ -253,7 +253,7 @@
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
-            value: generalTestParams + '&brand=phet&fuzzMouse&accessibility',
+            value: generalTestParams + '&brand=phet&fuzz&accessibility',
             text: 'Fuzz Mouse Test sims',
             default: true
           }, {
@@ -271,7 +271,7 @@
           text: 'Test Sims (Load Only)',
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
           url: '../aqua/test-server/test-sims.html',
-          queryParameters: fuzzMouseTestParameter
+          queryParameters: fuzzTestParameter
         } );
         modes.push( {
           name: 'continuous-testing',
