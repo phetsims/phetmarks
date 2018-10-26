@@ -308,11 +308,11 @@
           queryParameters: noPhetBrandQP
         } );
 
-        // Add a link to the compiled index wrapper;
+        // Add a link to the compiled wrapper index;
         modes.push( {
           name: 'compiled-index',
           text: 'Compiled Index',
-          description: 'Runs the PhET-iO index wrapper from build/ directory (built from chipper)',
+          description: 'Runs the PhET-iO wrapper index from build/ directory (built from chipper)',
           url: '../' + repo + '/build/phet-io/',
           queryParameters: noPhetBrandQP
         } );
