@@ -32,11 +32,12 @@
 
   // Query parameters used for the following modes: requirejs, compiled, production
   var simQueryParameters = [
-    { value: 'accessibility', text: 'Accessibility' },
+    { value: 'a11y', text: 'Accessibility' },
     { value: 'supportsSound', text: 'Supports Sound' },
     { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
     { value: 'audioVolume=0', text: 'Mute' },
     { value: 'fuzz', text: 'Fuzz' },
+    { value: 'fuzzBoard', text: 'Keyboard Fuzz' },
     { value: 'dev', text: 'Dev' },
     { value: 'profiler', text: 'Profiler' },
     { value: 'showPointers', text: 'Pointers' },
@@ -253,12 +254,12 @@
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
-            value: generalTestParams + '&brand=phet&fuzz&accessibility',
-            text: 'Fuzz Mouse Test sims',
+            value: generalTestParams + '&brand=phet&fuzzBoard&a11y',
+            text: 'Keyboard Fuzz Test sims',
             default: true
           }, {
-            value: generalTestParams + '&brand=phet&fuzzBoard&accessibility',
-            text: 'Keyboard Fuzz Test sims',
+            value: generalTestParams + '&brand=phet&fuzz&a11y',
+            text: 'Normal Fuzz Test sims',
             default: false
           }, {
             value: 'testSims=' + accessibleSims.join( ',' ),
