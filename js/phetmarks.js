@@ -351,7 +351,7 @@
           name: 'colorized',
           text: 'console: colorized',
           description: 'Show the colorized event log in the console of the stand alone sim.',
-          url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioConsoleLog=colorized&phetioStandalone',
+          url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioConsoleLog=colorized&phetioStandalone&phetioEmitHighFrequencyEvents=false',
           queryParameters: noPhetBrandQP
         } );
       }
