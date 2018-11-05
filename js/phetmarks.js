@@ -47,16 +47,19 @@
     { value: 'webgl=false', text: 'No WebGL' }
   ];
 
+  const eaObject = { value: 'ea', text: 'Assertions', default: true };
+
   // Query parameters used for requirejs and PhET-iO wrappers
   var devSimQueryParameters = [
     { value: 'brand=phet', text: 'PhET Brand', default: true },
-    { value: 'ea', text: 'Assertions', default: true },
+    eaObject,
     { value: 'eall', text: 'All Assertions' }
   ];
 
   // Query parameters for the PhET-iO modes
   var phetioQueryParameters = [
-    { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' }
+    { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' },
+    { value: 'phetioDebug', text: 'Enable assertions for wrappers, basically the phet-io version of ?ea' }
   ];
 
   /**
@@ -297,7 +300,7 @@
 
         // omit the phet brand query parameter, but take everything else
         var noPhetBrandQP = devSimQueryParameters.concat( phetioQueryParameters ).filter( function( queryParameter ) {
-          return queryParameter.value !== 'brand=phet';
+          return queryParameter.value !== 'brand=phet' && queryParameter.value !== 'ea';
         } );
 
         // Add the console logging, not a wrapper but nice to have
@@ -330,8 +333,7 @@
 
             // Special use case for the sonification wrapper
             url = wrapperName === 'sonification' ? '../phet-io-wrapper-' + wrapperName + '/' + repo + '-sonification.html?sim=' + repo :
-                  '../' + wrapper + '/' + wrapperName + '.html?sim=' + repo;
-
+                  '../' + wrapper + '/?sim=' + repo;
           }
           // Load the wrapper urls for the phet-io-wrappers/
           else {
@@ -352,7 +354,7 @@
           text: 'console: colorized',
           description: 'Show the colorized event log in the console of the stand alone sim.',
           url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioConsoleLog=colorized&phetioStandalone&phetioEmitHighFrequencyEvents=false',
-          queryParameters: noPhetBrandQP
+          queryParameters: [ eaObject ].concat( noPhetBrandQP )
         } );
       }
 
