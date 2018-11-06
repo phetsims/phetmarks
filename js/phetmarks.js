@@ -339,6 +339,12 @@
           else {
             url = '../' + wrapper + '/?sim=' + repo;
           }
+
+          // add recording to the console by default
+          if ( wrapper === 'phet-io-wrappers/record' ) {
+            url += '&console';
+          }
+
           modes.push( {
             name: wrapperName,
             text: wrapperName,
