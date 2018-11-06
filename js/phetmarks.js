@@ -47,7 +47,7 @@
     { value: 'webgl=false', text: 'No WebGL' }
   ];
 
-  const eaObject = { value: 'ea', text: 'Assertions', default: true };
+  var eaObject = { value: 'ea', text: 'Assertions', default: true };
 
   // Query parameters used for requirejs and PhET-iO wrappers
   var devSimQueryParameters = [
