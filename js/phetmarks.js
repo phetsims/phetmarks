@@ -154,7 +154,7 @@
           name: 'compiledXHTML',
           text: 'Compiled XHTML',
           description: 'Runs the English simulation from the build/phet/xhtml directory (built from chipper)',
-          url: '../' + repo + '/build/phet/xhtml/' + repo + '_en_phet.html',
+          url: '../' + repo + '/build/phet/xhtml/' + repo + '_all_phet.html',
           queryParameters: ( isPhetio ? phetioQueryParameters : [] ).concat( simQueryParameters )
         } );
         modes.push( {
