@@ -322,6 +322,14 @@
           queryParameters: noPhetBrandQP
         } );
 
+        modes.push( {
+          name: 'standalone',
+          text: 'Standalone',
+          description: 'Runs the sim in phet-io brand with the standalone query parameter',
+          url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioStandalone',
+          queryParameters: [ eaObject ].concat( isPhetio ? phetioQueryParameters : [] ).concat( simQueryParameters )
+        } );
+
         // phet-io wrappers
         wrappers.forEach( function( wrapper ) {
 
