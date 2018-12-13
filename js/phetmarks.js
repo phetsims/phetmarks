@@ -60,7 +60,7 @@
   var phetioQueryParameters = [
     { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' },
     { value: 'phetioDebug', text: 'Enable assertions for wrappers, basically the phet-io version of ?ea' },
-    { value: 'phetioValidateTandems', text: 'Validate that required tandems are supplied, etc.' }
+    { value: 'phetioValidateTandems', default: true, text: 'Validate that required tandems are supplied, etc.' }
   ];
 
   /**
