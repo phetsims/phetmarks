@@ -56,11 +56,27 @@
     { value: 'eall', text: 'All Assertions' }
   ];
 
-  // Query parameters for the PhET-iO modes
-  var phetioQueryParameters = [
-    { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' },
-    { value: 'phetioDebug', text: 'Enable assertions for wrappers, basically the phet-io version of ?ea' },
-    { value: 'phetioValidateTandems', default: true, text: 'Validate that required tandems are supplied, etc.' }
+  var phetioValidateTandemsParameter = {
+    value: 'phetioValidateTandems',
+    default: true,
+    text: 'Validate that required tandems are supplied, etc.'
+  };
+
+  // Query parameters for the PhET-iO wrappers (including iframe tests)
+  var phetioWrapperQueryParameters = [
+    {
+      value: 'phetioDebug',
+      text: 'Enable assertions for wrappers, basically the phet-io version of ?ea',
+      default: true
+    },
+    phetioValidateTandemsParameter
+  ];
+
+  // For phetio sim frame links
+  var phetioSimQueryParameters = [
+    eaObject, // this needs to be first in this list
+    phetioValidateTandemsParameter,
+    { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' }
   ];
 
   /**
@@ -142,28 +158,28 @@
           text: 'Require.js',
           description: 'Runs the simulation from the top-level development HTML in require.js mode',
           url: '../' + repo + '/' + repo + '_en.html',
-          queryParameters: devSimQueryParameters.concat( isPhetio ? phetioQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: devSimQueryParameters.concat( simQueryParameters )
         } );
         modes.push( {
           name: 'compiled',
           text: 'Compiled',
           description: 'Runs the English simulation from the build/phet/ directory (built from chipper)',
           url: '../' + repo + '/build/phet/' + repo + '_en_phet.html',
-          queryParameters: ( isPhetio ? phetioQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: simQueryParameters
         } );
         modes.push( {
           name: 'compiledXHTML',
           text: 'Compiled XHTML',
           description: 'Runs the English simulation from the build/phet/xhtml directory (built from chipper)',
           url: '../' + repo + '/build/phet/xhtml/' + repo + '_all_phet.html',
-          queryParameters: ( isPhetio ? phetioQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: simQueryParameters
         } );
         modes.push( {
           name: 'production',
           text: 'Production',
           description: 'Runs the latest English simulation from the production server',
           url: 'https://phet.colorado.edu/sims/html/' + repo + '/latest/' + repo + '_en.html',
-          queryParameters: ( isPhetio ? phetioQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: simQueryParameters
         } );
         modes.push( {
           name: 'spot',
@@ -312,11 +328,6 @@
       // if a phet-io sim, then add the wrappers to them
       if ( isPhetio ) {
 
-        // omit the phet brand query parameter, but take everything else
-        var noPhetBrandQP = devSimQueryParameters.concat( phetioQueryParameters ).filter( function( queryParameter ) {
-          return queryParameter.value !== 'brand=phet' && queryParameter.value !== 'ea';
-        } );
-
         // Add the console logging, not a wrapper but nice to have
         modes.push( {
           name: 'one-sim-wrapper-tests',
@@ -324,7 +335,7 @@
           group: 'PhET-iO',
           description: 'Test the PhET-iO API for this sim.',
           url: '../phet-io-wrappers/phet-io-wrappers-tests.html?sim=' + repo,
-          queryParameters: noPhetBrandQP
+          queryParameters: phetioWrapperQueryParameters
         } );
 
         // Add a link to the compiled wrapper index;
@@ -334,7 +345,7 @@
           group: 'PhET-iO',
           description: 'Runs the PhET-iO wrapper index from build/ directory (built from chipper)',
           url: '../' + repo + '/build/phet-io/',
-          queryParameters: noPhetBrandQP
+          queryParameters: phetioWrapperQueryParameters
         } );
 
         modes.push( {
@@ -343,7 +354,7 @@
           group: 'PhET-iO',
           description: 'Runs the sim in phet-io brand with the standalone query parameter',
           url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioStandalone',
-          queryParameters: [ eaObject ].concat( isPhetio ? phetioQueryParameters : [] ).concat( simQueryParameters )
+          queryParameters: phetioSimQueryParameters.concat( simQueryParameters )
         } );
 
         // phet-io wrappers
@@ -376,7 +387,7 @@
             group: 'PhET-iO',
             description: 'Runs the phet-io wrapper ' + wrapperName,
             url: url,
-            queryParameters: noPhetBrandQP
+            queryParameters: phetioWrapperQueryParameters
           } );
         } );
 
@@ -387,7 +398,7 @@
           group: 'PhET-iO',
           description: 'Show the colorized event log in the console of the stand alone sim.',
           url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioConsoleLog=colorized&phetioStandalone&phetioEmitHighFrequencyEvents=false',
-          queryParameters: [ eaObject ].concat( noPhetBrandQP )
+          queryParameters: phetioSimQueryParameters.concat( simQueryParameters )
         } );
       }
     } );
