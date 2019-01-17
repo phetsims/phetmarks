@@ -14,6 +14,7 @@
  * {
  *   name: {string} - Internal unique value (for looking up which option was chosen),
  *   text: {string} - Shown in the mode list,
+ *   group: {string} - The optgroup that this mode belongs to
  *   description: {string} - Shown when hovering over the mode in the list,
  *   url: {string} - The base URL to visit (without added query parameters) when the mode is chosen,
  *   queryParameters: {Array.<QueryParameter>}
@@ -23,6 +24,7 @@
  * {
  *   value: {string} - The actual query parameter included in the URL,
  *   text: {string} - Shown in the query parameter list,
+ *   [type]: {'boolean'} - if boolean, then it will add "=true" or "=false" to the checkbox value
  *   [default]: {boolean} - If true, the query parameter will be true by default
  * }
  */
@@ -56,28 +58,45 @@
     { value: 'eall', text: 'All Assertions' }
   ];
 
-  var phetioValidateTandemsParameter = {
-    value: 'phetioValidateTandems',
-    default: true,
-    text: 'Validate that required tandems are supplied, etc.'
-  };
+  var phetioBaseParameters = [
+    {
+      value: 'phetioValidateTandems',
+      default: true,
+      text: 'Validate that required tandems are supplied, etc.'
+    },
+    {
+      value: 'phetioEmitHighFrequencyEvents',
+      default: true,
+      type: 'boolean',
+      text: 'Emit events that occur often'
+    },
+    {
+      value: 'phetioEmitStates',
+      default: false,
+      type: 'boolean',
+      text: 'Emit states to the data stream'
+    }
+  ];
 
   // Query parameters for the PhET-iO wrappers (including iframe tests)
-  var phetioWrapperQueryParameters = [
+  var phetioWrapperQueryParameters = phetioBaseParameters.concat( [
     {
       value: 'phetioDebug',
       text: 'Enable assertions for wrappers, basically the phet-io version of ?ea',
       default: true
-    },
-    phetioValidateTandemsParameter
-  ];
+    }
+  ] );
 
   // For phetio sim frame links
-  var phetioSimQueryParameters = [
+  var phetioSimQueryParameters = phetioBaseParameters.concat( [
     eaObject, // this needs to be first in this list
-    phetioValidateTandemsParameter,
-    { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' }
-  ];
+    { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' },
+    {
+      value: 'phetioPrintMissingTandems',
+      default: false,
+      text: 'Print tandems that have not yet been added'
+    }
+  ] );
 
   /**
    * Returns a local-storage key that has additional information included, to prevent collision with other applications (or in the future, previous
@@ -574,10 +593,22 @@
       get value() {
         var screensValue = screenSelector.value;
         var checkboxes = $( toggleContainer ).find( ':checkbox' );
-        var checkedCheckboxes = _.filter( checkboxes, function( checkbox ) {
-          return checkbox.checked;
+        var usefulCheckboxes = _.filter( checkboxes, function( checkbox ) {
+
+          // if a checkbox isn't checked, then we only care if it has been changed and is a boolean
+          if ( checkbox.dataset.queryParameterType === 'boolean' ) {
+            return checkbox.dataset.changed === 'true';
+          }
+          else {
+            return checkbox.checked;
+          }
         } );
-        var checkboxQueryParameters = _.map( checkedCheckboxes, function( checkbox ) {
+        var checkboxQueryParameters = _.map( usefulCheckboxes, function( checkbox ) {
+
+          // support boolean parameters
+          if ( checkbox.dataset.queryParameterType === 'boolean' ) {
+            return checkbox.name + '=' + checkbox.checked;
+          }
           return checkbox.name;
         } );
         var customQueryParameters = customTextBox.value.length ? [ customTextBox.value ] : [];
@@ -598,6 +629,12 @@
           toggleContainer.appendChild( label );
           toggleContainer.appendChild( document.createElement( 'br' ) );
           checkbox.checked = !!parameter.default;
+
+          // mark changed events for boolean parameter support
+          checkbox.addEventListener( 'change', function() {
+            checkbox.dataset.changed = 'true';
+          } );
+          checkbox.dataset.queryParameterType = parameter.type;
         } );
       },
       reset: function() {
