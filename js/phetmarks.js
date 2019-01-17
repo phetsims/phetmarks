@@ -296,6 +296,19 @@
         } );
       }
 
+      modes.push( {
+        name: 'github',
+        text: 'GitHub',
+        description: 'Opens to the repository\'s GitHub main page',
+        url: 'https://github.com/phetsims/' + repo
+      } );
+      modes.push( {
+        name: 'issues',
+        text: 'Issues',
+        description: 'Opens to the repository\'s GitHub issues page',
+        url: 'https://github.com/phetsims/' + repo + '/issues'
+      } );
+
       // if a phet-io sim, then add the wrappers to them
       if ( isPhetio ) {
 
@@ -308,6 +321,7 @@
         modes.push( {
           name: 'one-sim-wrapper-tests',
           text: 'Wrapper Unit Tests',
+          group: 'PhET-iO',
           description: 'Test the PhET-iO API for this sim.',
           url: '../phet-io-wrappers/phet-io-wrappers-tests.html?sim=' + repo,
           queryParameters: noPhetBrandQP
@@ -317,6 +331,7 @@
         modes.push( {
           name: 'compiled-index',
           text: 'Compiled Index',
+          group: 'PhET-iO',
           description: 'Runs the PhET-iO wrapper index from build/ directory (built from chipper)',
           url: '../' + repo + '/build/phet-io/',
           queryParameters: noPhetBrandQP
@@ -325,6 +340,7 @@
         modes.push( {
           name: 'standalone',
           text: 'Standalone',
+          group: 'PhET-iO',
           description: 'Runs the sim in phet-io brand with the standalone query parameter',
           url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioStandalone',
           queryParameters: [ eaObject ].concat( isPhetio ? phetioQueryParameters : [] ).concat( simQueryParameters )
@@ -357,6 +373,7 @@
           modes.push( {
             name: wrapperName,
             text: wrapperName,
+            group: 'PhET-iO',
             description: 'Runs the phet-io wrapper ' + wrapperName,
             url: url,
             queryParameters: noPhetBrandQP
@@ -367,24 +384,12 @@
         modes.push( {
           name: 'colorized',
           text: 'console: colorized',
+          group: 'PhET-iO',
           description: 'Show the colorized event log in the console of the stand alone sim.',
           url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioConsoleLog=colorized&phetioStandalone&phetioEmitHighFrequencyEvents=false',
           queryParameters: [ eaObject ].concat( noPhetBrandQP )
         } );
       }
-
-      modes.push( {
-        name: 'github',
-        text: 'GitHub',
-        description: 'Opens to the repository\'s GitHub main page',
-        url: 'https://github.com/phetsims/' + repo
-      } );
-      modes.push( {
-        name: 'issues',
-        text: 'Issues',
-        description: 'Opens to the repository\'s GitHub issues page',
-        url: 'https://github.com/phetsims/' + repo + '/issues'
-      } );
     } );
 
     return modeData;
@@ -461,7 +466,7 @@
     var selector = {
       element: select,
       get value() {
-        return select.childNodes[ select.selectedIndex ].value;
+        return select.value;
       },
       get mode() {
         var currentModeName = selector.value;
@@ -473,15 +478,31 @@
         localStorage.setItem( storageKey( 'repo' ), repositorySelector.value );
 
         clearChildren( select );
+
+        var groups = {};
         modeData[ repositorySelector.value ].forEach( function( choice ) {
           var choiceOption = document.createElement( 'option' );
           choiceOption.value = choice.name;
           choiceOption.label = choice.text;
           choiceOption.title = choice.description;
           choiceOption.innerHTML = choice.text;
-          select.appendChild( choiceOption );
+
+          // add to an `optgroup` instead of having all modes on the `select`
+          choice.group = choice.group || 'General';
+
+          // create if the group doesn't exist
+          if ( !groups[ choice.group ] ) {
+            var optGroup = document.createElement( 'optgroup' );
+            optGroup.label = choice.group;
+            groups[ choice.group ] = optGroup;
+            select.appendChild( optGroup );
+          }
+
+          // add the choice to the propert group
+          groups[ choice.group ].appendChild( choiceOption );
         } );
-        select.setAttribute( 'size', modeData[ repositorySelector.value ].length );
+
+        select.setAttribute( 'size', modeData[ repositorySelector.value ].length + Object.keys( groups ).length );
         if ( select.selectedIndex < 0 ) {
           select.selectedIndex = 0;
         }
