@@ -331,6 +331,32 @@
         } );
       }
 
+      if ( repo === 'interaction-dashboard' ) {
+        modes.push( {
+          name: 'preprocessor',
+          text: 'Preprocessor',
+          description: 'Load the preprocessor for parsing data logs down to a size that can be used by the simulation.',
+          url: '../' + repo + '/preprocessor.html?ea',
+          queryParameters: [ {
+            value: 'ea',
+            text: 'Enable Assertions',
+            default: true
+          }, {
+            value: 'parseX=10',
+            text: 'Test only 10 sessions',
+            default: false
+          }, {
+            value: 'cacheBust',
+            text: 'Do not cache the log file information',
+            default: false
+          }, {
+            value: 'forSpreadsheet',
+            text: 'Create output for a spreasheet.',
+            default: false
+          } ]
+        } );
+      }
+
       modes.push( {
         name: 'github',
         text: 'GitHub',
