@@ -336,7 +336,7 @@
           name: 'preprocessor',
           text: 'Preprocessor',
           description: 'Load the preprocessor for parsing data logs down to a size that can be used by the simulation.',
-          url: '../' + repo + '/preprocessor.html?ea',
+          url: '../' + repo + '/preprocessor.html',
           queryParameters: [ {
             value: 'ea',
             text: 'Enable Assertions',
