@@ -26,6 +26,9 @@ function execute( cmd, args, cwd, callback, errCallback ) {
   } );
   console.log( 'running ' + cmd + ' ' + args.join( ' ' ) + ' from ' + cwd );
 
+  process.on( 'error', function( error) {
+    console.log( 'uncaught error:', error );
+  } );
   process.stderr.on( 'data', function( data ) {
     console.log( 'stderr: ' + data );
   } );
@@ -75,16 +78,16 @@ function getActiveRepos() {
   'use strict';
 
   return fs.readFileSync( rootDir + 'perennial/data/active-repos', 'utf8' )
-           .split( '\n' )
-           .filter( function( name ) { return name.length > 0; } );
+    .split( '\n' )
+    .filter( function( name ) { return name.length > 0; } );
 }
 
 function getActiveSims() {
   'use strict';
 
   return fs.readFileSync( rootDir + 'perennial/data/active-sims', 'utf8' )
-           .split( '\n' )
-           .filter( function( name ) { return name.length > 0; } );
+    .split( '\n' )
+    .filter( function( name ) { return name.length > 0; } );
 }
 
 function successFunction( req, res, name ) {
@@ -127,8 +130,8 @@ function taskBuild( req, res, query ) {
 
   npmUpdate( simName, function() {
     grunt( simName,
-           successFunction( req, res, 'build ' + simName ),
-           errorFunction( req, res, 'grunt ' + simName ) );
+      successFunction( req, res, 'build ' + simName ),
+      errorFunction( req, res, 'grunt ' + simName ) );
   }, errorFunction( req, res, 'npm update ' + simName ) );
 }
 
@@ -162,8 +165,8 @@ function taskPerennialRefresh( req, res, query ) {
   pull( 'perennial', function() {
     npmUpdate( 'perennial', function() {
       execute( rootDir + 'perennial/bin/clone-missing-repos.sh', [], rootDir,
-               successFunction( req, res, 'perennial refresh' ),
-               errorFunction( req, res, 'perennial clone missing repos') );
+        successFunction( req, res, 'perennial refresh' ),
+        errorFunction( req, res, 'perennial clone missing repos' ) );
     }, errorFunction( req, res, 'perennial npm update' ) );
   }, errorFunction( req, res, 'pull perennial' ) );
 }
@@ -189,8 +192,8 @@ function taskPullAll( req, res, query ) {
   'use strict';
 
   execute( rootDir + 'perennial/bin/pull-all.sh', [ '-p' ], rootDir,
-           successFunction( req, res, 'pulled' ),
-           errorFunction( req, res, 'pull failed') );
+    successFunction( req, res, 'pulled' ),
+    errorFunction( req, res, 'pull failed' ) );
 }
 
 function taskSameAsRemoteMaster( req, res, query ) {
