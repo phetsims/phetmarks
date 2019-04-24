@@ -26,7 +26,7 @@ function execute( cmd, args, cwd, callback, errCallback ) {
   } );
   console.log( 'running ' + cmd + ' ' + args.join( ' ' ) + ' from ' + cwd );
 
-  process.on( 'error', function( error) {
+  process.on( 'error', function( error ) {
     console.log( 'uncaught error:', error );
   } );
   process.stderr.on( 'data', function( data ) {
@@ -128,11 +128,13 @@ function taskBuild( req, res, query ) {
     return;
   }
 
-  npmUpdate( simName, function() {
-    grunt( simName,
-      successFunction( req, res, 'build ' + simName ),
-      errorFunction( req, res, 'grunt ' + simName ) );
-  }, errorFunction( req, res, 'npm update ' + simName ) );
+  npmUpdate( 'chipper', function() {
+    npmUpdate( simName, function() {
+      grunt( simName,
+        successFunction( req, res, 'build ' + simName ),
+        errorFunction( req, res, 'grunt ' + simName ) );
+    }, errorFunction( req, res, 'npm update ' + simName ) );
+  }, errorFunction( req, res, 'npm update chipper' ) );
 }
 
 function taskSimList( req, res, query ) {
@@ -267,7 +269,6 @@ http.createServer( function( req, res ) {
   }
 
   // var simName = req.url.slice( 1 );
-
 
 
 } ).listen( port );
