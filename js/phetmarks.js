@@ -35,6 +35,7 @@
   // Query parameters used for the following modes: requirejs, compiled, production
   var simQueryParameters = [
     { value: 'a11y', text: 'Accessibility' },
+    { value: 'cacheBust', text: 'Cache bust' },
     { value: 'supportsSound', text: 'Supports Sound' },
     { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
     { value: 'audioVolume=0', text: 'Mute' },
@@ -277,7 +278,7 @@
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
-        var generalTestParams = 'ea&audioVolume=0&sound=disabled&testDuration=10000&testConcurrentBuilds=4';
+        var generalTestParams = 'ea&audioVolume=0&sound=disabled&testDuration=10000&testConcurrentBuilds=4&cacheBust';
         var fuzzTestParameter = [ {
           value: generalTestParams + '&brand=phet&fuzz',
           text: 'Test PhET sims',
