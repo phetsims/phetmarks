@@ -250,7 +250,10 @@
           text: 'Unit Tests (Require.js)',
           description: 'Runs unit tests in require.js mode',
           url: '../' + repo + '/' + repo + '-tests.html',
-          queryParameters: [ { value: 'ea', text: 'Assertions', default: true } ]
+          queryParameters: [
+            { value: 'ea', text: 'Assertions', default: true },
+            { value: 'cacheBust', text: 'Cache Bust', default: true }
+          ]
         } );
       }
       if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-io' ) {
