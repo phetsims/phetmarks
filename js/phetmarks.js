@@ -399,7 +399,11 @@
           group: 'PhET-iO',
           description: 'Test the PhET-iO API for this sim.',
           url: '../phet-io-wrappers/phet-io-wrappers-tests.html?sim=' + repo,
-          queryParameters: phetioWrapperQueryParameters
+          queryParameters: phetioWrapperQueryParameters.concat( [ {
+            value: 'cacheBust',
+            text: 'Cache Bust',
+            default: true
+          } ] )
         } );
 
         // Add a link to the compiled wrapper index;
