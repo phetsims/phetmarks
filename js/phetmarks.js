@@ -35,7 +35,7 @@
   // Query parameters used for the following modes: requirejs, compiled, production
   var simQueryParameters = [
     { value: 'a11y', text: 'Accessibility' },
-    { value: 'cacheBust', text: 'Cache bust' },
+    { value: 'cacheBust', text: 'Cache bust', default: window.location.hostname === 'phettest.colorado.edu' },
     { value: 'supportsSound', text: 'Supports Sound' },
     { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
     { value: 'audioVolume=0', text: 'Mute' },
