@@ -1,10 +1,10 @@
 // Copyright 2016, University of Colorado Boulder
 
-var http = require( 'http' );
-var spawn = require( 'child_process' ).spawn; // eslint-disable-line
-var path = require( 'path' );
-var url = require( 'url' );
-var fs = require( 'fs' );
+const http = require( 'http' );
+const spawn = require( 'child_process' ).spawn; // eslint-disable-line
+const path = require( 'path' );
+const url = require( 'url' );
+const fs = require( 'fs' );
 
 var port = 45362;
 
