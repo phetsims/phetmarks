@@ -21,7 +21,7 @@ var rootDir = path.normalize( __dirname + '/../../' ); // eslint-disable-line
 function execute( cmd, args, cwd, callback, errCallback ) {
   'use strict';
 
-  var process = spawn( cmd, args, {
+  const process = spawn( cmd, args, {
     cwd: cwd
   } );
   console.log( 'running ' + cmd + ' ' + args.join( ' ' ) + ' from ' + cwd );
@@ -117,7 +117,7 @@ function errorFunction( req, res, name ) {
 function taskBuild( req, res, query ) {
   'use strict';
 
-  var simName = query.sim;
+  const simName = query.sim;
 
   if ( !validateSimName( simName ) ) {
     res.writeHead( 403, jsonHeaders );
@@ -140,7 +140,7 @@ function taskBuild( req, res, query ) {
 function taskSimList( req, res, query ) {
   'use strict';
 
-  var activeSims = getActiveSims();
+  const activeSims = getActiveSims();
 
   res.writeHead( 200, jsonHeaders );
   res.end( JSON.stringify( {
@@ -152,7 +152,7 @@ function taskSimList( req, res, query ) {
 function taskRepoList( req, res, query ) {
   'use strict';
 
-  var activeSims = getActiveRepos();
+  const activeSims = getActiveRepos();
 
   res.writeHead( 200, jsonHeaders );
   res.end( JSON.stringify( {
@@ -176,7 +176,7 @@ function taskPerennialRefresh( req, res, query ) {
 function taskPull( req, res, query ) {
   'use strict';
 
-  var simName = query.sim;
+  const simName = query.sim;
 
   if ( !validateSimName( simName ) ) {
     res.writeHead( 403, jsonHeaders );
@@ -201,7 +201,7 @@ function taskPullAll( req, res, query ) {
 function taskSameAsRemoteMaster( req, res, query ) {
   'use strict';
 
-  var simName = query.repo;
+  const simName = query.repo;
 
   if ( !validateSimName( simName ) ) {
     res.writeHead( 403, jsonHeaders );
@@ -219,8 +219,8 @@ function validateSimName( simName ) {
   'use strict';
 
   // validate that it is lower-case with hyphens
-  for ( var i = 0; i < simName.length; i++ ) {
-    var charCode = simName.charCodeAt( i );
+  for ( let i = 0; i < simName.length; i++ ) {
+    const charCode = simName.charCodeAt( i );
     if ( charCode !== '-'.charCodeAt( 0 ) && ( charCode < 'a'.charCodeAt( 0 ) || charCode > 'z'.charCodeAt( 0 ) ) ) {
       return false;
     }
@@ -235,9 +235,9 @@ http.createServer( function( req, res ) {
   // req.method
   // req.headers
 
-  var bits = url.parse( req.url, true );
-  var path = bits.pathname;
-  var query = bits.query;
+  const bits = url.parse( req.url, true );
+  const path = bits.pathname;
+  const query = bits.query;
 
   if ( path === '/build' ) {
     taskBuild( req, res, query );

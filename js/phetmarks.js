@@ -33,7 +33,7 @@
   'use strict';
 
   // Query parameters used for the following modes: requirejs, compiled, production
-  var simQueryParameters = [
+  const simQueryParameters = [
     { value: 'a11y', text: 'Accessibility' },
     { value: 'cacheBust', text: 'Cache bust', default: window.location.hostname === 'phettest.colorado.edu' },
     { value: 'supportsSound', text: 'Supports Sound' },
@@ -50,16 +50,16 @@
     { value: 'webgl=false', text: 'No WebGL' }
   ];
 
-  var eaObject = { value: 'ea', text: 'Assertions', default: true };
+  const eaObject = { value: 'ea', text: 'Assertions', default: true };
 
   // Query parameters used for requirejs and PhET-iO wrappers
-  var devSimQueryParameters = [
+  const devSimQueryParameters = [
     { value: 'brand=phet', text: 'PhET Brand', default: true },
     eaObject,
     { value: 'eall', text: 'All Assertions' }
   ];
 
-  var phetioBaseParameters = [
+  const phetioBaseParameters = [
     {
       value: 'phetioValidateTandems',
       default: true,
@@ -86,7 +86,7 @@
   ];
 
   // Query parameters for the PhET-iO wrappers (including iframe tests)
-  var phetioWrapperQueryParameters = phetioBaseParameters.concat( [
+  const phetioWrapperQueryParameters = phetioBaseParameters.concat( [
     {
       value: 'phetioDebug',
       text: 'Enable assertions for wrappers, basically the phet-io version of ?ea',
@@ -95,7 +95,7 @@
   ] );
 
   // For phetio sim frame links
-  var phetioSimQueryParameters = phetioBaseParameters.concat( [
+  const phetioSimQueryParameters = phetioBaseParameters.concat( [
     eaObject, // this needs to be first in this list
     { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' },
     {
@@ -122,21 +122,21 @@
    * @param {string} wrapper
    * @returns {string} - the name of the wrapper
    */
-  var getWrapperName = function( wrapper ) {
+  const getWrapperName = function( wrapper ) {
 
     // If the wrapper has its own individual repo, then get the name 'classroom-activity' from 'phet-io-wrapper-classroom-activity'
     // Maintain compatibility for wrappers in 'phet-io-wrappers-'
-    var wrapperParts = wrapper.split( 'phet-io-wrapper-' );
-    var wrapperName = wrapperParts.length === 1 ? wrapperParts[ 0 ] : wrapperParts[ 1 ];
+    const wrapperParts = wrapper.split( 'phet-io-wrapper-' );
+    const wrapperName = wrapperParts.length === 1 ? wrapperParts[ 0 ] : wrapperParts[ 1 ];
 
     // If the wrapper still has slashes in it, then it looks like 'phet-io-wrappers/active'
-    var splitOnSlash = wrapperName.split( '/' );
+    const splitOnSlash = wrapperName.split( '/' );
     return splitOnSlash[ splitOnSlash.length - 1 ];
   };
 
   // Track whether 'shift' key is pressed, so that we can change how windows are opened.  If shift is pressed, the
   // page is launched in a separate tab.
-  var shiftPressed = false;
+  let shiftPressed = false;
   window.addEventListener( 'keydown', function( event ) {
     shiftPressed = event.shiftKey;
   } );
@@ -166,20 +166,20 @@
    * @returns {Object} - Maps from {string} repository name => {Mode}
    */
   function populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers, colorProfileRepos, unitTestsRepos ) {
-    var modeData = {};
+    const modeData = {};
 
     activeRepos.forEach( function( repo ) {
-      var modes = [];
+      const modes = [];
       modeData[ repo ] = modes;
 
       const legendsOfLearningHarnessUrl = 'http://developers.legendsoflearning.com/public-harness/index.html';
       const legendsOfLearningSimUrl = '?url=' + window.origin + '/' + repo + '/' + repo + '_en.html' + '?ea%26brand=phet%26legendsOfLearning';
 
-      var isPhetio = _.includes( phetioSims, repo );
-      var hasColorProfile = _.includes( colorProfileRepos, repo );
-      var hasUnitTests = _.includes( unitTestsRepos, repo );
-      var isRunnable = _.includes( activeRunnables, repo );
-      var isAccessible = _.includes( accessibleSims, repo );
+      const isPhetio = _.includes( phetioSims, repo );
+      const hasColorProfile = _.includes( colorProfileRepos, repo );
+      const hasUnitTests = _.includes( unitTestsRepos, repo );
+      const isRunnable = _.includes( activeRunnables, repo );
+      const isAccessible = _.includes( accessibleSims, repo );
 
       if ( isRunnable ) {
         modes.push( {
@@ -281,8 +281,8 @@
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
-        var generalTestParams = 'ea&audioVolume=0&sound=disabled&testDuration=10000&testConcurrentBuilds=4&cacheBust';
-        var fuzzTestParameter = [ {
+        const generalTestParams = 'ea&audioVolume=0&sound=disabled&testDuration=10000&testConcurrentBuilds=4&cacheBust';
+        const fuzzTestParameter = [ {
           value: generalTestParams + '&brand=phet&fuzz',
           text: 'Test PhET sims',
           default: true
@@ -428,9 +428,9 @@
         // phet-io wrappers
         wrappers.forEach( function( wrapper ) {
 
-          var wrapperName = getWrapperName( wrapper );
+          const wrapperName = getWrapperName( wrapper );
 
-          var url = '';
+          let url = '';
 
           // Process for dedicated wrapper repos
           if ( wrapper.indexOf( 'phet-io-wrapper-' ) === 0 ) {
@@ -483,10 +483,10 @@
    * @returns { element: {HTMLSelectElement}, get value(): {string} }
    */
   function createRepositorySelector( repositories ) {
-    var select = document.createElement( 'select' );
+    const select = document.createElement( 'select' );
     select.autofocus = true;
     repositories.forEach( function( repo ) {
-      var option = document.createElement( 'option' );
+      const option = document.createElement( 'option' );
       option.value = option.label = option.innerHTML = repo;
       select.appendChild( option );
     } );
@@ -500,7 +500,7 @@
     }
 
     // Select a repository if it's been stored in localStorage before
-    var repoKey = storageKey( 'repo' );
+    const repoKey = storageKey( 'repo' );
     if ( localStorage.getItem( repoKey ) ) {
       select.value = localStorage.getItem( repoKey );
     }
@@ -509,7 +509,7 @@
 
     // Scroll to the selected element
     function tryScroll() {
-      var element = select.childNodes[ select.selectedIndex ];
+      const element = select.childNodes[ select.selectedIndex ];
       if ( element.scrollIntoViewIfNeeded ) {
         element.scrollIntoViewIfNeeded();
       }
@@ -540,7 +540,7 @@
    *            update: function() }
    */
   function createModeSelector( modeData, repositorySelector ) {
-    var select = document.createElement( 'select' );
+    const select = document.createElement( 'select' );
 
     var selector = {
       element: select,
@@ -548,7 +548,7 @@
         return select.value;
       },
       get mode() {
-        var currentModeName = selector.value;
+        const currentModeName = selector.value;
         return _.filter( modeData[ repositorySelector.value ], function( mode ) {
           return mode.name === currentModeName;
         } )[ 0 ];
@@ -558,9 +558,9 @@
 
         clearChildren( select );
 
-        var groups = {};
+        const groups = {};
         modeData[ repositorySelector.value ].forEach( function( choice ) {
-          var choiceOption = document.createElement( 'option' );
+          const choiceOption = document.createElement( 'option' );
           choiceOption.value = choice.name;
           choiceOption.label = choice.text;
           choiceOption.title = choice.description;
@@ -571,7 +571,7 @@
 
           // create if the group doesn't exist
           if ( !groups[ choice.group ] ) {
-            var optGroup = document.createElement( 'optgroup' );
+            const optGroup = document.createElement( 'optgroup' );
             optGroup.label = choice.group;
             groups[ choice.group ] = optGroup;
             select.appendChild( optGroup );
@@ -592,12 +592,12 @@
   }
 
   function createScreenSelector() {
-    var div = document.createElement( 'div' );
+    const div = document.createElement( 'div' );
 
     function createScreenRadioButton( name, value, text ) {
-      var label = document.createElement( 'label' );
+      const label = document.createElement( 'label' );
       label.className = 'screenLabel';
-      var radio = document.createElement( 'input' );
+      const radio = document.createElement( 'input' );
       radio.type = 'radio';
       radio.name = name;
       radio.value = value;
@@ -608,7 +608,7 @@
     }
 
     div.appendChild( createScreenRadioButton( 'screens', 'all', 'All screens' ) );
-    for ( var i = 1; i <= 6; i++ ) {
+    for ( let i = 1; i <= 6; i++ ) {
       div.appendChild( createScreenRadioButton( 'screens', '' + i, '' + i ) );
     }
 
@@ -628,21 +628,21 @@
    * @returns { element: {HTMLSelectElement}, get value(): {string} }
    */
   function createQueryParameterSelector( modeSelector ) {
-    var screenSelector = createScreenSelector();
+    const screenSelector = createScreenSelector();
 
-    var customTextBox = document.createElement( 'input' );
+    const customTextBox = document.createElement( 'input' );
     customTextBox.type = 'text';
 
-    var toggleContainer = document.createElement( 'div' );
+    const toggleContainer = document.createElement( 'div' );
 
-    var selector = {
+    const selector = {
       screenElement: screenSelector.element,
       toggleElement: toggleContainer,
       customElement: customTextBox,
       get value() {
-        var screensValue = screenSelector.value;
-        var checkboxes = $( toggleContainer ).find( ':checkbox' );
-        var usefulCheckboxes = _.filter( checkboxes, function( checkbox ) {
+        const screensValue = screenSelector.value;
+        const checkboxes = $( toggleContainer ).find( ':checkbox' );
+        const usefulCheckboxes = _.filter( checkboxes, function( checkbox ) {
 
           // if a checkbox isn't checked, then we only care if it has been changed and is a boolean
           if ( checkbox.dataset.queryParameterType === 'boolean' ) {
@@ -652,7 +652,7 @@
             return checkbox.checked;
           }
         } );
-        var checkboxQueryParameters = _.map( usefulCheckboxes, function( checkbox ) {
+        const checkboxQueryParameters = _.map( usefulCheckboxes, function( checkbox ) {
 
           // support boolean parameters
           if ( checkbox.dataset.queryParameterType === 'boolean' ) {
@@ -660,17 +660,17 @@
           }
           return checkbox.name;
         } );
-        var customQueryParameters = customTextBox.value.length ? [ customTextBox.value ] : [];
-        var screenQueryParameters = screensValue === 'all' ? [] : [ 'screens=' + screensValue ];
+        const customQueryParameters = customTextBox.value.length ? [ customTextBox.value ] : [];
+        const screenQueryParameters = screensValue === 'all' ? [] : [ 'screens=' + screensValue ];
         return checkboxQueryParameters.concat( customQueryParameters ).concat( screenQueryParameters ).join( '&' );
       },
       update: function() {
         clearChildren( toggleContainer );
 
-        var queryParameters = modeSelector.mode.queryParameters || [];
+        const queryParameters = modeSelector.mode.queryParameters || [];
         queryParameters.forEach( function( parameter ) {
-          var label = document.createElement( 'label' );
-          var checkbox = document.createElement( 'input' );
+          const label = document.createElement( 'label' );
+          const checkbox = document.createElement( 'input' );
           checkbox.type = 'checkbox';
           checkbox.name = parameter.value;
           label.appendChild( checkbox );
@@ -694,7 +694,7 @@
         // For each checkbox, set it to its default
         _.forEach( $( toggleContainer ).find( ':checkbox' ), function( checkbox ) {
           // Grab the parameter object
-          var parameter = _.filter( modeSelector.mode.queryParameters, function( param ) { return param.value === checkbox.name; } )[ 0 ];
+          const parameter = _.filter( modeSelector.mode.queryParameters, function( param ) { return param.value === checkbox.name; } )[ 0 ];
 
           // Handle when the default isn't defined (it would be false)
           checkbox.checked = !!parameter.default;
@@ -711,38 +711,38 @@
    * @param {Object} modeData - Maps from {string} repository name => {Mode}
    */
   function render( modeData ) {
-    var repositorySelector = createRepositorySelector( Object.keys( modeData ) );
-    var modeSelector = createModeSelector( modeData, repositorySelector );
-    var queryParameterSelector = createQueryParameterSelector( modeSelector );
+    const repositorySelector = createRepositorySelector( Object.keys( modeData ) );
+    const modeSelector = createModeSelector( modeData, repositorySelector );
+    const queryParameterSelector = createQueryParameterSelector( modeSelector );
 
     function getCurrentURL() {
-      var queryParameters = queryParameterSelector.value;
-      var url = modeSelector.mode.url;
-      var separator = url.indexOf( '?' ) < 0 ? '?' : '&';
+      const queryParameters = queryParameterSelector.value;
+      const url = modeSelector.mode.url;
+      const separator = url.indexOf( '?' ) < 0 ? '?' : '&';
       return url + ( queryParameters.length ? separator + queryParameters : '' );
     }
 
-    var launchButton = document.createElement( 'button' );
+    const launchButton = document.createElement( 'button' );
     launchButton.id = 'launchButton';
     launchButton.name = 'launch';
     launchButton.innerHTML = 'Launch';
 
-    var resetButton = document.createElement( 'button' );
+    const resetButton = document.createElement( 'button' );
     resetButton.name = 'reset';
     resetButton.innerHTML = 'Reset Query Parameters';
 
     function header( str ) {
-      var head = document.createElement( 'h3' );
+      const head = document.createElement( 'h3' );
       head.appendChild( document.createTextNode( str ) );
       return head;
     }
 
     // Divs for our three columns
-    var repoDiv = document.createElement( 'div' );
+    const repoDiv = document.createElement( 'div' );
     repoDiv.id = 'repositories';
-    var modeDiv = document.createElement( 'div' );
+    const modeDiv = document.createElement( 'div' );
     modeDiv.id = 'choices';
-    var queryParametersDiv = document.createElement( 'div' );
+    const queryParametersDiv = document.createElement( 'div' );
     queryParametersDiv.id = 'queryParameters';
 
     // Layout of all of the major elements
@@ -822,37 +822,37 @@
   $.ajax( {
     url: '../perennial/data/active-runnables'
   } ).done( function( activeRunnablesString ) {
-    var activeRunnables = whiteSplit( activeRunnablesString );
+    const activeRunnables = whiteSplit( activeRunnablesString );
 
     $.ajax( {
       url: '../perennial/data/active-repos'
     } ).done( function( activeReposString ) {
-      var activeRepos = whiteSplit( activeReposString );
+      const activeRepos = whiteSplit( activeReposString );
 
       $.ajax( {
         url: '../perennial/data/phet-io'
       } ).done( function( testPhetioString ) {
-        var phetioSims = whiteSplit( testPhetioString );
+        const phetioSims = whiteSplit( testPhetioString );
 
         $.ajax( {
           url: '../perennial/data/accessibility'
         } ).done( function( accessibleSimsString ) {
-          var accessibleSims = whiteSplit( accessibleSimsString );
+          const accessibleSims = whiteSplit( accessibleSimsString );
 
           $.ajax( {
             url: '../chipper/data/wrappers'
           } ).done( function( wrappersString ) {
-            var wrappers = whiteSplit( wrappersString ).sort();
+            const wrappers = whiteSplit( wrappersString ).sort();
 
             $.ajax( {
               url: '../perennial/data/color-profiles'
             } ).done( function( colorProfilesString ) {
-              var colorProfileRepos = whiteSplit( colorProfilesString ).sort();
+              const colorProfileRepos = whiteSplit( colorProfilesString ).sort();
 
               $.ajax( {
                 url: '../perennial/data/unit-tests'
               } ).done( function( unitTestsStrings ) {
-                var unitTestsRepos = whiteSplit( unitTestsStrings ).sort();
+                const unitTestsRepos = whiteSplit( unitTestsStrings ).sort();
 
                 render( populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers, colorProfileRepos, unitTestsRepos ) );
               } );
