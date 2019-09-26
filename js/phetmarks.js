@@ -455,7 +455,13 @@
             group: 'PhET-iO',
             description: 'Runs the phet-io wrapper ' + wrapperName,
             url: url,
-            queryParameters: phetioWrapperQueryParameters
+            queryParameters: wrapperName === 'studio' ?
+                             phetioWrapperQueryParameters.concat( {
+                               value: 'phetioElementsDisplay=all',
+                               text: 'Show all elements',
+                               default: true
+                             } ) :
+                             phetioWrapperQueryParameters
           } );
         } );
 
