@@ -35,7 +35,7 @@
   // Query parameters used for the following modes: requirejs, compiled, production
   const simQueryParameters = [
     { value: 'a11y', text: 'Accessibility' },
-    { value: 'cacheBust', text: 'Cache bust', default: window.location.hostname === 'phettest.colorado.edu' },
+    { value: 'cacheBust=false', text: 'Disable Cache bust' },
     { value: 'supportsSound', text: 'Supports Sound' },
     { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
     { value: 'audioVolume=0', text: 'Mute' },
@@ -281,7 +281,7 @@
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
-        const generalTestParams = 'ea&audioVolume=0&sound=disabled&testDuration=10000&testConcurrentBuilds=4&cacheBust';
+        const generalTestParams = 'ea&audioVolume=0&sound=disabled&testDuration=10000&testConcurrentBuilds=4';
         const fuzzTestParameter = [ {
           value: generalTestParams + '&brand=phet&fuzz',
           text: 'Test PhET sims',
@@ -365,12 +365,8 @@
             text: 'Test only 10 sessions',
             default: false
           }, {
-            value: 'cacheBust',
-            text: 'Do not cache the log file information',
-            default: false
-          }, {
             value: 'forSpreadsheet',
-            text: 'Create output for a spreasheet.',
+            text: 'Create output for a spreadsheet.',
             default: false
           } ]
         } );
