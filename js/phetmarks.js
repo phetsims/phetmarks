@@ -32,10 +32,12 @@
 ( function() {
   'use strict';
 
+  const disableCacheBust = { value: 'cacheBust=false', text: 'Disable cache Bust' };
+
   // Query parameters used for the following modes: requirejs, compiled, production
   const simQueryParameters = [
     { value: 'a11y', text: 'Accessibility' },
-    { value: 'cacheBust=false', text: 'Disable Cache bust' },
+    disableCacheBust,
     { value: 'supportsSound', text: 'Supports Sound' },
     { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
     { value: 'audioVolume=0', text: 'Mute' },
@@ -252,7 +254,7 @@
           url: '../' + repo + '/' + repo + '-tests.html',
           queryParameters: [
             { value: 'ea', text: 'Assertions', default: true },
-            { value: 'cacheBust', text: 'Cache Bust', default: true }
+            disableCacheBust
           ]
         } );
       }
@@ -395,11 +397,7 @@
           group: 'PhET-iO',
           description: 'Test the PhET-iO API for this sim.',
           url: '../phet-io-wrappers/phet-io-wrappers-tests.html?sim=' + repo,
-          queryParameters: phetioWrapperQueryParameters.concat( [ {
-            value: 'cacheBust',
-            text: 'Cache Bust',
-            default: true
-          } ] )
+          queryParameters: phetioWrapperQueryParameters.concat( [ disableCacheBust ] )
         } );
 
         // Add a link to the compiled wrapper index;
