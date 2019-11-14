@@ -32,7 +32,7 @@
 ( function() {
   'use strict';
 
-  const disableCacheBust = { value: 'cacheBust=false', text: 'Disable cache Bust' };
+  const disableCacheBust = { value: 'cacheBust=false', text: 'Disable cacheBust' };
 
   // Query parameters used for the following modes: requirejs, compiled, production
   const simQueryParameters = [
