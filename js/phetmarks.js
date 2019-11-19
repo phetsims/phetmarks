@@ -443,19 +443,21 @@
             url += '&console';
           }
 
+          const queryParameters = wrapperName === 'studio' ?
+                                  phetioWrapperQueryParameters.concat( {
+                                    value: 'phetioElementsDisplay=all',
+                                    text: 'Show all elements',
+                                    default: true
+                                  } ) : wrapperName === 'playback' ? [] :
+                                        phetioWrapperQueryParameters;
+
           modes.push( {
             name: wrapperName,
             text: wrapperName,
             group: 'PhET-iO',
             description: 'Runs the phet-io wrapper ' + wrapperName,
             url: url,
-            queryParameters: wrapperName === 'studio' ?
-                             phetioWrapperQueryParameters.concat( {
-                               value: 'phetioElementsDisplay=all',
-                               text: 'Show all elements',
-                               default: true
-                             } ) :
-                             phetioWrapperQueryParameters
+            queryParameters:queryParameters
           } );
         } );
 
