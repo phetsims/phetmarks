@@ -498,7 +498,7 @@
       select.setAttribute( 'size', repositories.length );
     }
     else {
-      select.setAttribute( 'size', 30 );
+      select.setAttribute( 'size', '30' );
     }
 
     // Select a repository if it's been stored in localStorage before
