@@ -303,7 +303,7 @@
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
-            value: generalTestParams + '&brand=phet-io&fuzz&phetioStandalone&testSims=' + phetioSims.join( ',' ),
+            value: generalTestParams + '&brand=phet-io&fuzz&phetioStandalone&testSims=' + _.shuffle( phetioSims ).join( ',' ),
             text: 'Fuzz Test PhET-IO sims',
             default: true
           } ]
@@ -322,7 +322,7 @@
             text: 'Normal Fuzz Test sims',
             default: false
           }, {
-            value: 'testSims=' + accessibleSims.join( ',' ),
+            value: 'testSims=' + _.shuffle( accessibleSims ).join( ',' ),
             text: 'Test only A11y sims',
             default: true
           } ]
@@ -457,7 +457,7 @@
             group: 'PhET-iO',
             description: 'Runs the phet-io wrapper ' + wrapperName,
             url: url,
-            queryParameters:queryParameters
+            queryParameters: queryParameters
           } );
         } );
 
