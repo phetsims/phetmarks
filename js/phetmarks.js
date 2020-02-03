@@ -445,11 +445,18 @@
 
           let queryParameters = [];
           if ( wrapperName === 'studio' ) {
-            queryParameters = phetioWrapperQueryParameters.concat( {
-              value: 'phetioElementsDisplay=all',
-              text: 'Show all elements',
-              default: true
-            } );
+            queryParameters = phetioWrapperQueryParameters.concat( [
+              {
+                value: 'phetioElementsDisplay=all',
+                text: 'Show all elements',
+                default: true
+              },
+              {
+                value: 'phetioPrintMissingTandems',
+                default: false,
+                text: 'Print tandems that have not yet been added'
+              }
+            ] );
           }
           else if ( wrapperName === 'playback' ) {
             queryParameters = [];
