@@ -443,13 +443,27 @@
             url += '&console';
           }
 
-          const queryParameters = wrapperName === 'studio' ?
-                                  phetioWrapperQueryParameters.concat( {
-                                    value: 'phetioElementsDisplay=all',
-                                    text: 'Show all elements',
-                                    default: true
-                                  } ) : wrapperName === 'playback' ? [] :
-                                        phetioWrapperQueryParameters;
+          let queryParameters = [];
+          if ( wrapperName === 'studio' ) {
+            queryParameters = phetioWrapperQueryParameters.concat( [
+              {
+                value: 'phetioElementsDisplay=all',
+                text: 'Show all elements',
+                default: true
+              },
+              {
+                value: 'phetioPrintMissingTandems',
+                default: false,
+                text: 'Print tandems that have not yet been added'
+              }
+            ] );
+          }
+          else if ( wrapperName === 'playback' ) {
+            queryParameters = [];
+          }
+          else {
+            queryParameters = phetioWrapperQueryParameters;
+          }
 
           modes.push( {
             name: wrapperName,
