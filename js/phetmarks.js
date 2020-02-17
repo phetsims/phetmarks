@@ -478,7 +478,7 @@
         // Add the console logging, not a wrapper but nice to have
         modes.push( {
           name: 'colorized',
-          text: 'console: colorized',
+          text: 'Data: colorized',
           group: 'PhET-iO',
           description: 'Show the colorized event log in the console of the stand alone sim.',
           url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioConsoleLog=colorized&phetioStandalone&phetioEmitHighFrequencyEvents=false',
