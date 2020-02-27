@@ -36,6 +36,8 @@ function execute( cmd, args, cwd, callback, errCallback ) {
     console.log( 'stdout: ' + data );
   } );
   process.on( 'close', function( code ) {
+    console.log( 'finished executing', cmd, args, cwd, code );
+
     // Failure
     if ( code !== 0 ) {
       errCallback( code );
