@@ -8,7 +8,7 @@ var commonSameMasterStatusElements = {};
 var commonRows = [];
 var outOfDateCommonRows = [];
 var showAllCommon = true;
-var showOutOfDateCommon = false
+var showOutOfDateCommon = false;
 var commonCheckingStatus = document.getElementById( 'commonCheckingStatus' );
 
 // sim repo fields
@@ -16,7 +16,7 @@ var simSameMasterStatusElements = {};
 var simRows = [];
 var outOfDateSimRows = [];
 var showAllSims = true;
-var showOutOfDateSims = false
+var showOutOfDateSims = false;
 var simCheckingStatus = document.getElementById( 'simCheckingStatus' );
 
 function updateOutOfDateCommon() {
@@ -101,18 +101,18 @@ function checkSimSameMaster( reposToCheck ) {
     $.ajax( 'http://' + domain + ':45362/same-as-remote-master?repo=' + sim ).done( function( data ) {
       if ( data.output === 'same' ) {
         $( statusElement ).text( 'up-to-date' );
-        statusElement.className = 'masterStatus masterUpToDate'
+        statusElement.className = 'masterStatus masterUpToDate';
         outOfDateSimRows = remove( outOfDateSimRows, simSameMasterStatusElements[ sim ].row );
       }
       else if ( data.output === 'different' ) {
         $( statusElement ).text( 'out-of-date' );
-        statusElement.className = 'masterStatus masterOutOfDate'
+        statusElement.className = 'masterStatus masterOutOfDate';
         outOfDateSimRows.push( simSameMasterStatusElements[ sim ].row );
         updateOutOfDateSims();
       }
       else {
         $( statusElement ).text( 'failed' );
-        statusElement.className = 'masterStatus masterFailed'
+        statusElement.className = 'masterStatus masterFailed';
       }
       if ( reposToCheck.length ) {
 
@@ -124,7 +124,7 @@ function checkSimSameMaster( reposToCheck ) {
       }
     } ).fail( function() {
       $( statusElement ).text( 'failed' );
-      statusElement.className = 'masterStatus masterFailed'
+      statusElement.className = 'masterStatus masterFailed';
       reposToCheck.length && checkSim( reposToCheck.shift() );
     } );
   }
@@ -159,18 +159,18 @@ function checkCommonSameMaster( reposToCheck ) {
     $.ajax( 'http://' + domain + ':45362/same-as-remote-master?repo=' + commonRepo ).done( function( data ) {
       if ( data.output === 'same' ) {
         $( statusElement ).text( 'up-to-date' );
-        statusElement.className = 'masterStatus masterUpToDate'
+        statusElement.className = 'masterStatus masterUpToDate';
         outOfDateCommonRows = remove( outOfDateCommonRows, commonSameMasterStatusElements[ commonRepo ].row );
       }
       else if ( data.output === 'different' ) {
         $( statusElement ).text( 'out-of-date' );
-        statusElement.className = 'masterStatus masterOutOfDate'
+        statusElement.className = 'masterStatus masterOutOfDate';
         outOfDateCommonRows.push( commonSameMasterStatusElements[ commonRepo ].row );
         updateOutOfDateCommon();
       }
       else {
         $( statusElement ).text( 'failed' );
-        statusElement.className = 'masterStatus masterFailed'
+        statusElement.className = 'masterStatus masterFailed';
       }
 
       if ( reposToCheck.length ) {
@@ -183,7 +183,7 @@ function checkCommonSameMaster( reposToCheck ) {
       }
     } ).fail( function() {
       $( statusElement ).text( 'failed' );
-      statusElement.className = 'masterStatus masterFailed'
+      statusElement.className = 'masterStatus masterFailed';
       reposToCheck.length && checkCommon( reposToCheck.shift() );
     } );
   }
@@ -248,7 +248,7 @@ function updateCommonRepos() {
 
     $.ajax( 'http://' + domain + ':45362/repo-list' ).done( function( data ) {
       var repos = data.output;
-      commonRepos = repos.filter( function( repo ) {
+      const commonRepos = repos.filter( function( repo ) {
         return !_.includes( sims, repo );
       } );
 
@@ -301,7 +301,7 @@ function updateCommonRepos() {
           cell( status );
         }
 
-        var name = document.createElement( "div" );
+        var name = document.createElement( 'div' );
         name.textContent = commonRepoName;
         cell( name );
         sameAsMasterCell( commonRepoName );
