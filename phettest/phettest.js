@@ -356,6 +356,7 @@ function updateSims() {
             }
             else {
               $( status ).text( 'failed' );
+              console.error( data );
             }
             checkSimSameMaster( [ simName ] );
           } ).fail( function( xhr ) {
