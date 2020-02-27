@@ -283,10 +283,12 @@ function updateCommonRepos() {
               }
               else {
                 $( status ).text( 'failed' );
+                console.error( data );
               }
               checkCommonSameMaster( [ commonRepoName ] );
-            } ).fail( function() {
+            } ).fail( function( xhr ) {
               $( status ).text( 'failed' );
+              console.error( xhr );
             } );
           } );
           cell( button );
