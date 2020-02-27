@@ -67,7 +67,7 @@ function npmUpdate( repo, callback, errCallback ) {
 function grunt( repo, callback, errCallback ) {
   'use strict';
 
-  execute( 'grunt', [ '--no-color', '--minify.minify=false' ], rootDir + repo, callback, errCallback );
+  execute( 'grunt', [ '--no-color', '--minify.uglify=false' ], rootDir + repo, callback, errCallback );
 }
 
 function isSameAsRemoteMaster( repo, sameCallback, differentCallback ) {
