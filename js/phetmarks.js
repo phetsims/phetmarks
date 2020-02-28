@@ -186,8 +186,8 @@
       if ( isRunnable ) {
         modes.push( {
           name: 'requirejs',
-          text: 'Require.js',
-          description: 'Runs the simulation from the top-level development HTML in require.js mode',
+          text: 'Unbuilt',
+          description: 'Runs the simulation from the top-level development HTML in unbuilt mode',
           url: '../' + repo + '/' + repo + '_en.html',
           queryParameters: devSimQueryParameters.concat( simQueryParameters )
         } );
