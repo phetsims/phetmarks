@@ -156,18 +156,19 @@
   }
 
   /**
-   * Fills out the modeData map with information about repositories, modes and query parameters.
+   * Fills out the modeData map with information about repositories, modes and query parameters. Parameters are largely
+   * repo lists from perennial/data files.
    *
    * @param {Array.<string>} activeRunnables - from active-runnables
    * @param {Array.<string>} activeRepos - from active-repos
    * @param {Array.<string>} phetioSims - from phet-io
-   * @param {Array.<string>} accessibleSims - from accessibility
+   * @param {Array.<string>} interactiveDescriptionSims - from interactive-descriptions
    * @param {Array.<string>} wrappers - from wrappers
    * @param {Array.<string>} colorProfileRepos - Has a color profile
    * @param {Array.<string>} unitTestsRepos - Has unit tests
    * @returns {Object} - Maps from {string} repository name => {Mode}
    */
-  function populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers, colorProfileRepos, unitTestsRepos ) {
+  function populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, colorProfileRepos, unitTestsRepos ) {
     const modeData = {};
 
     activeRepos.forEach( function( repo ) {
@@ -181,7 +182,7 @@
       const hasColorProfile = _.includes( colorProfileRepos, repo );
       const hasUnitTests = _.includes( unitTestsRepos, repo );
       const isRunnable = _.includes( activeRunnables, repo );
-      const isAccessible = _.includes( accessibleSims, repo );
+      const supportsInteractiveDescription = _.includes( interactiveDescriptionSims, repo );
 
       if ( isRunnable ) {
         modes.push( {
@@ -322,7 +323,7 @@
             text: 'Normal Fuzz Test sims',
             default: false
           }, {
-            value: 'testSims=' + _.shuffle( accessibleSims ).join( ',' ),
+            value: 'testSims=' + _.shuffle( interactiveDescriptionSims ).join( ',' ),
             text: 'Test only A11y sims',
             default: true
           } ]
@@ -342,7 +343,7 @@
         } );
       }
 
-      if ( isAccessible ) {
+      if ( supportsInteractiveDescription ) {
         modes.push( {
           name: 'a11y-view',
           text: 'A11y View',
@@ -851,9 +852,9 @@
         const phetioSims = whiteSplit( testPhetioString );
 
         $.ajax( {
-          url: '../perennial/data/accessibility'
+          url: '../perennial/data/interactive-descriptions'
         } ).done( function( accessibleSimsString ) {
-          const accessibleSims = whiteSplit( accessibleSimsString );
+          const interactiveDescriptionSims = whiteSplit( accessibleSimsString );
 
           $.ajax( {
             url: '../chipper/data/wrappers'
@@ -870,7 +871,7 @@
               } ).done( function( unitTestsStrings ) {
                 const unitTestsRepos = whiteSplit( unitTestsStrings ).sort();
 
-                render( populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers, colorProfileRepos, unitTestsRepos ) );
+                render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, colorProfileRepos, unitTestsRepos ) );
               } );
             } );
           } );
