@@ -315,11 +315,11 @@
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
-            value: generalTestParams + '&brand=phet&fuzzBoard&a11y',
+            value: generalTestParams + '&brand=phet&fuzzBoard&supportsDescriptions',
             text: 'Keyboard Fuzz Test sims',
             default: true
           }, {
-            value: generalTestParams + '&brand=phet&fuzz&a11y',
+            value: generalTestParams + '&brand=phet&fuzz&supportsDescriptions',
             text: 'Normal Fuzz Test sims',
             default: false
           }, {
