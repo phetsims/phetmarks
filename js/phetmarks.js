@@ -34,7 +34,7 @@
 
   // Query parameters used for the following modes: requirejs, compiled, production
   const simQueryParameters = [
-    { value: 'a11y', text: 'Accessibility' },
+    { value: 'supportsDescriptions', text: 'Supports Interactive Descriptions' },
     { value: 'supportsSound', text: 'Supports Sound' },
     { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
     { value: 'audioVolume=0', text: 'Mute' },
@@ -306,8 +306,8 @@
           } ]
         } );
         modes.push( {
-          name: 'test-a11y-sims',
-          text: 'Fuzz Test Accessibility Sims (Fast Build)',
+          name: 'test-interactive-descriptions-sims',
+          text: 'Fuzz Test Interactive Descriptions Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
