@@ -687,7 +687,14 @@
           checkbox.type = 'checkbox';
           checkbox.name = parameter.value;
           label.appendChild( checkbox );
-          label.appendChild( document.createTextNode( parameter.text + ' (' + parameter.value + ')' ) );
+
+          let queryParameterDisplay = parameter.value;
+
+          // should the "=true" if boolean
+          if ( parameter.type === 'boolean' ) {
+            queryParameterDisplay += `=${parameter.default}`;
+          }
+          label.appendChild( document.createTextNode( parameter.text + ' (' + queryParameterDisplay + ')' ) );
           toggleContainer.appendChild( label );
           toggleContainer.appendChild( document.createElement( 'br' ) );
           checkbox.checked = !!parameter.default;
