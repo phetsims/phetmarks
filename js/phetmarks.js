@@ -337,6 +337,20 @@
           description: 'Link to the continuous testing on Bayes.',
           url: 'https://bayes.colorado.edu/continuous-testing/aqua/html/continuous-report.html'
         } );
+        modes.push( {
+          name: 'snapshot-comparison',
+          text: 'Snapshot Comparison',
+          description: 'Sets up snapshot screenshot comparison that can be run on different SHAs',
+          url: '../aqua/html/snapshot-comparison.html'
+        } );
+      }
+      if ( repo === 'yotta' ) {
+        modes.push( {
+          name: 'yotta-statistics',
+          text: 'Statistics page',
+          description: 'Goes to the yotta report page, credentials in the Google Doc',
+          url: 'https://bayes.colorado.edu/statistics/yotta/'
+        } );
       }
 
       if ( supportsInteractiveDescription ) {
