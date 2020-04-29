@@ -75,12 +75,6 @@
       default: false,
       type: 'boolean',
       text: 'Emit states to the data stream'
-    },
-    {
-      value: 'phetioValidateAPI',
-      default: true,
-      type: 'boolean',
-      text: 'Validate the phet-io api, including testing metadata against the baseline elements api file.'
     }
   ];
 
