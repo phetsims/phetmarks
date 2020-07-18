@@ -60,11 +60,6 @@
 
   const phetioBaseParameters = [
     {
-      value: 'phetioValidateTandems',
-      default: true,
-      text: 'Validate that required tandems are supplied, etc.'
-    },
-    {
       value: 'phetioEmitHighFrequencyEvents',
       default: true,
       type: 'boolean',
@@ -639,10 +634,42 @@
         return $( 'input[name=screens]:checked' ).val();
       },
       reset: function() {
-        $( 'input[value=all]' )[ 0 ].checked = true;
+        $( 'input[name=screens]' )[ 0 ].checked = true;
       }
     };
   }
+
+  function createPhetioValidationSelector() {
+    const div = document.createElement( 'div' );
+
+    function createValidationRadioButton( name, value, text ) {
+      const label = document.createElement( 'label' );
+      label.className = 'validationLabel'; // https://github.com/phetsims/tandem/issues/191
+      const radio = document.createElement( 'input' );
+      radio.type = 'radio';
+      radio.name = name;
+      radio.value = value;
+      radio.checked = value === 'simulation-default';
+      label.appendChild( radio );
+      label.appendChild( document.createTextNode( text ) );
+      return label;
+    }
+
+    div.appendChild( createValidationRadioButton( 'validation', 'simulation-default', 'PhET-iO Validation: Simulation Default' ) );
+    div.appendChild( createValidationRadioButton( 'validation', 'true', 'True' ) );
+    div.appendChild( createValidationRadioButton( 'validation', 'false', 'False' ) );
+
+    return {
+      element: div,
+      get value() {
+        return $( 'input[name=validation]:checked' ).val();
+      },
+      reset: function() {
+        $( 'input[name=validation]' )[ 0 ].checked = true;
+      }
+    };
+  }
+
 
   /**
    * @param {Object} modeSelector
@@ -650,6 +677,7 @@
    */
   function createQueryParameterSelector( modeSelector ) {
     const screenSelector = createScreenSelector();
+    const phetioValidationSelector = createPhetioValidationSelector();
 
     const customTextBox = document.createElement( 'input' );
     customTextBox.type = 'text';
@@ -658,10 +686,13 @@
 
     const selector = {
       screenElement: screenSelector.element,
+      phetioValidationElement: phetioValidationSelector.element,
       toggleElement: toggleContainer,
       customElement: customTextBox,
       get value() {
         const screensValue = screenSelector.value;
+        const validationValue = phetioValidationSelector.value;
+        console.log( validationValue );
         const checkboxes = $( toggleContainer ).find( ':checkbox' );
         const usefulCheckboxes = _.filter( checkboxes, function( checkbox ) {
 
@@ -683,7 +714,14 @@
         } );
         const customQueryParameters = customTextBox.value.length ? [ customTextBox.value ] : [];
         const screenQueryParameters = screensValue === 'all' ? [] : [ 'screens=' + screensValue ];
-        return checkboxQueryParameters.concat( customQueryParameters ).concat( screenQueryParameters ).join( '&' );
+        const phetioValidationQueryParameters = phetioValidationSelector.value === 'simulation-default' ? [] :
+                                                phetioValidationSelector.value === 'true' ? [ 'phetioValidation=true' ] :
+                                                phetioValidationSelector.value === 'false' ? [ 'phetioValidation=false' ] :
+                                                'error';
+        if ( phetioValidationQueryParameters === 'error' ) {
+          throw new Error( 'bad value for phetioValidation' );
+        }
+        return checkboxQueryParameters.concat( customQueryParameters ).concat( screenQueryParameters ).concat( phetioValidationQueryParameters ).join( '&' );
       },
       update: function() {
         clearChildren( toggleContainer );
@@ -716,6 +754,7 @@
       },
       reset: function() {
         screenSelector.reset();
+        phetioValidationSelector.reset();
 
         customTextBox.value = '';
 
@@ -783,6 +822,7 @@
     modeDiv.appendChild( launchButton );
     queryParametersDiv.appendChild( header( 'Query Parameters' ) );
     queryParametersDiv.appendChild( queryParameterSelector.toggleElement );
+    queryParametersDiv.appendChild( queryParameterSelector.phetioValidationElement );
     queryParametersDiv.appendChild( queryParameterSelector.screenElement );
     queryParametersDiv.appendChild( document.createTextNode( 'Query Parameters: ' ) );
     queryParametersDiv.appendChild( queryParameterSelector.customElement );
