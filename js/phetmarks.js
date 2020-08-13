@@ -319,7 +319,11 @@
           text: 'Test Sims (Load Only)',
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
           url: '../aqua/test-server/test-sims.html',
-          queryParameters: fuzzTestParameter
+          queryParameters: [ {
+            value: 'ea&testDuration=3000&testConcurrentBuilds=1',
+            text: 'Test Sims (Load Only)',
+            default: true
+          } ]
         } );
         modes.push( {
           name: 'continuous-testing',
