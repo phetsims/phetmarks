@@ -237,8 +237,8 @@
 
         modes.push( {
           name: 'unitTestsRequirejs',
-          text: 'Unit Tests (Require.js)',
-          description: 'Runs unit tests in require.js mode',
+          text: 'Unit Tests (unbuilt)',
+          description: 'Runs unit tests in unbuilt mode',
           url: '../' + repo + '/' + repo + '-tests.html',
           queryParameters: [
             { value: 'ea', text: 'Assertions', default: true }
