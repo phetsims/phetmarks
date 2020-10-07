@@ -320,7 +320,7 @@
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
-            value: 'ea&testDuration=3000&testConcurrentBuilds=1',
+            value: 'ea&brand=phet&audioVolume=0&testTask=false&testBuilt=false',
             text: 'Test Sims (Load Only)',
             default: true
           } ]
