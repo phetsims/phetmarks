@@ -8,16 +8,16 @@ const path = require( 'path' );
 const url = require( 'url' );
 const fs = require( 'fs' );
 
-var port = 45362;
+const port = 45362;
 
 // Allow CORS
-var jsonHeaders = {
+const jsonHeaders = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*'
 };
 
 // root of your GitHub working copy, relative to the name of the directory that the currently-executing script resides in
-var rootDir = path.normalize( __dirname + '/../../' ); // eslint-disable-line
+const rootDir = path.normalize( __dirname + '/../../' ); // eslint-disable-line
 
 // callback(), errCallback( code )
 function execute( cmd, args, cwd, callback, errCallback ) {
@@ -26,18 +26,18 @@ function execute( cmd, args, cwd, callback, errCallback ) {
   const process = spawn( cmd, args, {
     cwd: cwd
   } );
-  console.log( 'running ' + cmd + ' ' + args.join( ' ' ) + ' from ' + cwd );
+  console.log( `running ${cmd} ${args.join( ' ' )} from ${cwd}` );
 
-  process.on( 'error', function( error ) {
+  process.on( 'error', error => {
     console.log( 'uncaught error:', error );
   } );
-  process.stderr.on( 'data', function( data ) {
-    console.log( 'stderr: ' + data );
+  process.stderr.on( 'data', data => {
+    console.log( `stderr: ${data}` );
   } );
-  process.stdout.on( 'data', function( data ) {
-    console.log( 'stdout: ' + data );
+  process.stdout.on( 'data', data => {
+    console.log( `stdout: ${data}` );
   } );
-  process.on( 'close', function( code ) {
+  process.on( 'close', code => {
     console.log( 'finished executing', cmd, args, cwd, code );
 
     // Failure
@@ -81,17 +81,17 @@ function isSameAsRemoteMaster( repo, sameCallback, differentCallback ) {
 function getActiveRepos() {
   'use strict';
 
-  return fs.readFileSync( rootDir + 'perennial/data/active-repos', 'utf8' )
+  return fs.readFileSync( `${rootDir}perennial/data/active-repos`, 'utf8' )
     .split( '\n' )
-    .filter( function( name ) { return name.length > 0; } );
+    .filter( name => name.length > 0 );
 }
 
 function getActiveSims() {
   'use strict';
 
-  return fs.readFileSync( rootDir + 'perennial/data/active-sims', 'utf8' )
+  return fs.readFileSync( `${rootDir}perennial/data/active-sims`, 'utf8' )
     .split( '\n' )
-    .filter( function( name ) { return name.length > 0; } );
+    .filter( name => name.length > 0 );
 }
 
 function successFunction( req, res, name ) {
@@ -109,10 +109,10 @@ function successFunction( req, res, name ) {
 function errorFunction( req, res, name ) {
   'use strict';
 
-  return function( code ) {
+  return code => {
     res.writeHead( 500, jsonHeaders );
     res.end( JSON.stringify( {
-      output: name + ' exit code ' + code,
+      output: `${name} exit code ${code}`,
       success: false
     } ) );
   };
@@ -135,9 +135,9 @@ function taskBuild( req, res, query ) {
   npmUpdate( 'chipper', function() {
     npmUpdate( simName, function() {
       grunt( simName,
-        successFunction( req, res, 'build ' + simName ),
-        errorFunction( req, res, 'grunt ' + simName ) );
-    }, errorFunction( req, res, 'npm update ' + simName ) );
+        successFunction( req, res, `build ${simName}` ),
+        errorFunction( req, res, `grunt ${simName}` ) );
+    }, errorFunction( req, res, `npm update ${simName}` ) );
   }, errorFunction( req, res, 'npm update chipper' ) );
 }
 
@@ -170,7 +170,7 @@ function taskPerennialRefresh( req, res, query ) {
 
   pull( 'perennial', function() {
     npmUpdate( 'perennial', function() {
-      execute( rootDir + 'perennial/bin/clone-missing-repos.sh', [], rootDir,
+      execute( `${rootDir}perennial/bin/clone-missing-repos.sh`, [], rootDir,
         successFunction( req, res, 'perennial refresh' ),
         errorFunction( req, res, 'perennial clone missing repos' ) );
     }, errorFunction( req, res, 'perennial npm update' ) );
@@ -191,13 +191,13 @@ function taskPull( req, res, query ) {
     return;
   }
 
-  pull( simName, successFunction( req, res, 'pull ' + simName ), errorFunction( req, res, 'pull ' + simName ) );
+  pull( simName, successFunction( req, res, `pull ${simName}` ), errorFunction( req, res, `pull ${simName}` ) );
 }
 
 function taskPullAll( req, res, query ) {
   'use strict';
 
-  execute( rootDir + 'perennial/bin/pull-all.sh', [ '-p' ], rootDir,
+  execute( `${rootDir}perennial/bin/pull-all.sh`, [ '-p' ], rootDir,
     successFunction( req, res, 'pulled' ),
     errorFunction( req, res, 'pull failed' ) );
 }
@@ -274,9 +274,9 @@ http.createServer( function( req, res ) {
     } ) );
   }
 
-  // var simName = req.url.slice( 1 );
+  // const simName = req.url.slice( 1 );
 
 
 } ).listen( port );
 
-console.log( 'running on port ' + port + ' with root directory ' + rootDir );
+console.log( `running on port ${port} with root directory ${rootDir}` );
