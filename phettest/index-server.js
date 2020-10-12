@@ -225,6 +225,8 @@ function validateSimName( simName ) {
   // validate that it is lower-case with hyphens
   for ( let i = 0; i < simName.length; i++ ) {
     const charCode = simName.charCodeAt( i );
+
+    // TODO: use a perennial data list as a white list, https://github.com/phetsims/special-ops/issues/170
     if ( charCode !== '-'.charCodeAt( 0 ) && ( charCode < 'a'.charCodeAt( 0 ) || charCode > 'z'.charCodeAt( 0 ) ) ) {
       return false;
     }
