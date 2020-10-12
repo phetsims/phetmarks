@@ -1,7 +1,7 @@
 // Copyright 2020, University of Colorado Boulder
 
 // will be replaced by domain name in the future
-var domain = 'phettest.colorado.edu';
+var domain = 'https://phet-dev.colorado.edu/phettest-server/';
 
 // common repo fields
 var commonSameMasterStatusElements = {};
@@ -98,7 +98,7 @@ function checkSimSameMaster( reposToCheck ) {
     var statusElement = simSameMasterStatusElements[ sim ].status;
     $( statusElement ).text( '?' );
     statusElement.className = 'masterStatus';
-    $.ajax( 'http://' + domain + ':45362/same-as-remote-master?repo=' + sim ).done( function( data ) {
+    $.ajax( domain + '/same-as-remote-master?repo=' + sim ).done( function( data ) {
       if ( data.output === 'same' ) {
         $( statusElement ).text( 'up-to-date' );
         statusElement.className = 'masterStatus masterUpToDate';
@@ -156,7 +156,7 @@ function checkCommonSameMaster( reposToCheck ) {
     var statusElement = commonSameMasterStatusElements[ commonRepo ].status;
     $( statusElement ).text( '?' );
     statusElement.className = 'masterStatus';
-    $.ajax( 'http://' + domain + ':45362/same-as-remote-master?repo=' + commonRepo ).done( function( data ) {
+    $.ajax( domain + '/same-as-remote-master?repo=' + commonRepo ).done( function( data ) {
       if ( data.output === 'same' ) {
         $( statusElement ).text( 'up-to-date' );
         statusElement.className = 'masterStatus masterUpToDate';
@@ -209,7 +209,7 @@ function updateCommonCheckingStatus( done ) {
 document.getElementById( 'pullAll' ).addEventListener( 'click', function() {
   var status = document.getElementById( 'pullStatus' );
   $( status ).text( 'pulling...' );
-  $.ajax( 'http://' + domain + ':45362/pull-all' ).done( function( data ) {
+  $.ajax( domain + '/pull-all' ).done( function( data ) {
     $( status ).text( '' );
 
     checkCommonSameMaster();
@@ -222,7 +222,7 @@ document.getElementById( 'pullAll' ).addEventListener( 'click', function() {
 document.getElementById( 'perennialRefresh' ).addEventListener( 'click', function() {
   var status = document.getElementById( 'perennialStatus' );
   $( status ).text( 'refreshing perennial' );
-  $.ajax( 'http://' + domain + ':45362/perennial-refresh' ).done( function( data ) {
+  $.ajax( domain + '/perennial-refresh' ).done( function( data ) {
     $( status ).text( '' );
 
     updateCommonRepos();
@@ -243,10 +243,10 @@ function updateCommonRepos() {
   while ( commonTable.childNodes.length ) {
     commonTable.removeChild( commonTable.childNodes[ 0 ] );
   }
-  $.ajax( 'http://' + domain + ':45362/sim-list' ).done( function( data ) {
+  $.ajax( domain + '/sim-list' ).done( function( data ) {
     var sims = data.output;
 
-    $.ajax( 'http://' + domain + ':45362/repo-list' ).done( function( data ) {
+    $.ajax( domain + '/repo-list' ).done( function( data ) {
       var repos = data.output;
       const commonRepos = repos.filter( function( repo ) {
         return !_.includes( sims, repo );
@@ -307,7 +307,7 @@ function updateCommonRepos() {
         name.textContent = commonRepoName;
         cell( name );
         sameAsMasterCell( commonRepoName );
-        actionCell( 'Pull', 'http://' + domain + ':45362/pull?sim=' + commonRepoName );
+        actionCell( 'Pull', domain + '/pull?sim=' + commonRepoName );
         linkCell( 'GitHub Issues', 'http://github.com/phetsims/' + commonRepoName + '/issues' );
 
         commonRows.push( tr );
@@ -324,7 +324,7 @@ function updateSims() {
   while ( simsTable.childNodes.length ) {
     simsTable.removeChild( simsTable.childNodes[ 0 ] );
   }
-  $.ajax( 'http://' + domain + ':45362/sim-list' ).done( function( data ) {
+  $.ajax( domain + '/sim-list' ).done( function( data ) {
     var sims = data.output;
 
     _.each( sims, function( simName ) {
@@ -378,11 +378,11 @@ function updateSims() {
         cell( status );
       }
 
-      linkCell( simName, 'http://' + domain + '/' + simName + '/' + simName + '_en.html?ea&brand=phet' );
+      linkCell( simName, domain + '/' + simName + '/' + simName + '_en.html?ea&brand=phet' );
       sameAsMasterCell( simName );
-      actionCell( 'Pull', 'http://' + domain + ':45362/pull?sim=' + simName );
-      actionCell( 'Build', 'http://' + domain + ':45362/build?sim=' + simName );
-      linkCell( 'Built Version', 'http://' + domain + '/' + simName + '/build/phet/' + simName + '_en_phet.html' );
+      actionCell( 'Pull', domain + '/pull?sim=' + simName );
+      actionCell( 'Build', domain + '/build?sim=' + simName );
+      linkCell( 'Built Version', domain + '/' + simName + '/build/phet/' + simName + '_en_phet.html' );
       linkCell( 'GitHub Issues', 'http://github.com/phetsims/' + simName + '/issues' );
       linkCell( 'Dev', 'https://phet-dev.colorado.edu/html/' + simName );
       linkCell( 'Production', 'http://phet.colorado.edu/sims/html/' + simName + '/latest/' + simName + '_en.html' );
