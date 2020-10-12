@@ -1,7 +1,7 @@
 // Copyright 2020, University of Colorado Boulder
 
 // will be replaced by domain name in the future
-const domain = 'https://bayes.colorado.edu/';
+const domain = 'https://bayes.colorado.edu/dev/';
 const serverURL = `${domain}phettest-server/`;
 const phettestURL = `${domain}phettest/`;
 
@@ -380,11 +380,11 @@ function updateSims() {
         cell( status );
       }
 
-      linkCell( simName, `${serverURL + simName}/${simName}_en.html?ea&brand=phet` );
+      linkCell( simName, `${phettestURL}${simName}/${simName}_en.html?ea&brand=phet` );
       sameAsMasterCell( simName );
       actionCell( 'Pull', `${serverURL}pull?sim=${simName}` );
       actionCell( 'Build', `${serverURL}build?sim=${simName}` );
-      linkCell( 'Built Version', `${phettestURL + simName}/build/phet/${simName}_en_phet.html` );
+      linkCell( 'Built Version', `${phettestURL}${simName}/build/phet/${simName}_en_phet.html` );
       linkCell( 'GitHub Issues', `http://github.com/phetsims/${simName}/issues` );
       linkCell( 'Dev', `https://phet-dev.colorado.edu/html/${simName}` );
       linkCell( 'Production', `http://phet.colorado.edu/sims/html/${simName}/latest/${simName}_en.html` );
