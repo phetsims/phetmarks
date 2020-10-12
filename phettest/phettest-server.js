@@ -97,7 +97,7 @@ function getActiveSims() {
 function successFunction( req, res, name ) {
   'use strict';
 
-  return function() {
+  return () => {
     res.writeHead( 200, jsonHeaders );
     res.end( JSON.stringify( {
       output: name,
@@ -132,8 +132,8 @@ function taskBuild( req, res, query ) {
     return;
   }
 
-  npmUpdate( 'chipper', function() {
-    npmUpdate( simName, function() {
+  npmUpdate( 'chipper', () => {
+    npmUpdate( simName, () => {
       grunt( simName,
         successFunction( req, res, `build ${simName}` ),
         errorFunction( req, res, `grunt ${simName}` ) );
@@ -168,8 +168,8 @@ function taskRepoList( req, res, query ) {
 function taskPerennialRefresh( req, res, query ) {
   'use strict';
 
-  pull( 'perennial', function() {
-    npmUpdate( 'perennial', function() {
+  pull( 'perennial', () => {
+    npmUpdate( 'perennial', () => {
       execute( `${rootDir}perennial/bin/clone-missing-repos.sh`, [], rootDir,
         successFunction( req, res, 'perennial refresh' ),
         errorFunction( req, res, 'perennial clone missing repos' ) );
