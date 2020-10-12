@@ -10,7 +10,7 @@ This must be accessed from on campus or via a VPN.
 ### implementation notes
 
 * Currently this runs on Turing
-* The server, `index-server.js`, runs via `pm2`
+* The server, `phettest-server.js`, runs via `pm2`
 * Access to the ~/phet/ directory over http is through apache, and is configured in `/etc/apache2/httpd.conf`
 * To publish changes on the front end:
   * Push changes to master
