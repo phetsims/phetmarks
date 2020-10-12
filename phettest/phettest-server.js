@@ -1,6 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 /* eslint-env node */
+'use strict';
 
 const http = require( 'http' );
 const spawn = require( 'child_process' ).spawn; // eslint-disable-line
@@ -21,7 +22,6 @@ const rootDir = path.normalize( __dirname + '/../../' ); // eslint-disable-line
 
 // callback(), errCallback( code )
 function execute( cmd, args, cwd, callback, errCallback ) {
-  'use strict';
 
   const process = spawn( cmd, args, {
     cwd: cwd
@@ -53,33 +53,28 @@ function execute( cmd, args, cwd, callback, errCallback ) {
 
 // callback(), errCallback( code )
 function pull( repo, callback, errCallback ) {
-  'use strict';
 
   execute( 'git', [ 'pull' ], rootDir + repo, callback, errCallback );
 }
 
 // callback(), errCallback( code )
 function npmUpdate( repo, callback, errCallback ) {
-  'use strict';
 
   execute( 'npm', [ 'update' ], rootDir + repo, callback, errCallback );
 }
 
 // callback(), errCallback( code )
 function grunt( repo, callback, errCallback ) {
-  'use strict';
 
   execute( 'grunt', [ '--no-color', '--minify.uglify=false' ], rootDir + repo, callback, errCallback );
 }
 
 function isSameAsRemoteMaster( repo, sameCallback, differentCallback ) {
-  'use strict';
 
   execute( 'bash', [ '../phetmarks/phettest/same-as-remote-master.sh' ], rootDir + repo, sameCallback, differentCallback );
 }
 
 function getActiveRepos() {
-  'use strict';
 
   return fs.readFileSync( `${rootDir}perennial/data/active-repos`, 'utf8' )
     .split( '\n' )
@@ -87,7 +82,6 @@ function getActiveRepos() {
 }
 
 function getActiveSims() {
-  'use strict';
 
   return fs.readFileSync( `${rootDir}perennial/data/active-sims`, 'utf8' )
     .split( '\n' )
@@ -95,7 +89,6 @@ function getActiveSims() {
 }
 
 function successFunction( req, res, name ) {
-  'use strict';
 
   return () => {
     res.writeHead( 200, jsonHeaders );
@@ -107,7 +100,6 @@ function successFunction( req, res, name ) {
 }
 
 function errorFunction( req, res, name ) {
-  'use strict';
 
   return code => {
     res.writeHead( 500, jsonHeaders );
@@ -119,7 +111,6 @@ function errorFunction( req, res, name ) {
 }
 
 function taskBuild( req, res, query ) {
-  'use strict';
 
   const simName = query.sim;
 
@@ -142,7 +133,6 @@ function taskBuild( req, res, query ) {
 }
 
 function taskSimList( req, res, query ) {
-  'use strict';
 
   const activeSims = getActiveSims();
 
@@ -154,7 +144,6 @@ function taskSimList( req, res, query ) {
 }
 
 function taskRepoList( req, res, query ) {
-  'use strict';
 
   const activeSims = getActiveRepos();
 
@@ -166,7 +155,6 @@ function taskRepoList( req, res, query ) {
 }
 
 function taskPerennialRefresh( req, res, query ) {
-  'use strict';
 
   pull( 'perennial', () => {
     npmUpdate( 'perennial', () => {
@@ -178,7 +166,6 @@ function taskPerennialRefresh( req, res, query ) {
 }
 
 function taskPull( req, res, query ) {
-  'use strict';
 
   const simName = query.sim;
 
@@ -195,7 +182,6 @@ function taskPull( req, res, query ) {
 }
 
 function taskPullAll( req, res, query ) {
-  'use strict';
 
   execute( `${rootDir}perennial/bin/pull-all.sh`, [ '-p' ], rootDir,
     successFunction( req, res, 'pulled' ),
@@ -203,7 +189,6 @@ function taskPullAll( req, res, query ) {
 }
 
 function taskSameAsRemoteMaster( req, res, query ) {
-  'use strict';
 
   const simName = query.repo;
 
@@ -220,7 +205,6 @@ function taskSameAsRemoteMaster( req, res, query ) {
 }
 
 function validateSimName( simName ) {
-  'use strict';
 
   // validate that it is lower-case with hyphens
   for ( let i = 0; i < simName.length; i++ ) {
@@ -235,7 +219,6 @@ function validateSimName( simName ) {
 }
 
 http.createServer( function( req, res ) {
-  'use strict';
 
   // req.url
   // req.method
