@@ -125,11 +125,15 @@ function taskBuild( req, res, query ) {
 
   npmUpdate( 'chipper', () => {
     npmUpdate( simName, () => {
-      grunt( simName,
-        successFunction( req, res, `build ${simName}` ),
-        errorFunction( req, res, `grunt ${simName}` ) );
-    }, errorFunction( req, res, `npm update ${simName}` ) );
-  }, errorFunction( req, res, 'npm update chipper' ) );
+      grunt( simName, () => {} );
+    }, () => {} );
+  }, () => {} );
+
+  res.writeHead( 200, jsonHeaders );
+  res.end( JSON.stringify( {
+    output: 'Build kicked off',
+    success: true
+  } ) );
 }
 
 function taskSimList( req, res, query ) {
