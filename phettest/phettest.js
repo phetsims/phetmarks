@@ -347,7 +347,11 @@ function updateSims() {
         cell( a );
       }
 
-      function actionCell( text, url ) {
+      function actionCell( text, url, options ) {
+        options = _.extend( {
+          delaySuccessMessage: '',
+          delaySuccessTime: 0 // in ms
+        }, options );
         const button = document.createElement( 'button' );
         const status = document.createElement( 'span' );
         status.className = 'status';
@@ -356,7 +360,10 @@ function updateSims() {
           $( status ).text( 'running' );
           $.ajax( url ).done( function handle( data ) {
             if ( data.success ) {
-              $( status ).text( '' );
+              $( status ).text( options.delaySuccessMessage );
+              setTimeout( () => {
+                $( status ).text( '' );
+              }, options.delaySuccessTime );
             }
             else {
               $( status ).text( 'failed' );
@@ -383,7 +390,10 @@ function updateSims() {
       linkCell( simName, `${phettestURL}${simName}/${simName}_en.html?ea&brand=phet` );
       sameAsMasterCell( simName );
       actionCell( 'Pull', `${serverURL}pull?sim=${simName}` );
-      actionCell( 'Build', `${serverURL}build?sim=${simName}` );
+      actionCell( 'Build', `${serverURL}build?sim=${simName}`, {
+        delaySuccessTime: 2000,
+        delaySuccessMessage: 'Build successfully\nkicked off.'
+      } );
       linkCell( 'Built Version', `${phettestURL}${simName}/build/phet/${simName}_en_phet.html` );
       linkCell( 'GitHub Issues', `http://github.com/phetsims/${simName}/issues` );
       linkCell( 'Dev', `https://phet-dev.colorado.edu/html/${simName}` );
