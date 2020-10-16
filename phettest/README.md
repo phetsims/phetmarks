@@ -1,21 +1,27 @@
 
 
-## phettest.colorado.edu
+## PhET Testing server (phettest)
 
 This internal testing server is set up to let internal phet employees run sims off of master without having 
 code checked out.
 
-This must be accessed from on campus or via a VPN. 
+This is currently available on bayes.colorado.edu/dev/phettest/ 
 
-### implementation notes
+### Maintenance
 
-* Currently this runs on Turing
-* The server, `phettest-server.js`, runs via `pm2`
-* Access to the ~/phet/ directory over http is through apache, and is configured in `/etc/apache2/httpd.conf`
-* To publish changes on the front end:
-  * Push changes to master
-  * `cd ~/phet/phetmarks`
-  * `git pull`
-  * `cp index.html ../../`
-  * `cp phettest.js ../../`
+The server is currently running on bayes using pm2 on the `phet-admin` account.
+
+To pull changes for the server or front-end:
+
+    cd /data/web/htdocs/dev/phettest/phetmarks
+    git pull
+
+To restart:
+
+    pm2 restart phettest-server
   
+To check on the logs:
+
+    pm2 logs phettest-server
+    
+    
