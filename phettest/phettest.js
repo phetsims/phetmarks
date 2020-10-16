@@ -392,7 +392,7 @@ function updateSims() {
       actionCell( 'Pull', `${serverURL}pull?sim=${simName}` );
       actionCell( 'Build', `${serverURL}build?sim=${simName}`, {
         delaySuccessTime: 2000,
-        delaySuccessMessage: 'Build successfully\nkicked off.'
+        delaySuccessMessage: 'Build successfully kicked off.'
       } );
       linkCell( 'Built Version', `${phettestURL}${simName}/build/phet/${simName}_en_phet.html` );
       linkCell( 'GitHub Issues', `http://github.com/phetsims/${simName}/issues` );
