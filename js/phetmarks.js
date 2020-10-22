@@ -275,6 +275,9 @@
           value: generalTestParams + '&brand=phet&fuzz',
           text: 'Test PhET sims',
           default: true
+        },{
+          value: 'randomize',
+          text: 'Randomize sim list'
         } ];
 
         modes.push( {
