@@ -275,7 +275,7 @@
           value: generalTestParams + '&brand=phet&fuzz',
           text: 'Test PhET sims',
           default: true
-        },{
+        }, {
           value: 'randomize',
           text: 'Randomize sim list'
         } ];
@@ -296,6 +296,9 @@
             value: generalTestParams + '&brand=phet-io&fuzz&phetioStandalone&testSims=' + phetioSims.join( ',' ),
             text: 'Fuzz Test PhET-IO sims',
             default: true
+          }, {
+            value: 'randomize',
+            text: 'Randomize sim list'
           } ]
         } );
         modes.push( {
@@ -315,6 +318,9 @@
             value: 'testSims=' + interactiveDescriptionSims.join( ',' ),
             text: 'Test only A11y sims',
             default: true
+          }, {
+            value: 'randomize',
+            text: 'Randomize sim list'
           } ]
         } );
         modes.push( {
