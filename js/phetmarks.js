@@ -670,11 +670,11 @@
     }
 
     const span = document.createElement( 'span' );
-    span.textContent = 'PhET-iO Validation:';
+    span.textContent = 'phetioValidation=';
     div.appendChild( span );
+    div.appendChild( createValidationRadioButton( 'validation', 'true', 'true' ) );
+    div.appendChild( createValidationRadioButton( 'validation', 'false', 'false' ) );
     div.appendChild( createValidationRadioButton( 'validation', 'simulation-default', 'Simulation Default' ) );
-    div.appendChild( createValidationRadioButton( 'validation', 'true', 'True' ) );
-    div.appendChild( createValidationRadioButton( 'validation', 'false', 'False' ) );
 
     return {
       element: div,
