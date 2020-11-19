@@ -34,12 +34,10 @@
 
   // Query parameters used for the following modes: requirejs, compiled, production
   const simQueryParameters = [
-    { value: 'supportsDescriptions', text: 'Supports Interactive Descriptions' },
-    { value: 'supportsSound', text: 'Supports Sound' },
-    { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
     { value: 'audioVolume=0', text: 'Mute' },
     { value: 'fuzz', text: 'Fuzz' },
     { value: 'fuzzBoard', text: 'Keyboard Fuzz' },
+    { value: 'debugger', text: 'Debugger' },
     { value: 'deprecationWarnings', text: 'Deprecation Warnings' },
     { value: 'dev', text: 'Dev' },
     { value: 'profiler', text: 'Profiler' },
@@ -47,6 +45,9 @@
     { value: 'showPointerAreas', text: 'Pointer Areas' },
     { value: 'showFittedBlockBounds', text: 'Fitted Block Bounds' },
     { value: 'showCanvasNodeBounds', text: 'CanvasNode Bounds' },
+    { value: 'supportsDescriptions', text: 'Supports Interactive Descriptions' },
+    { value: 'supportsSound', text: 'Supports Sound' },
+    { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
     { value: 'webgl=false', text: 'No WebGL' }
   ];
 
