@@ -37,7 +37,7 @@
     { value: 'audioVolume=0', text: 'Mute' },
     { value: 'fuzz', text: 'Fuzz' },
     { value: 'fuzzBoard', text: 'Keyboard Fuzz' },
-    { value: 'debugger', text: 'Debugger' },
+    { value: 'debugger', text: 'Debugger', default: true },
     { value: 'deprecationWarnings', text: 'Deprecation Warnings' },
     { value: 'dev', text: 'Dev' },
     { value: 'profiler', text: 'Profiler' },
