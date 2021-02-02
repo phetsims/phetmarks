@@ -122,7 +122,11 @@
    * @param {Array.<string>} activeRunnables - from active-runnables
    * @param {Array.<string>} activeRepos - from active-repos
    * @param {Array.<string>} phetioSims - from phet-io
+<<<<<<< HEAD
    * @param {Array.<string>} accessibleSims - from accessibility
+=======
+   * @param {Array.<string>} interactiveDescriptionims - from interactive-description
+>>>>>>> b63edcd... interactive-descriptions -> interactive-description, https://github.com/phetsims/a11y-research/issues/157
    * @param {Array.<string>} wrappers - from wrappers
    * @returns {Object} - Maps from {string} repository name => {Mode}
    */
@@ -260,9 +264,9 @@
           } ]
         } );
         modes.push( {
-          name: 'test-a11y-keyboard-sims',
-          text: 'Test A11y Keyboard on PhET Sims',
-          description: 'Runs automated testing with a11y keyboard fuzzing, 10 second timer, and 4 concurrent builds',
+          name: 'test-interactive-description-sims',
+          text: 'Fuzz Test Interactive Description Sims (Fast Build)',
+          description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
             value: generalTestParams + '&brand=phet&fuzzBoard&accessibility',
@@ -707,7 +711,7 @@
         var phetioSims = whiteSplit( testPhetioString );
 
         $.ajax( {
-          url: '../perennial/data/accessibility'
+          url: '../perennial/data/interactive-description'
         } ).done( function( accessibleSimsString ) {
           var accessibleSims = whiteSplit( accessibleSimsString );
 
