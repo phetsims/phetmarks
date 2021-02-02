@@ -162,6 +162,7 @@
    * @param {Array.<string>} activeRepos - from active-repos
    * @param {Array.<string>} phetioSims - from phet-io
    * @param {Array.<string>} accessibleSims - from accessibility
+   * @param {Array.<string>} interactiveDescriptionims - from interactive-description
    * @param {Array.<string>} wrappers - from wrappers
    * @param {Array.<string>} colorProfileRepos - Has a color profile
    * @param {Array.<string>} unitTestsRepos - Has unit tests
@@ -309,8 +310,8 @@
           } ]
         } );
         modes.push( {
-          name: 'test-a11y-sims',
-          text: 'Fuzz Test Accessibility Sims (Fast Build)',
+          name: 'test-interactive-description-sims',
+          text: 'Fuzz Test Interactive Description Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
@@ -837,7 +838,7 @@
         const phetioSims = whiteSplit( testPhetioString );
 
         $.ajax( {
-          url: '../perennial/data/accessibility'
+          url: '../perennial/data/interactive-description'
         } ).done( function( accessibleSimsString ) {
           const accessibleSims = whiteSplit( accessibleSimsString );
 
