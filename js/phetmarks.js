@@ -45,7 +45,7 @@
     { value: 'showPointerAreas', text: 'Pointer Areas' },
     { value: 'showFittedBlockBounds', text: 'Fitted Block Bounds' },
     { value: 'showCanvasNodeBounds', text: 'CanvasNode Bounds' },
-    { value: 'supportsDescriptions', text: 'Supports Interactive Descriptions' },
+    { value: 'supportsDescription', text: 'Supports Interactive Description' },
     { value: 'supportsSound', text: 'Supports Sound' },
     { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
     { value: 'webgl=false', text: 'No WebGL' }
@@ -150,13 +150,13 @@
    * @param {Array.<string>} activeRunnables - from active-runnables
    * @param {Array.<string>} activeRepos - from active-repos
    * @param {Array.<string>} phetioSims - from phet-io
-   * @param {Array.<string>} interactiveDescriptionSims - from interactive-descriptions
+   * @param {Array.<string>} interactiveDescriptionims - from interactive-descriptions
    * @param {Array.<string>} wrappers - from wrappers
    * @param {Array.<string>} colorProfileRepos - Has a color profile
    * @param {Array.<string>} unitTestsRepos - Has unit tests
    * @returns {Object} - Maps from {string} repository name => {Mode}
    */
-  function populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, colorProfileRepos, unitTestsRepos ) {
+  function populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionims, wrappers, colorProfileRepos, unitTestsRepos ) {
     const modeData = {};
 
     activeRepos.forEach( function( repo ) {
@@ -170,7 +170,7 @@
       const hasColorProfile = _.includes( colorProfileRepos, repo );
       const hasUnitTests = _.includes( unitTestsRepos, repo );
       const isRunnable = _.includes( activeRunnables, repo );
-      const supportsInteractiveDescription = _.includes( interactiveDescriptionSims, repo );
+      const supportsInteractiveDescription = _.includes( interactiveDescriptionims, repo );
 
       if ( isRunnable ) {
         modes.push( {
@@ -304,19 +304,19 @@
         } );
         modes.push( {
           name: 'test-interactive-descriptions-sims',
-          text: 'Fuzz Test Interactive Descriptions Sims (Fast Build)',
+          text: 'Fuzz Test Interactive Description Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
-            value: generalTestParams + '&brand=phet&fuzzBoard&supportsDescriptions',
+            value: generalTestParams + '&brand=phet&fuzzBoard&supportsDescription',
             text: 'Keyboard Fuzz Test sims',
             default: true
           }, {
-            value: generalTestParams + '&brand=phet&fuzz&supportsDescriptions',
+            value: generalTestParams + '&brand=phet&fuzz&supportsDescription',
             text: 'Normal Fuzz Test sims',
             default: false
           }, {
-            value: 'testSims=' + interactiveDescriptionSims.join( ',' ),
+            value: 'testSims=' + interactiveDescriptionims.join( ',' ),
             text: 'Test only A11y sims',
             default: true
           }, {
@@ -923,7 +923,7 @@
         $.ajax( {
           url: '../perennial/data/interactive-descriptions'
         } ).done( function( accessibleSimsString ) {
-          const interactiveDescriptionSims = whiteSplit( accessibleSimsString );
+          const interactiveDescriptionims = whiteSplit( accessibleSimsString );
 
           $.ajax( {
             url: '../chipper/data/wrappers'
@@ -940,7 +940,7 @@
               } ).done( function( unitTestsStrings ) {
                 const unitTestsRepos = whiteSplit( unitTestsStrings ).sort();
 
-                render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, colorProfileRepos, unitTestsRepos ) );
+                render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionims, wrappers, colorProfileRepos, unitTestsRepos ) );
               } );
             } );
           } );
