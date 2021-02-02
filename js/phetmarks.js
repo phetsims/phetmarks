@@ -149,7 +149,11 @@
    * @param {Array.<string>} activeRunnables - from active-runnables
    * @param {Array.<string>} activeRepos - from active-repos
    * @param {Array.<string>} phetioSims - from phet-io
+<<<<<<< HEAD
    * @param {Array.<string>} interactiveDescriptionSims - from interactive-descriptions
+=======
+   * @param {Array.<string>} interactiveDescriptionims - from interactive-description
+>>>>>>> b63edcd... interactive-descriptions -> interactive-description, https://github.com/phetsims/a11y-research/issues/157
    * @param {Array.<string>} wrappers - from wrappers
    * @param {Array.<string>} colorProfileRepos - Has a color profile
    * @param {Array.<string>} unitTestsRepos - Has unit tests
@@ -302,8 +306,8 @@
           } ]
         } );
         modes.push( {
-          name: 'test-interactive-descriptions-sims',
-          text: 'Fuzz Test Interactive Descriptions Sims (Fast Build)',
+          name: 'test-interactive-description-sims',
+          text: 'Fuzz Test Interactive Description Sims (Fast Build)',
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
@@ -920,7 +924,7 @@
         const phetioSims = whiteSplit( testPhetioString );
 
         $.ajax( {
-          url: '../perennial/data/interactive-descriptions'
+          url: '../perennial/data/interactive-description'
         } ).done( function( accessibleSimsString ) {
           const interactiveDescriptionSims = whiteSplit( accessibleSimsString );
 
