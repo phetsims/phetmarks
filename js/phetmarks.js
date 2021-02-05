@@ -35,7 +35,11 @@
   // Query parameters used for the following modes: requirejs, compiled, production
   const simQueryParameters = [
     { value: 'audioVolume=0', text: 'Mute' },
-    { value: 'fuzz', text: 'Fuzz' },
+    {
+      value: 'fuzz', text: 'Fuzz', dependentQueryParameters: [
+        { value: 'fuzzPointers=2', text: 'Multitouch-fuzz' }
+      ]
+    },
     { value: 'fuzzBoard', text: 'Keyboard Fuzz' },
     { value: 'debugger', text: 'Debugger', default: true },
     { value: 'deprecationWarnings', text: 'Deprecation Warnings' },
@@ -702,6 +706,9 @@
 
     const toggleContainer = document.createElement( 'div' );
 
+    // get the ID for a checkbox that is "dependent" on another value
+    const getDependentParameterControlId = value => `dependent-checkbox-${value}`;
+
     const selector = {
       screenElement: screenSelector.element,
       phetioValidationElement: phetioValidationSelector.element,
@@ -709,8 +716,6 @@
       customElement: customTextBox,
       get value() {
         const screensValue = screenSelector.value;
-        const validationValue = phetioValidationSelector.value;
-        console.log( validationValue );
         const checkboxes = $( toggleContainer ).find( ':checkbox' );
         const usefulCheckboxes = _.filter( checkboxes, function( checkbox ) {
 
@@ -763,6 +768,53 @@
           toggleContainer.appendChild( document.createElement( 'br' ) );
           checkbox.checked = !!parameter.default;
 
+          if ( parameter.dependentQueryParameters ) {
+
+            /**
+             * Creates a checkbox whose value is dependent on another checkbox, it is only used if the parent
+             * checkbox is checked.
+             * @param {string} label
+             * @param {string} value
+             * @param {boolean} checked - initial checked state
+             * @returns {HTMLDivElement}
+             */
+            const createDependentCheckbox = ( label, value, checked ) => {
+              const dependentQueryParametersContainer = document.createElement( 'div' );
+
+              const dependentCheckbox = document.createElement( 'input' );
+              dependentCheckbox.id = getDependentParameterControlId( value );
+              dependentCheckbox.type = 'checkbox';
+              dependentCheckbox.name = value;
+              dependentCheckbox.style.marginLeft = '40px';
+              dependentCheckbox.checked = checked;
+              const labelElement = document.createElement( 'label' );
+              labelElement.appendChild( document.createTextNode( label ) );
+              labelElement.htmlFor = dependentCheckbox.id;
+
+              dependentQueryParametersContainer.appendChild( dependentCheckbox );
+              dependentQueryParametersContainer.appendChild( labelElement );
+
+              // checkbox becomes unchecked and disabled if dependency checkbox is unchecked
+              const enableButton = () => {
+                dependentCheckbox.disabled = !checkbox.checked;
+                if ( !checkbox.checked ) {
+                  dependentCheckbox.checked = false;
+                }
+              };
+              checkbox.addEventListener( 'change', enableButton );
+              enableButton();
+
+              return dependentQueryParametersContainer;
+            };
+
+            const containerDiv = document.createElement( 'div' );
+            parameter.dependentQueryParameters.forEach( relatedParameter => {
+              const dependentCheckbox = createDependentCheckbox( `${relatedParameter.text} (${relatedParameter.value})`, relatedParameter.value, !!relatedParameter.default );
+              containerDiv.appendChild( dependentCheckbox );
+            } );
+            toggleContainer.appendChild( containerDiv );
+          }
+
           // mark changed events for boolean parameter support
           checkbox.addEventListener( 'change', function() {
             checkbox.dataset.changed = 'true';
@@ -778,11 +830,24 @@
 
         // For each checkbox, set it to its default
         _.forEach( $( toggleContainer ).find( ':checkbox' ), function( checkbox ) {
+
           // Grab the parameter object
           const parameter = _.filter( modeSelector.mode.queryParameters, function( param ) { return param.value === checkbox.name; } )[ 0 ];
 
-          // Handle when the default isn't defined (it would be false)
-          checkbox.checked = !!parameter.default;
+          if ( parameter ) {
+
+            // Handle when the default isn't defined (it would be false)
+            checkbox.checked = !!parameter.default;
+
+            // dependent parameter controls only enabled if parent checkbox is checked
+            if ( parameter.dependentQueryParameters ) {
+              parameter.dependentQueryParameters.forEach( relatedParam => {
+                const dependentCheckbox = document.getElementById( getDependentParameterControlId( relatedParam.value ) );
+                dependentCheckbox.disabled = !checkbox.checked;
+                dependentCheckbox.checked = !!relatedParam.default;
+              } );
+            }
+          }
         } );
       }
     };
