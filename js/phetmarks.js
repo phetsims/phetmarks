@@ -154,13 +154,13 @@
    * @param {Array.<string>} activeRunnables - from active-runnables
    * @param {Array.<string>} activeRepos - from active-repos
    * @param {Array.<string>} phetioSims - from phet-io
-   * @param {Array.<string>} interactiveDescriptionims - from interactive-description
+   * @param {Array.<string>} interactiveDescriptionSims - from interactive-description
    * @param {Array.<string>} wrappers - from wrappers
    * @param {Array.<string>} colorProfileRepos - Has a color profile
    * @param {Array.<string>} unitTestsRepos - Has unit tests
    * @returns {Object} - Maps from {string} repository name => {Mode}
    */
-  function populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionims, wrappers, colorProfileRepos, unitTestsRepos ) {
+  function populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, colorProfileRepos, unitTestsRepos ) {
     const modeData = {};
 
     activeRepos.forEach( function( repo ) {
@@ -174,7 +174,7 @@
       const hasColorProfile = _.includes( colorProfileRepos, repo );
       const hasUnitTests = _.includes( unitTestsRepos, repo );
       const isRunnable = _.includes( activeRunnables, repo );
-      const supportsInteractiveDescription = _.includes( interactiveDescriptionims, repo );
+      const supportsInteractiveDescription = _.includes( interactiveDescriptionSims, repo );
 
       if ( isRunnable ) {
         modes.push( {
@@ -320,7 +320,7 @@
             text: 'Normal Fuzz Test sims',
             default: false
           }, {
-            value: 'testSims=' + interactiveDescriptionims.join( ',' ),
+            value: 'testSims=' + interactiveDescriptionSims.join( ',' ),
             text: 'Test only A11y sims',
             default: true
           }, {
@@ -988,7 +988,7 @@
         $.ajax( {
           url: '../perennial/data/interactive-description'
         } ).done( function( accessibleSimsString ) {
-          const interactiveDescriptionims = whiteSplit( accessibleSimsString );
+          const interactiveDescriptionSims = whiteSplit( accessibleSimsString );
 
           $.ajax( {
             url: '../chipper/data/wrappers'
@@ -1005,7 +1005,7 @@
               } ).done( function( unitTestsStrings ) {
                 const unitTestsRepos = whiteSplit( unitTestsStrings ).sort();
 
-                render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionims, wrappers, colorProfileRepos, unitTestsRepos ) );
+                render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, colorProfileRepos, unitTestsRepos ) );
               } );
             } );
           } );
