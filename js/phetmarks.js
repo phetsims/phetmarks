@@ -52,6 +52,7 @@
     { value: 'supportsDescription', text: 'Supports Interactive Description' },
     { value: 'supportsSound', text: 'Supports Sound' },
     { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
+    { value: 'supportsPanAndZoom', text: 'Supports Pan and Zoom', default: true, type: 'boolean' },
     { value: 'webgl=false', text: 'No WebGL' }
   ];
 
