@@ -168,9 +168,6 @@
       const modes = [];
       modeData[ repo ] = modes;
 
-      const legendsOfLearningHarnessUrl = 'http://developers.legendsoflearning.com/public-harness/index.html';
-      const legendsOfLearningSimUrl = '?url=' + window.origin + '/' + repo + '/' + repo + '_en.html' + '?ea%26brand=phet%26legendsOfLearning';
-
       const isPhetio = _.includes( phetioSims, repo );
       const hasColorProfile = _.includes( colorProfileRepos, repo );
       const hasUnitTests = _.includes( unitTestsRepos, repo );
@@ -211,12 +208,6 @@
           text: 'Dev (spot)',
           description: 'Loads the location on phet-dev.colorado.edu with versions for each dev deploy',
           url: 'https://phet-dev.colorado.edu/html/' + repo
-        } );
-        modes.push( {
-          name: 'legendsOfLearning',
-          text: 'Legends of Learning',
-          description: 'Redirects to the Legends of Learning test harness with this sim ready to run.',
-          url: legendsOfLearningHarnessUrl + legendsOfLearningSimUrl
         } );
       }
 
