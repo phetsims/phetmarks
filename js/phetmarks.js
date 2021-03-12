@@ -132,10 +132,10 @@
   // Track whether 'shift' key is pressed, so that we can change how windows are opened.  If shift is pressed, the
   // page is launched in a separate tab.
   let shiftPressed = false;
-  window.addEventListener( 'keydown', function( event ) {
+  window.addEventListener( 'keydown', event => {
     shiftPressed = event.shiftKey;
   } );
-  window.addEventListener( 'keyup', function( event ) {
+  window.addEventListener( 'keyup', event => {
     shiftPressed = event.shiftKey;
   } );
 
@@ -164,7 +164,7 @@
   function populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, colorProfileRepos, unitTestsRepos ) {
     const modeData = {};
 
-    activeRepos.forEach( function( repo ) {
+    activeRepos.forEach( repo => {
       const modes = [];
       modeData[ repo ] = modes;
 
@@ -431,7 +431,7 @@
         } );
 
         // phet-io wrappers
-        wrappers.forEach( function( wrapper ) {
+        wrappers.forEach( wrapper => {
 
           const wrapperName = getWrapperName( wrapper );
 
@@ -512,7 +512,7 @@
   function createRepositorySelector( repositories ) {
     const select = document.createElement( 'select' );
     select.autofocus = true;
-    repositories.forEach( function( repo ) {
+    repositories.forEach( repo => {
       const option = document.createElement( 'option' );
       option.value = option.label = option.innerHTML = repo;
       select.appendChild( option );
@@ -576,7 +576,7 @@
       },
       get mode() {
         const currentModeName = selector.value;
-        return _.filter( modeData[ repositorySelector.value ], function( mode ) {
+        return _.filter( modeData[ repositorySelector.value ], mode => {
           return mode.name === currentModeName;
         } )[ 0 ];
       },
@@ -586,7 +586,7 @@
         clearChildren( select );
 
         const groups = {};
-        modeData[ repositorySelector.value ].forEach( function( choice ) {
+        modeData[ repositorySelector.value ].forEach( choice => {
           const choiceOption = document.createElement( 'option' );
           choiceOption.value = choice.name;
           choiceOption.label = choice.text;
@@ -709,7 +709,7 @@
       get value() {
         const screensValue = screenSelector.value;
         const checkboxes = $( toggleContainer ).find( ':checkbox' );
-        const usefulCheckboxes = _.filter( checkboxes, function( checkbox ) {
+        const usefulCheckboxes = _.filter( checkboxes, checkbox => {
 
           // if a checkbox isn't checked, then we only care if it has been changed and is a boolean
           if ( checkbox.dataset.queryParameterType === 'boolean' ) {
@@ -719,7 +719,7 @@
             return checkbox.checked;
           }
         } );
-        const checkboxQueryParameters = _.map( usefulCheckboxes, function( checkbox ) {
+        const checkboxQueryParameters = _.map( usefulCheckboxes, checkbox => {
 
           // support boolean parameters
           if ( checkbox.dataset.queryParameterType === 'boolean' ) {
@@ -742,7 +742,7 @@
         clearChildren( toggleContainer );
 
         const queryParameters = modeSelector.mode.queryParameters || [];
-        queryParameters.forEach( function( parameter ) {
+        queryParameters.forEach( parameter => {
           const label = document.createElement( 'label' );
           const checkbox = document.createElement( 'input' );
           checkbox.type = 'checkbox';
@@ -808,7 +808,7 @@
           }
 
           // mark changed events for boolean parameter support
-          checkbox.addEventListener( 'change', function() {
+          checkbox.addEventListener( 'change', () => {
             checkbox.dataset.changed = 'true';
           } );
           checkbox.dataset.queryParameterType = parameter.type;
@@ -821,10 +821,10 @@
         customTextBox.value = '';
 
         // For each checkbox, set it to its default
-        _.forEach( $( toggleContainer ).find( ':checkbox' ), function( checkbox ) {
+        _.forEach( $( toggleContainer ).find( ':checkbox' ), checkbox => {
 
           // Grab the parameter object
-          const parameter = _.filter( modeSelector.mode.queryParameters, function( param ) { return param.value === checkbox.name; } )[ 0 ];
+          const parameter = _.filter( modeSelector.mode.queryParameters, param => param.value === checkbox.name )[ 0 ];
 
           if ( parameter ) {
 
@@ -940,7 +940,7 @@
       openURL( getCurrentURL() );
     }
 
-    window.addEventListener( 'keydown', function( event ) {
+    window.addEventListener( 'keydown', event => {
       // Check for enter key
       if ( event.which === 13 ) {
         openCurrentURL();
@@ -954,9 +954,9 @@
 
   // Splits file strings (such as perennial/data/active-runnables) into a list of entries, ignoring blank lines.
   function whiteSplit( str ) {
-    return str.split( '\n' ).map( function( line ) {
+    return str.split( '\n' ).map( line => {
       return line.replace( '\r', '' );
-    } ).filter( function( line ) {
+    } ).filter( line => {
       return line.length > 0;
     } );
   }
@@ -964,37 +964,37 @@
   // Load files serially, populate then render
   $.ajax( {
     url: '../perennial/data/active-runnables'
-  } ).done( function( activeRunnablesString ) {
+  } ).done( activeRunnablesString => {
     const activeRunnables = whiteSplit( activeRunnablesString );
 
     $.ajax( {
       url: '../perennial/data/active-repos'
-    } ).done( function( activeReposString ) {
+    } ).done( activeReposString => {
       const activeRepos = whiteSplit( activeReposString );
 
       $.ajax( {
         url: '../perennial/data/phet-io'
-      } ).done( function( testPhetioString ) {
+      } ).done( testPhetioString => {
         const phetioSims = whiteSplit( testPhetioString );
 
         $.ajax( {
           url: '../perennial/data/interactive-description'
-        } ).done( function( accessibleSimsString ) {
+        } ).done( accessibleSimsString => {
           const interactiveDescriptionSims = whiteSplit( accessibleSimsString );
 
           $.ajax( {
             url: '../chipper/data/wrappers'
-          } ).done( function( wrappersString ) {
+          } ).done( wrappersString => {
             const wrappers = whiteSplit( wrappersString ).sort();
 
             $.ajax( {
               url: '../perennial/data/color-profiles'
-            } ).done( function( colorProfilesString ) {
+            } ).done( colorProfilesString => {
               const colorProfileRepos = whiteSplit( colorProfilesString ).sort();
 
               $.ajax( {
                 url: '../perennial/data/unit-tests'
-              } ).done( function( unitTestsStrings ) {
+              } ).done( unitTestsStrings => {
                 const unitTestsRepos = whiteSplit( unitTestsStrings ).sort();
 
                 render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, colorProfileRepos, unitTestsRepos ) );

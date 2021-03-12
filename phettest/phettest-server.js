@@ -222,7 +222,7 @@ function validateSimName( simName ) {
   return true;
 }
 
-http.createServer( function( req, res ) {
+http.createServer( ( req, res ) => {
 
   // req.url
   // req.method

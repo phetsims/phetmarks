@@ -279,7 +279,7 @@ function updateCommonRepos() {
           $( button ).text( text );
           button.addEventListener( 'click', () => {
             $( status ).text( 'running' );
-            $.ajax( url ).done( function handle( data ) {
+            $.ajax( url ).done( data => {
               if ( data.success ) {
                 $( status ).text( '' );
               }
@@ -358,7 +358,7 @@ function updateSims() {
         $( button ).text( text );
         button.addEventListener( 'click', () => {
           $( status ).text( 'running' );
-          $.ajax( url ).done( function handle( data ) {
+          $.ajax( url ).done( data => {
             if ( data.success ) {
               $( status ).text( options.delaySuccessMessage );
               setTimeout( () => {
