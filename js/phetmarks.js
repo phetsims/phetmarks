@@ -109,7 +109,7 @@
    * @returns {string}
    */
   function storageKey( key ) {
-    return 'phetmarks-' + key;
+    return `phetmarks-${key}`;
   }
 
   /**
@@ -179,35 +179,35 @@
           name: 'requirejs',
           text: 'Unbuilt',
           description: 'Runs the simulation from the top-level development HTML in unbuilt mode',
-          url: '../' + repo + '/' + repo + '_en.html',
+          url: `../${repo}/${repo}_en.html`,
           queryParameters: devSimQueryParameters.concat( simQueryParameters )
         } );
         modes.push( {
           name: 'compiled',
           text: 'Compiled',
           description: 'Runs the English simulation from the build/phet/ directory (built from chipper)',
-          url: '../' + repo + '/build/phet/' + repo + '_en_phet.html',
+          url: `../${repo}/build/phet/${repo}_en_phet.html`,
           queryParameters: simQueryParameters
         } );
         modes.push( {
           name: 'compiledXHTML',
           text: 'Compiled XHTML',
           description: 'Runs the English simulation from the build/phet/xhtml directory (built from chipper)',
-          url: '../' + repo + '/build/phet/xhtml/' + repo + '_all.xhtml',
+          url: `../${repo}/build/phet/xhtml/${repo}_all.xhtml`,
           queryParameters: simQueryParameters
         } );
         modes.push( {
           name: 'production',
           text: 'Production',
           description: 'Runs the latest English simulation from the production server',
-          url: 'https://phet.colorado.edu/sims/html/' + repo + '/latest/' + repo + '_en.html',
+          url: `https://phet.colorado.edu/sims/html/${repo}/latest/${repo}_en.html`,
           queryParameters: simQueryParameters
         } );
         modes.push( {
           name: 'spot',
           text: 'Dev (spot)',
           description: 'Loads the location on phet-dev.colorado.edu with versions for each dev deploy',
-          url: 'https://phet-dev.colorado.edu/html/' + repo
+          url: `https://phet-dev.colorado.edu/html/${repo}`
         } );
       }
 
@@ -217,7 +217,7 @@
           name: 'colors',
           text: 'Color Editor',
           description: 'Runs the top-level -colors.html file (allows editing/viewing different profile colors)',
-          url: '../' + repo + '/' + repo + '-colors.html'
+          url: `../${repo}/${repo}-colors.html`
         } );
       }
 
@@ -226,7 +226,7 @@
           name: 'inspector',
           text: 'Inspector',
           description: 'Displays saved Scenery snapshots',
-          url: '../' + repo + '/tests/inspector.html'
+          url: `../${repo}/tests/inspector.html`
         } );
       }
 
@@ -236,7 +236,7 @@
           name: 'unitTestsRequirejs',
           text: 'Unit Tests (unbuilt)',
           description: 'Runs unit tests in unbuilt mode',
-          url: '../' + repo + '/' + repo + '-tests.html',
+          url: `../${repo}/${repo}-tests.html`,
           queryParameters: [
             { value: 'ea', text: 'Assertions', default: true }
           ]
@@ -247,7 +247,7 @@
           name: 'documentation',
           text: 'Documentation',
           description: 'Browse HTML documentation',
-          url: '../' + repo + '/doc/'
+          url: `../${repo}/doc/`
         } );
       }
       if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
@@ -255,21 +255,21 @@
           name: 'examples',
           text: 'Examples',
           description: 'Browse Examples',
-          url: '../' + repo + '/examples/'
+          url: `../${repo}/examples/`
         } );
       }
       if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-core' ) {
         modes.push( {
           name: 'playground',
           text: 'Playground',
-          description: 'Loads ' + repo + ' and dependencies in the tab, and allows quick testing',
-          url: '../' + repo + '/tests/playground.html'
+          description: `Loads ${repo} and dependencies in the tab, and allows quick testing`,
+          url: `../${repo}/tests/playground.html`
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
         const generalTestParams = 'ea&audioVolume=0&sound=disabled&testDuration=10000&testConcurrentBuilds=4';
         const fuzzTestParameter = [ {
-          value: generalTestParams + '&brand=phet&fuzz',
+          value: `${generalTestParams}&brand=phet&fuzz`,
           text: 'Test PhET sims',
           default: true
         }, {
@@ -290,7 +290,7 @@
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
-            value: generalTestParams + '&brand=phet-io&fuzz&phetioStandalone&testSims=' + phetioSims.join( ',' ),
+            value: `${generalTestParams}&brand=phet-io&fuzz&phetioStandalone&testSims=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
           }, {
@@ -304,15 +304,15 @@
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
-            value: generalTestParams + '&brand=phet&fuzzBoard&supportsDescription',
+            value: `${generalTestParams}&brand=phet&fuzzBoard&supportsDescription`,
             text: 'Keyboard Fuzz Test sims',
             default: true
           }, {
-            value: generalTestParams + '&brand=phet&fuzz&supportsDescription',
+            value: `${generalTestParams}&brand=phet&fuzz&supportsDescription`,
             text: 'Normal Fuzz Test sims',
             default: false
           }, {
-            value: 'testSims=' + interactiveDescriptionSims.join( ',' ),
+            value: `testSims=${interactiveDescriptionSims.join( ',' )}`,
             text: 'Test only A11y sims',
             default: true
           }, {
@@ -358,7 +358,7 @@
           name: 'a11y-view',
           text: 'A11y View',
           description: 'Runs the simulation in an iframe next to a copy of the PDOM tot easily inspect accessible content.',
-          url: '../' + repo + '/' + repo + '_a11y_view.html',
+          url: `../${repo}/${repo}_a11y_view.html`,
           queryParameters: devSimQueryParameters.concat( simQueryParameters )
         } );
       }
@@ -368,7 +368,7 @@
           name: 'preprocessor',
           text: 'Preprocessor',
           description: 'Load the preprocessor for parsing data logs down to a size that can be used by the simulation.',
-          url: '../' + repo + '/preprocessor.html',
+          url: `../${repo}/preprocessor.html`,
           queryParameters: [ {
             value: 'ea',
             text: 'Enable Assertions',
@@ -389,13 +389,13 @@
         name: 'github',
         text: 'GitHub',
         description: 'Opens to the repository\'s GitHub main page',
-        url: 'https://github.com/phetsims/' + repo
+        url: `https://github.com/phetsims/${repo}`
       } );
       modes.push( {
         name: 'issues',
         text: 'Issues',
         description: 'Opens to the repository\'s GitHub issues page',
-        url: 'https://github.com/phetsims/' + repo + '/issues'
+        url: `https://github.com/phetsims/${repo}/issues`
       } );
 
       // if a phet-io sim, then add the wrappers to them
@@ -407,7 +407,7 @@
           text: 'Wrapper Unit Tests',
           group: 'PhET-iO',
           description: 'Test the PhET-iO API for this sim.',
-          url: '../phet-io-wrappers/phet-io-wrappers-tests.html?sim=' + repo,
+          url: `../phet-io-wrappers/phet-io-wrappers-tests.html?sim=${repo}`,
           queryParameters: phetioWrapperQueryParameters
         } );
 
@@ -417,7 +417,7 @@
           text: 'Compiled Index',
           group: 'PhET-iO',
           description: 'Runs the PhET-iO wrapper index from build/ directory (built from chipper)',
-          url: '../' + repo + '/build/phet-io/',
+          url: `../${repo}/build/phet-io/`,
           queryParameters: phetioWrapperQueryParameters
         } );
 
@@ -426,7 +426,7 @@
           text: 'Standalone',
           group: 'PhET-iO',
           description: 'Runs the sim in phet-io brand with the standalone query parameter',
-          url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioStandalone',
+          url: `../${repo}/${repo}_en.html?brand=phet-io&phetioStandalone`,
           queryParameters: phetioSimQueryParameters.concat( simQueryParameters )
         } );
 
@@ -441,12 +441,12 @@
           if ( wrapper.indexOf( 'phet-io-wrapper-' ) === 0 ) {
 
             // Special use case for the sonification wrapper
-            url = wrapperName === 'sonification' ? '../phet-io-wrapper-' + wrapperName + '/' + repo + '-sonification.html?sim=' + repo :
-                  '../' + wrapper + '/?sim=' + repo;
+            url = wrapperName === 'sonification' ? `../phet-io-wrapper-${wrapperName}/${repo}-sonification.html?sim=${repo}` :
+                  `../${wrapper}/?sim=${repo}`;
           }
           // Load the wrapper urls for the phet-io-wrappers/
           else {
-            url = '../' + wrapper + '/?sim=' + repo;
+            url = `../${wrapper}/?sim=${repo}`;
           }
 
           // add recording to the console by default
@@ -480,7 +480,7 @@
             name: wrapperName,
             text: wrapperName,
             group: 'PhET-iO',
-            description: 'Runs the phet-io wrapper ' + wrapperName,
+            description: `Runs the phet-io wrapper ${wrapperName}`,
             url: url,
             queryParameters: queryParameters
           } );
@@ -492,7 +492,7 @@
           text: 'Data: colorized',
           group: 'PhET-iO',
           description: 'Show the colorized event log in the console of the stand alone sim.',
-          url: '../' + repo + '/' + repo + '_en.html?brand=phet-io&phetioConsoleLog=colorized&phetioStandalone&phetioEmitHighFrequencyEvents=false',
+          url: `../${repo}/${repo}_en.html?brand=phet-io&phetioConsoleLog=colorized&phetioStandalone&phetioEmitHighFrequencyEvents=false`,
           queryParameters: phetioSimQueryParameters.concat( simQueryParameters )
         } );
       }
@@ -636,7 +636,7 @@
 
     div.appendChild( createScreenRadioButton( 'screens', 'all', 'All screens' ) );
     for ( let i = 1; i <= 6; i++ ) {
-      div.appendChild( createScreenRadioButton( 'screens', '' + i, '' + i ) );
+      div.appendChild( createScreenRadioButton( 'screens', `${i}`, `${i}` ) );
     }
 
     return {
@@ -723,12 +723,12 @@
 
           // support boolean parameters
           if ( checkbox.dataset.queryParameterType === 'boolean' ) {
-            return checkbox.name + '=' + checkbox.checked;
+            return `${checkbox.name}=${checkbox.checked}`;
           }
           return checkbox.name;
         } );
         const customQueryParameters = customTextBox.value.length ? [ customTextBox.value ] : [];
-        const screenQueryParameters = screensValue === 'all' ? [] : [ 'screens=' + screensValue ];
+        const screenQueryParameters = screensValue === 'all' ? [] : [ `screens=${screensValue}` ];
         const phetioValidationQueryParameters = phetioValidationSelector.value === 'simulation-default' ? [] :
                                                 phetioValidationSelector.value === 'true' ? [ 'phetioValidation=true' ] :
                                                 phetioValidationSelector.value === 'false' ? [ 'phetioValidation=false' ] :
@@ -755,7 +755,7 @@
           if ( parameter.type === 'boolean' ) {
             queryParameterDisplay += `=${parameter.default}`;
           }
-          label.appendChild( document.createTextNode( parameter.text + ' (' + queryParameterDisplay + ')' ) );
+          label.appendChild( document.createTextNode( `${parameter.text} (${queryParameterDisplay})` ) );
           toggleContainer.appendChild( label );
           toggleContainer.appendChild( document.createElement( 'br' ) );
           checkbox.checked = !!parameter.default;
@@ -913,8 +913,8 @@
 
     // Align panels based on width
     function layout() {
-      modeDiv.style.left = ( repositorySelector.element.clientWidth + 20 ) + 'px';
-      queryParametersDiv.style.left = ( repositorySelector.element.clientWidth + +modeDiv.clientWidth + 40 ) + 'px';
+      modeDiv.style.left = `${repositorySelector.element.clientWidth + 20}px`;
+      queryParametersDiv.style.left = `${repositorySelector.element.clientWidth + +modeDiv.clientWidth + 40}px`;
     }
 
     window.addEventListener( 'resize', layout );
