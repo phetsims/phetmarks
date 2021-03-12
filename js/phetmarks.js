@@ -569,7 +569,7 @@
   function createModeSelector( modeData, repositorySelector ) {
     const select = document.createElement( 'select' );
 
-    var selector = {
+    const selector = {
       element: select,
       get value() {
         return select.value;
