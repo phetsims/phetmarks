@@ -77,6 +77,10 @@
       default: false,
       type: 'boolean',
       text: 'Emit states to the data stream'
+    },
+    {
+      value: 'phetioCreateArchetypes&phetioCompareAPI',
+      text: 'Compare with reference API'
     }
   ];
 
