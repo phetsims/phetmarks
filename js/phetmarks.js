@@ -77,10 +77,6 @@
       default: false,
       type: 'boolean',
       text: 'Emit states to the data stream'
-    },
-    {
-      value: 'phetioCreateArchetypes&phetioCompareAPI',
-      text: 'Compare with reference API'
     }
   ];
 
@@ -101,6 +97,10 @@
       value: 'phetioPrintMissingTandems',
       default: false,
       text: 'Print tandems that have not yet been added'
+    },
+    {
+      value: 'phetioCreateArchetypes&phetioCompareAPI',
+      text: 'Compare with reference API'
     }
   ] );
 
@@ -470,6 +470,10 @@
                 value: 'phetioPrintMissingTandems',
                 default: false,
                 text: 'Print tandems that have not yet been added'
+              },
+              {
+                value: 'phetioCompareAPI',
+                text: 'Compare with reference API'
               }
             ] );
           }
