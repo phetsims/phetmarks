@@ -356,6 +356,14 @@
           url: 'https://bayes.colorado.edu/statistics/yotta/'
         } );
       }
+      if ( repo === 'skiffle' ) {
+        modes.push( {
+          name: 'sound-board',
+          text: 'Sound Board',
+          description: 'Interactive HTML page for exploring existing sounds in sims and common code',
+          url: '../skiffle/html/sound-board.html'
+        } );
+      }
 
       if ( supportsInteractiveDescription ) {
         modes.push( {
