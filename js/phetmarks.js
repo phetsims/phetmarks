@@ -65,19 +65,20 @@
     { value: 'eall', text: 'All Assertions' }
   ];
 
-  const phetioBaseParameters = [
-    {
-      value: 'phetioEmitHighFrequencyEvents',
-      default: true,
-      type: 'boolean',
-      text: 'Emit events that occur often'
-    },
-    {
-      value: 'phetioEmitStates',
-      default: false,
-      type: 'boolean',
-      text: 'Emit states to the data stream'
-    }
+  const phetioBaseParameters = [ {
+    value: 'phetioEmitHighFrequencyEvents',
+    default: true,
+    type: 'boolean',
+    text: 'Emit events that occur often'
+  }, {
+    value: 'phetioEmitStates',
+    default: false,
+    type: 'boolean',
+    text: 'Emit states to the data stream'
+  }, {
+    value: 'phetioCompareAPI',
+    text: 'Compare with reference API'
+  }
   ];
 
   // Query parameters for the PhET-iO wrappers (including iframe tests)
@@ -97,10 +98,6 @@
       value: 'phetioPrintMissingTandems',
       default: false,
       text: 'Print tandems that have not yet been added'
-    },
-    {
-      value: 'phetioCreateArchetypes&phetioCompareAPI',
-      text: 'Compare with reference API'
     }
   ] );
 
@@ -478,10 +475,6 @@
                 value: 'phetioPrintMissingTandems',
                 default: false,
                 text: 'Print tandems that have not yet been added'
-              },
-              {
-                value: 'phetioCompareAPI',
-                text: 'Compare with reference API'
               }
             ] );
           }
