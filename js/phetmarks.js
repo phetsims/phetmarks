@@ -49,7 +49,7 @@
     { value: 'showPointerAreas', text: 'Pointer Areas' },
     { value: 'showFittedBlockBounds', text: 'Fitted Block Bounds' },
     { value: 'showCanvasNodeBounds', text: 'CanvasNode Bounds' },
-    { value: 'supportsDescription', text: 'Supports Interactive Description' },
+    { value: 'supportsInteractiveDescription', text: 'Supports Interactive Description' },
     { value: 'supportsSound', text: 'Supports Sound' },
     { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
     { value: 'supportsPanAndZoom', text: 'Supports Pan and Zoom', default: true, type: 'boolean' },
@@ -305,11 +305,11 @@
           description: 'Runs automated testing with fuzzing, 10 second timer, and 4 concurrent builds',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
-            value: `${generalTestParams}&brand=phet&fuzzBoard&supportsDescription`,
+            value: `${generalTestParams}&brand=phet&fuzzBoard&supportsInteractiveDescription`,
             text: 'Keyboard Fuzz Test sims',
             default: true
           }, {
-            value: `${generalTestParams}&brand=phet&fuzz&supportsDescription`,
+            value: `${generalTestParams}&brand=phet&fuzz&supportsInteractiveDescription`,
             text: 'Normal Fuzz Test sims',
             default: false
           }, {
