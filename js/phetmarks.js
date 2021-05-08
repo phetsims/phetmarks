@@ -818,22 +818,16 @@
           var accessibleSims = whiteSplit( accessibleSimsString );
 
           $.ajax( {
-            url: '../chipper/data/wrappers'
-          } ).done( function( wrappersString ) {
-            var wrappers = whiteSplit( wrappersString ).sort();
+            url: '../perennial/data/color-profiles'
+          } ).done( function( colorProfilesString ) {
+            var colorProfileRepos = whiteSplit( colorProfilesString ).sort();
 
             $.ajax( {
-              url: '../perennial/data/color-profiles'
-            } ).done( function( colorProfilesString ) {
-              var colorProfileRepos = whiteSplit( colorProfilesString ).sort();
+              url: '../perennial/data/unit-tests'
+            } ).done( function( unitTestsStrings ) {
+              var unitTestsRepos = whiteSplit( unitTestsStrings ).sort();
 
-              $.ajax( {
-                url: '../perennial/data/unit-tests'
-              } ).done( function( unitTestsStrings ) {
-                var unitTestsRepos = whiteSplit( unitTestsStrings ).sort();
-
-                render( populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers, colorProfileRepos, unitTestsRepos ) );
-              } );
+              render( populate( activeRunnables, activeRepos, phetioSims, accessibleSims, [ 'phet-io-wrappers/active', 'phet-io-wrappers/api-diff', 'phet-io-wrappers/event-log', 'phet-io-wrappers/index', 'phet-io-wrappers/studio', 'phet-io-wrappers/login', 'phet-io-wrappers/mirror-inputs', 'phet-io-wrappers/multi', 'phet-io-wrappers/record', 'phet-io-wrappers/playback', 'phet-io-wrappers/screenshot', 'phet-io-wrappers/state', 'phet-io-wrappers/wrapper-template', 'phet-io-wrapper-classroom-activity', 'phet-io-wrapper-lab-book' ], colorProfileRepos, unitTestsRepos ) );
             } );
           } );
         } );
