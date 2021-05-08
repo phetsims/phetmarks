@@ -715,17 +715,7 @@
         } ).done( function( accessibleSimsString ) {
           var accessibleSims = whiteSplit( accessibleSimsString );
 
-          $.ajax( {
-            url: '../perennial/data/wrappers'
-          } ).done( function( wrappersString ) {
-            var wrappers = whiteSplit( wrappersString );
-
-            // Add documentation wrapper here, but we don't yet want to publish this wrapper with all wrappers.
-            wrappers.push( 'phet-io-wrappers/documentation' );
-            wrappers.sort();
-
-            render( populate( activeRunnables, activeRepos, phetioSims, accessibleSims, wrappers ) );
-          } );
+          render( populate( activeRunnables, activeRepos, phetioSims, accessibleSims, [ 'phet-io-wrappers/active', 'phet-io-wrappers/api-diff', 'phet-io-wrappers/documentation', 'phet-io-wrappers/event-log', 'phet-io-wrappers/index', 'phet-io-wrappers/studio', 'phet-io-wrappers/login', 'phet-io-wrappers/mirror-inputs', 'phet-io-wrappers/multi', 'phet-io-wrappers/record', 'phet-io-wrappers/playback', 'phet-io-wrappers/screenshot', 'phet-io-wrappers/state', 'phet-io-wrappers/wrapper-template', 'phet-io-wrapper-classroom-activity', 'phet-io-wrapper-lab-book' ] ) );
         } );
       } );
     } );
