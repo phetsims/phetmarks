@@ -662,13 +662,7 @@
       } ).done( function( testPhetioString ) {
         var phetioSims = whiteSplit( testPhetioString );
 
-        $.ajax( {
-          url: '../chipper/data/wrappers'
-        } ).done( function( wrappersString ) {
-          var wrappers = whiteSplit( wrappersString );
-
-          render( populate( activeRunnables, activeRepos, phetioSims, wrappers ) );
-        } );
+        render( populate( activeRunnables, activeRepos, phetioSims, [ 'phet-io-wrappers/active', 'phet-io-wrappers/api-diff', 'phet-io-wrappers/event-log', 'phet-io-wrappers/index', 'phet-io-wrappers/studio', 'phet-io-wrappers/login', 'phet-io-wrappers/mirror-inputs', 'phet-io-wrappers/multi', 'phet-io-wrappers/record', 'phet-io-wrappers/playback', 'phet-io-wrappers/screenshot', 'phet-io-wrappers/state', 'phet-io-wrappers/wrapper-template', 'phet-io-wrapper-classroom-activity', 'phet-io-wrapper-lab-book' ] ) );
       } );
     } );
   } );
