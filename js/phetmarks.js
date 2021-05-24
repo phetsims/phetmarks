@@ -93,11 +93,14 @@
   // For phetio sim frame links
   const phetioSimQueryParameters = phetioBaseParameters.concat( [
     eaObject, // this needs to be first in this list
-    { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' },
-    {
+    { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' }, {
       value: 'phetioPrintMissingTandems',
       default: false,
       text: 'Print tandems that have not yet been added'
+    }, {
+      value: 'phetioPrintAPI',
+      default: false,
+      text: 'Print the API to the console'
     }
   ] );
 
