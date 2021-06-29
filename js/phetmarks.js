@@ -30,7 +30,7 @@
  */
 
 ( function() {
-  'use strict';
+  
 
   // Query parameters used for the following modes: requirejs, compiled, production
   const simQueryParameters = [

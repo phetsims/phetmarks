@@ -1,7 +1,7 @@
 // Copyright 2016, University of Colorado Boulder
 
 /* eslint-env node */
-'use strict';
+
 
 const http = require( 'http' );
 const spawn = require( 'child_process' ).spawn; // eslint-disable-line
