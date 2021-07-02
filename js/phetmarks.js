@@ -30,7 +30,7 @@
  */
 
 ( function() {
-  
+
 
   // Query parameters used for the following modes: requirejs, compiled, production
   const simQueryParameters = [
@@ -50,7 +50,7 @@
     { value: 'showFittedBlockBounds', text: 'Fitted Block Bounds' },
     { value: 'showCanvasNodeBounds', text: 'CanvasNode Bounds' },
     { value: 'supportsInteractiveDescription', text: 'Supports Interactive Description', default: false, type: 'boolean' },
-    { value: 'supportsSound', text: 'Supports Sound' },
+    { value: 'supportsSound', text: 'Supports Sound', default: false, type: 'boolean' },
     { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound', default: false, type: 'boolean' },
     { value: 'supportsPanAndZoom', text: 'Supports Pan and Zoom', default: true, type: 'boolean' },
     { value: 'webgl=false', text: 'No WebGL' }
