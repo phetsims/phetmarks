@@ -51,7 +51,7 @@
     { value: 'showCanvasNodeBounds', text: 'CanvasNode Bounds' },
     { value: 'supportsInteractiveDescription', text: 'Supports Interactive Description', default: false, type: 'boolean' },
     { value: 'supportsSound', text: 'Supports Sound' },
-    { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound' },
+    { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound', default: false, type: 'boolean' },
     { value: 'supportsPanAndZoom', text: 'Supports Pan and Zoom', default: true, type: 'boolean' },
     { value: 'webgl=false', text: 'No WebGL' }
   ];
