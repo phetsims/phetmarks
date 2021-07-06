@@ -53,6 +53,8 @@
     { value: 'supportsSound', text: 'Supports Sound', default: false, type: 'boolean' },
     { value: 'supportsEnhancedSound', text: 'Supports Enhanced Sound', default: false, type: 'boolean' },
     { value: 'supportsPanAndZoom', text: 'Supports Pan and Zoom', default: true, type: 'boolean' },
+    { value: 'supportsVoicing', text: 'Supports Voicing', default: false, type: 'boolean' },
+    { value: 'voicingInitiallyEnabled', text: 'Voicing on by default' },
     { value: 'webgl=false', text: 'No WebGL' }
   ];
 
