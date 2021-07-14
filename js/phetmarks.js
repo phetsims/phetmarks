@@ -78,7 +78,7 @@
     type: 'boolean',
     text: 'Emit states to the data stream'
   }, {
-    value: 'phetioCompareAPI&randomSeed=12345', // random seed must match that of API generation, see generatePhetioMacroAPI.js
+    value: 'phetioCompareAPI&randomSeed=332211', // NOTE: DUPLICATION ALERT: random seed must match that of API generation, see generatePhetioMacroAPI.js
     text: 'Compare with reference API'
   }
   ];
