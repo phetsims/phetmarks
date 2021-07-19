@@ -163,11 +163,10 @@
    * @param {Array.<string>} phetioSims - from phet-io
    * @param {Array.<string>} interactiveDescriptionSims - from interactive-description
    * @param {Array.<string>} wrappers - from wrappers
-   * @param {Array.<string>} colorProfileRepos - Has a color profile
    * @param {Array.<string>} unitTestsRepos - Has unit tests
    * @returns {Object} - Maps from {string} repository name => {Mode}
    */
-  function populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, colorProfileRepos, unitTestsRepos ) {
+  function populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos ) {
     const modeData = {};
 
     activeRepos.forEach( repo => {
@@ -175,7 +174,6 @@
       modeData[ repo ] = modes;
 
       const isPhetio = _.includes( phetioSims, repo );
-      const hasColorProfile = _.includes( colorProfileRepos, repo );
       const hasUnitTests = _.includes( unitTestsRepos, repo );
       const isRunnable = _.includes( activeRunnables, repo );
       const supportsInteractiveDescription = _.includes( interactiveDescriptionSims, repo );
@@ -218,12 +216,13 @@
       }
 
       // Color picker UI
-      if ( hasColorProfile ) {
+      if ( isRunnable ) {
         modes.push( {
           name: 'colors',
           text: 'Color Editor',
           description: 'Runs the top-level -colors.html file (allows editing/viewing different profile colors)',
-          url: `../${repo}/${repo}-colors.html`
+          // url: `../${repo}/${repo}-colors.html`
+          url: `../chipper/templates/sim-development-colors.html?sim=${repo}`
         } );
       }
 
@@ -1002,17 +1001,11 @@
             const wrappers = whiteSplit( wrappersString ).sort();
 
             $.ajax( {
-              url: '../perennial/data/color-profiles'
-            } ).done( colorProfilesString => {
-              const colorProfileRepos = whiteSplit( colorProfilesString ).sort();
+              url: '../perennial/data/unit-tests'
+            } ).done( unitTestsStrings => {
+              const unitTestsRepos = whiteSplit( unitTestsStrings ).sort();
 
-              $.ajax( {
-                url: '../perennial/data/unit-tests'
-              } ).done( unitTestsStrings => {
-                const unitTestsRepos = whiteSplit( unitTestsStrings ).sort();
-
-                render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, colorProfileRepos, unitTestsRepos ) );
-              } );
+              render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos ) );
             } );
           } );
         } );
