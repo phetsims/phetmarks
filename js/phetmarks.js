@@ -221,7 +221,6 @@
           name: 'colors',
           text: 'Color Editor',
           description: 'Runs the top-level -colors.html file (allows editing/viewing different profile colors)',
-          // url: `../${repo}/${repo}-colors.html`
           url: `../chipper/templates/sim-development-colors.html?sim=${repo}`
         } );
       }
