@@ -55,6 +55,7 @@
     { value: 'supportsPanAndZoom', text: 'Supports Pan and Zoom', default: true, type: 'boolean' },
     { value: 'supportsVoicing', text: 'Supports Voicing', default: false, type: 'boolean' },
     { value: 'voicingInitiallyEnabled', text: 'Voicing on by default' },
+    { value: 'printVoicingResponses', text: 'console.log() voicing responses' },
     { value: 'webgl=false', text: 'No WebGL' }
   ];
 
