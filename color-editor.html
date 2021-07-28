@@ -43,7 +43,7 @@
   const urlParams = new URLSearchParams( window.location.search );
   const sim = urlParams.get( 'sim' );
   const suffix = window.location.search || '?brand=phet';
-  document.getElementById( 'sim-iframe' ).setAttribute( 'src', `../../${sim}/${sim}_en.html` + suffix );
+  document.getElementById( 'sim-iframe' ).setAttribute( 'src', `../${sim}/${sim}_en.html` + suffix );
 
   const simFrame = document.getElementById( 'sim-iframe' );
   const colorColumn = document.getElementById( 'color-column' );
