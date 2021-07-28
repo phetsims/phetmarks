@@ -222,7 +222,7 @@
           name: 'colors',
           text: 'Color Editor',
           description: 'Runs the top-level -colors.html file (allows editing/viewing different profile colors)',
-          url: `../phetmarks/templates/sim-development-colors.html?sim=${repo}&brand=phet`
+          url: `../phetmarks/sim-development-colors.html?sim=${repo}&brand=phet`
         } );
       }
 
