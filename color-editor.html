@@ -73,8 +73,8 @@
       let element = colorInputMap[ name ];
       if ( !element ) {
 
-        const input = document.createElement( 'input' );
-        input.type = 'color';
+        const colorInput = document.createElement( 'input' );
+        colorInput.type = 'color';
 
         const slider = document.createElement( 'input' );
 
@@ -84,14 +84,14 @@
           document.getElementById( 'sim-iframe' ).contentWindow.postMessage( JSON.stringify( {
             type: 'setColor',
             name: name,
-            value: input.value,
+            value: colorInput.value,
             alpha: slider.valueAsNumber
           } ), '*' );
         };
         // Send user changes to the sim
-        input.addEventListener( 'input', applyColorToSim );
+        colorInput.addEventListener( 'input', applyColorToSim );
 
-        colorColumn.appendChild( input );
+        colorColumn.appendChild( colorInput );
 
         // DUPLICATION ALERT: Copied with code in PhetioElementView.js
         slider.style.width = '100px';
@@ -112,7 +112,7 @@
         updateIFrameDimensions();
 
         element = {
-          input: input,
+          input: colorInput,
           slider: slider
         };
         colorInputMap[ name ] = element;
