@@ -9,7 +9,8 @@ This is currently available on bayes.colorado.edu/dev/phettest/
 
 ### Maintenance
 
-The server is currently running on bayes using pm2 on the `phet-admin` account.
+The server is currently running on bayes using pm2 on the `phet-admin` account.  Please see continuous-testing-management.md 
+for a convenient way to change users.
 
 To pull changes for the server or front-end:
 
