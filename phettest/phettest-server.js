@@ -23,6 +23,10 @@ const rootDir = path.normalize( __dirname + '/../../' ); // eslint-disable-line
 // callback(), errCallback( code )
 function execute( cmd, args, cwd, callback, errCallback ) {
 
+  if ( typeof errCallback !== 'function' ) {
+    throw new Error( 'errCallback must be supplied as a function' );
+  }
+
   const process = spawn( cmd, args, {
     cwd: cwd
   } );
