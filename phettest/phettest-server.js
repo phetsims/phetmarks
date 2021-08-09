@@ -129,7 +129,7 @@ function taskBuild( req, res, query ) {
 
   npmUpdate( 'chipper', () => {
     npmUpdate( simName, () => {
-      grunt( simName, () => {} );
+      grunt( simName, () => {}, () => {} );
     }, () => {} );
   }, () => {} );
 
