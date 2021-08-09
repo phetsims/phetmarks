@@ -177,7 +177,6 @@ function taskPerennialRefresh( req, res, query ) {
   };
 
   update( 'perennial' );
-  update( 'perennial-alias' );
 }
 
 function taskPull( req, res, query ) {
