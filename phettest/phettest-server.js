@@ -160,13 +160,20 @@ function taskRepoList( req, res, query ) {
 
 function taskPerennialRefresh( req, res, query ) {
 
-  pull( 'perennial', () => {
-    npmUpdate( 'perennial', () => {
-      execute( `${rootDir}perennial/bin/clone-missing-repos.sh`, [], rootDir,
-        successFunction( req, res, 'perennial refresh' ),
-        errorFunction( req, res, 'perennial clone missing repos' ) );
-    }, errorFunction( req, res, 'perennial npm update' ) );
-  }, errorFunction( req, res, 'pull perennial' ) );
+  const update = name => {
+    pull( name, () => {
+      npmUpdate( name, () => {
+
+        // Run clone missing repos from perennial instead of perennial-alias since it should run from master
+        execute( `${rootDir}perennial/bin/clone-missing-repos.sh`, [], rootDir,
+          successFunction( req, res, `${name} refresh` ),
+          errorFunction( req, res, `${name} clone missing repos` ) );
+      }, errorFunction( req, res, `${name} npm update` ) );
+    }, errorFunction( req, res, `pull ${name}` ) );
+  };
+
+  update( 'perennial' );
+  update( 'perennial-alias' );
 }
 
 function taskPull( req, res, query ) {
