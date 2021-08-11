@@ -165,21 +165,32 @@ function taskRepoList( req, res, query ) {
   } ) );
 }
 
-function taskPerennialRefresh( req, res, query ) {
+// will also refresh perennial-alias
+function taskPerennialRefresh( req, res ) {
 
-  const update = name => {
+  // perennial, or perennial-alias
+  const update = asAlias => {
+    const name = asAlias ? 'perennial-alias' : 'perennial';
     pull( name, () => {
       npmUpdate( name, () => {
 
         // Run clone missing repos from perennial instead of perennial-alias since it should run from master
         execute( 'bash', [ `${rootDir}perennial/bin/clone-missing-repos.sh` ], rootDir,
-          successFunction( req, res, `${name} refresh` ),
+          () => {
+            if ( asAlias ) {
+              successFunction( req, res, 'perennial and perennial-alias refresh' )();
+            }
+            else {
+
+              // next update perennial-alias
+              update( true );
+            }
+          },
           errorFunction( req, res, `${name} clone missing repos` ) );
       }, errorFunction( req, res, `${name} npm update` ) );
     }, errorFunction( req, res, `pull ${name}` ) );
   };
-
-  update( 'perennial' );
+  update( false );
 }
 
 function taskPull( req, res, query ) {
