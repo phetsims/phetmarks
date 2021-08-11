@@ -17,6 +17,9 @@ const jsonHeaders = {
   'Access-Control-Allow-Origin': '*'
 };
 
+// on windows, we often need a different execution runnable
+const ON_WIN = /^win/.test( process.platform );
+
 // root of your GitHub working copy, relative to the name of the directory that the currently-executing script resides in
 const rootDir = path.normalize( __dirname + '/../../' ); // eslint-disable-line
 
@@ -64,13 +67,13 @@ function pull( repo, callback, errCallback ) {
 // callback(), errCallback( code )
 function npmUpdate( repo, callback, errCallback ) {
 
-  execute( 'npm', [ 'update' ], rootDir + repo, callback, errCallback );
+  execute( ON_WIN ? 'npm.cmd' : 'npm', [ 'update' ], rootDir + repo, callback, errCallback );
 }
 
 // callback(), errCallback( code )
 function grunt( repo, callback, errCallback ) {
 
-  execute( 'grunt', [ '--no-color', '--minify.uglify=false' ], rootDir + repo, callback, errCallback );
+  execute( ON_WIN ? 'grunt.cmd' : 'grunt', [ '--no-color', '--minify.uglify=false' ], rootDir + repo, callback, errCallback );
 }
 
 function isSameAsRemoteMaster( repo, sameCallback, differentCallback ) {
@@ -169,7 +172,7 @@ function taskPerennialRefresh( req, res, query ) {
       npmUpdate( name, () => {
 
         // Run clone missing repos from perennial instead of perennial-alias since it should run from master
-        execute( `${rootDir}perennial/bin/clone-missing-repos.sh`, [], rootDir,
+        execute( 'bash', [ `${rootDir}perennial/bin/clone-missing-repos.sh` ], rootDir,
           successFunction( req, res, `${name} refresh` ),
           errorFunction( req, res, `${name} clone missing repos` ) );
       }, errorFunction( req, res, `${name} npm update` ) );
@@ -197,7 +200,7 @@ function taskPull( req, res, query ) {
 
 function taskPullAll( req, res, query ) {
 
-  execute( `${rootDir}perennial/bin/pull-all.sh`, [ '-p' ], rootDir,
+  execute( 'bash', [ `${rootDir}perennial/bin/pull-all.sh`, '-p' ], rootDir,
     successFunction( req, res, 'pulled' ),
     errorFunction( req, res, 'pull failed' ) );
 }
