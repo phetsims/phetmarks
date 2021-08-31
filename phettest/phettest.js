@@ -395,9 +395,9 @@ function updateSims() {
         delaySuccessMessage: 'Build successfully kicked off.'
       } );
       linkCell( 'Built Version', `${phettestURL}${simName}/build/phet/${simName}_en_phet.html` );
-      linkCell( 'GitHub Issues', `http://github.com/phetsims/${simName}/issues` );
+      linkCell( 'GitHub Issues', `https://github.com/phetsims/${simName}/issues` );
       linkCell( 'Dev', `https://phet-dev.colorado.edu/html/${simName}` );
-      linkCell( 'Production', `http://phet.colorado.edu/sims/html/${simName}/latest/${simName}_en.html` );
+      linkCell( 'Production', `https://phet.colorado.edu/sims/html/${simName}/latest/${simName}_en.html` );
 
       simRows.push( tr );
     } );
