@@ -33,7 +33,7 @@ for some of these working copy changes.
 
 1. move the index.html to the root of your git repository structure, and change the link to `phettest.js` to point
    into `./phetmarks/phettest/phettest.js`.
-1. `cd ./phetmarks/phettest/phettest-server.js`
+1. `cd ./phetmarks/phettest`
 1. `node phettest-server.js`
 1. change the hard coded URLs for the server and for phettest's index at the top `phettest.js` to point to the local
    URLs you plan to use.
