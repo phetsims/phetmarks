@@ -1,8 +1,11 @@
 // Copyright 2020, University of Colorado Boulder
 
-// will be replaced by domain name in the future
+// will be replaced by domain name in the future.
+
+// For local development, change the domain and serverURL as described in the README. For instance, on @samreid's machine
+// it could be domain = 'http://localhost/main/', serverURL = 'http://localhost:45362/' (port identified when running server)
 const domain = 'https://bayes.colorado.edu/dev/';
-const serverURL = `${domain}phettest-server/`;
+const serverURL = `${domain}phettest-server/`; // Note, this must end with a slash
 const phettestURL = `${domain}phettest/`;
 
 // common repo fields
