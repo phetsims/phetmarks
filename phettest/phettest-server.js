@@ -61,7 +61,7 @@ function execute( cmd, args, cwd, callback, errCallback ) {
 // callback(), errCallback( code )
 function pull( repo, callback, errCallback ) {
 
-  execute( 'git', [ 'pull' ], rootDir + repo, callback, errCallback );
+  execute( 'git', [ 'pull' ], rootDir + repo, () => gruntOutputJS( repo, callback, errCallback ), errCallback );
 }
 
 // callback(), errCallback( code )
@@ -74,6 +74,14 @@ function npmUpdate( repo, callback, errCallback ) {
 function grunt( repo, callback, errCallback ) {
 
   execute( ON_WIN ? 'grunt.cmd' : 'grunt', [ '--no-color', '--minify.uglify=false' ], rootDir + repo, callback, errCallback );
+}
+
+function gruntOutputJS( repo, callback, errCallback ) {
+  execute( ON_WIN ? 'grunt.cmd' : 'grunt', [ 'output-js', '--no-color' ], rootDir + repo, callback, errCallback );
+}
+
+function gruntOutputJSAll( callback, errCallback ) {
+  execute( ON_WIN ? 'grunt.cmd' : 'grunt', [ 'output-js-all', '--no-color' ], rootDir + 'chipper', callback, errCallback );
 }
 
 function isSameAsRemoteMaster( repo, sameCallback, differentCallback ) {
@@ -212,7 +220,9 @@ function taskPull( req, res, query ) {
 function taskPullAll( req, res, query ) {
 
   execute( 'bash', [ `${rootDir}perennial/bin/pull-all.sh`, '-p' ], rootDir,
-    successFunction( req, res, 'pulled' ),
+
+    // After pull-all succeeds, run output-js-all
+    () => gruntOutputJSAll( successFunction( req, res, 'pulled' ), errorFunction( req, res, 'output-js-all failed' ) ),
     errorFunction( req, res, 'pull failed' ) );
 }
 
