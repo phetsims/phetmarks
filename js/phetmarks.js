@@ -34,7 +34,7 @@
 
   // Query parameters used for the following modes: requirejs, compiled, production
   const simQueryParameters = [
-    { value: 'audioVolume=0', text: 'Mute' },
+    { value: 'audio=disabled', text: 'Mute' },
     {
       value: 'fuzz', text: 'Fuzz', dependentQueryParameters: [
         { value: 'fuzzPointers=2', text: 'Multitouch-fuzz' }
@@ -272,7 +272,7 @@
         } );
       }
       if ( repo === 'chipper' || repo === 'aqua' ) {
-        const generalTestParams = 'ea&audioVolume=0&sound=disabled&testDuration=10000&testConcurrentBuilds=4';
+        const generalTestParams = 'ea&audio=disabled&testDuration=10000&testConcurrentBuilds=4';
         const fuzzTestParameter = [ {
           value: `${generalTestParams}&brand=phet&fuzz`,
           text: 'Test PhET sims',
@@ -331,7 +331,7 @@
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
-            value: 'ea&brand=phet&audioVolume=0&testTask=false&testBuilt=false',
+            value: 'ea&brand=phet&audio=disabled&testTask=false&testBuilt=false',
             text: 'Test Sims (Load Only)',
             default: true
           } ]
