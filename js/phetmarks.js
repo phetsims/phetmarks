@@ -966,44 +966,44 @@
   }
 
   // Splits file strings (such as perennial/data/active-runnables) into a list of entries, ignoring blank lines.
-  function whiteSplit( str ) {
+  function whiteSplitAndSort( str ) {
     return str.split( '\n' ).map( line => {
       return line.replace( '\r', '' );
     } ).filter( line => {
       return line.length > 0;
-    } );
+    } ).sort();
   }
 
   // Load files serially, populate then render
   $.ajax( {
     url: '../perennial/data/active-runnables'
   } ).done( activeRunnablesString => {
-    const activeRunnables = whiteSplit( activeRunnablesString );
+    const activeRunnables = whiteSplitAndSort( activeRunnablesString );
 
     $.ajax( {
       url: '../perennial/data/active-repos'
     } ).done( activeReposString => {
-      const activeRepos = whiteSplit( activeReposString );
+      const activeRepos = whiteSplitAndSort( activeReposString );
 
       $.ajax( {
         url: '../perennial/data/phet-io'
       } ).done( testPhetioString => {
-        const phetioSims = whiteSplit( testPhetioString );
+        const phetioSims = whiteSplitAndSort( testPhetioString );
 
         $.ajax( {
           url: '../perennial/data/interactive-description'
         } ).done( accessibleSimsString => {
-          const interactiveDescriptionSims = whiteSplit( accessibleSimsString );
+          const interactiveDescriptionSims = whiteSplitAndSort( accessibleSimsString );
 
           $.ajax( {
             url: '../chipper/data/wrappers'
           } ).done( wrappersString => {
-            const wrappers = whiteSplit( wrappersString ).sort();
+            const wrappers = whiteSplitAndSort( wrappersString ).sort();
 
             $.ajax( {
               url: '../perennial/data/unit-tests'
             } ).done( unitTestsStrings => {
-              const unitTestsRepos = whiteSplit( unitTestsStrings ).sort();
+              const unitTestsRepos = whiteSplitAndSort( unitTestsStrings ).sort();
 
               render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos ) );
             } );
