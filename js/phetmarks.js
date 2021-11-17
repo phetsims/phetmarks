@@ -84,6 +84,9 @@
   }
   ];
 
+  // See chipper/data/wrappers for format
+  const nonPublishedPhetioWrappersToAddToPhetmarks = [ 'phet-io-wrappers/mirror-inputs' ];
+
   // Query parameters for the PhET-iO wrappers (including iframe tests)
   const phetioWrapperQueryParameters = phetioBaseParameters.concat( [
     {
@@ -444,7 +447,7 @@
         } );
 
         // phet-io wrappers
-        wrappers.forEach( wrapper => {
+        wrappers.concat( nonPublishedPhetioWrappersToAddToPhetmarks ).sort().forEach( wrapper => {
 
           const wrapperName = getWrapperName( wrapper );
 
