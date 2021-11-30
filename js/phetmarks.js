@@ -368,6 +368,14 @@
           url: '../skiffle/html/sound-board.html'
         } );
       }
+      if ( repo === 'quake' ) {
+        modes.push( {
+          name: 'haptics-playground',
+          text: 'Haptics Playground',
+          description: 'Interactive HTML page for experimenting with haptics',
+          url: '../quake/html/haptics-playground.html'
+        } );
+      }
 
       if ( supportsInteractiveDescription ) {
         modes.push( {
