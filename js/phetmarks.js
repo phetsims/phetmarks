@@ -370,8 +370,14 @@
       }
       if ( repo === 'quake' ) {
         modes.push( {
+          name: 'quake-built',
+          text: 'Haptics Playground App (built)',
+          description: 'Built browser version of the Haptics Playground app',
+          url: '../quake/platforms/browser/www/'
+        } );
+        modes.push( {
           name: 'haptics-playground',
-          text: 'Haptics Playground',
+          text: 'Haptics Playground HTML Prototype',
           description: 'Interactive HTML page for experimenting with haptics',
           url: '../quake/html/haptics-playground.html'
         } );
