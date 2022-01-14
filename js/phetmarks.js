@@ -496,10 +496,6 @@
                 value: 'phetioPrintMissingTandems',
                 default: false,
                 text: 'Print tandems that have not yet been added'
-              }, {
-                value: 'autoselectSupported',
-                default: false,
-                text: 'Enable the autoselect feature'
               }
             ] );
           }
