@@ -371,9 +371,9 @@
       if ( repo === 'quake' ) {
         modes.push( {
           name: 'quake-built',
-          text: 'Haptics Playground App (built)',
+          text: 'Haptics Playground (built for browser)',
           description: 'Built browser version of the Haptics Playground app',
-          url: '../quake/platforms/browser/www/'
+          url: '../quake/platforms/browser/www/haptics-playground.html'
         } );
         modes.push( {
           name: 'haptics-playground',
