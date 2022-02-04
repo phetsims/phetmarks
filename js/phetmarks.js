@@ -414,6 +414,14 @@
           } ]
         } );
       }
+      if ( repo === 'tangible' ) {
+        modes.push( {
+          name: 'demo',
+          text: 'Demo',
+          description: 'Demos marker input with a video interface',
+          url: `../${repo}/demo.html`
+        } );
+      }
 
       modes.push( {
         name: 'github',
