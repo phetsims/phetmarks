@@ -379,7 +379,7 @@
           name: 'haptics-playground',
           text: 'Haptics Playground HTML Prototype',
           description: 'Interactive HTML page for experimenting with haptics',
-          url: '../quake/html/haptics-playground.html'
+          url: '../quake/html/haptics-playground-prototype.html'
         } );
       }
 
