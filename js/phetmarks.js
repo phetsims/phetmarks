@@ -90,7 +90,7 @@
   // Query parameters for the PhET-iO wrappers (including iframe tests)
   const phetioWrapperQueryParameters = phetioBaseParameters.concat( [
     {
-      value: 'phetioDebug',
+      value: 'phetioDebug=true',
       text: 'Enable assertions for wrappers, basically the phet-io version of ?ea',
       default: true
     }
@@ -437,8 +437,7 @@
           text: 'Wrapper Unit Tests',
           group: 'PhET-iO',
           description: 'Test the PhET-iO API for this sim.',
-          url: `../phet-io-wrappers/phet-io-wrappers-tests.html?sim=${repo}`,
-          queryParameters: phetioWrapperQueryParameters
+          url: `../phet-io-wrappers/phet-io-wrappers-tests.html?sim=${repo}`
         } );
 
         // Add a link to the compiled wrapper index;
