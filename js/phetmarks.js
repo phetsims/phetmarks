@@ -258,6 +258,14 @@
           url: `../${repo}/doc/`
         } );
       }
+      if ( repo === 'scenery' ) {
+        modes.push( {
+          name: 'layout-documentation',
+          text: 'Layout Documentation',
+          description: 'Browse HTML layout documentation',
+          url: `../${repo}/doc/layout.html`
+        } );
+      }
       if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
         modes.push( {
           name: 'examples',
@@ -350,6 +358,12 @@
           text: 'Snapshot Comparison',
           description: 'Sets up snapshot screenshot comparison that can be run on different SHAs',
           url: '../aqua/html/snapshot-comparison.html'
+        } );
+        modes.push( {
+          name: 'multi-snapshot-comparison',
+          text: 'Multi-snapshot Comparison',
+          description: 'Sets up snapshot screenshot comparison for two different checkouts',
+          url: '../aqua/html/multi-snapshot-comparison.html'
         } );
       }
       if ( repo === 'yotta' ) {
