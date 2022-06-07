@@ -88,13 +88,15 @@
   const nonPublishedPhetioWrappersToAddToPhetmarks = [ 'phet-io-wrappers/mirror-inputs' ];
 
   // Query parameters for the PhET-iO wrappers (including iframe tests)
-  const phetioWrapperQueryParameters = phetioBaseParameters.concat( [
-    {
-      value: 'phetioDebug=true',
-      text: 'Enable assertions for wrappers, basically the phet-io version of ?ea',
-      default: true
-    }
-  ] );
+  const phetioWrapperQueryParameters = phetioBaseParameters.concat( [ {
+    value: 'phetioDebug=true',
+    text: 'Enable assertions for the sim inside a wrapper, basically the phet-io version of ?ea',
+    default: true
+  }, {
+    value: 'phetioWrapperDebug=true',
+    text: 'Enable assertions for wrapper-code, like assertions in Studio, State, or Client',
+    default: true
+  } ] );
 
   // For phetio sim frame links
   const phetioSimQueryParameters = phetioBaseParameters.concat( [
