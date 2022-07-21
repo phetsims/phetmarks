@@ -87,12 +87,14 @@
   // See chipper/data/wrappers for format
   const nonPublishedPhetioWrappersToAddToPhetmarks = [ 'phet-io-wrappers/mirror-inputs' ];
 
-  // Query parameters for the PhET-iO wrappers (including iframe tests)
-  const phetioWrapperQueryParameters = phetioBaseParameters.concat( [ {
+  const phetioDebugTrueParameter = {
     value: 'phetioDebug=true',
     text: 'Enable assertions for the sim inside a wrapper, basically the phet-io version of ?ea',
     default: true
-  }, {
+  };
+
+  // Query parameters for the PhET-iO wrappers (including iframe tests)
+  const phetioWrapperQueryParameters = phetioBaseParameters.concat( [ phetioDebugTrueParameter, {
     value: 'phetioWrapperDebug=true',
     text: 'Enable assertions for wrapper-code, like assertions in Studio, State, or Client',
     default: true
@@ -501,17 +503,25 @@
 
           let queryParameters = [];
           if ( wrapperName === 'studio' ) {
-            queryParameters = phetioWrapperQueryParameters.concat( [
-              {
-                value: 'phetioElementsDisplay=all',
-                text: 'Show all elements',
-                default: true
-              },
-              {
-                value: 'phetioPrintMissingTandems',
-                default: false,
-                text: 'Print tandems that have not yet been added'
-              }
+
+            const studioQueryParameters = [ ...phetioWrapperQueryParameters ];
+
+            // Studio defaults to phetioDebug=true, so this parameter doesn't make sense
+            _.remove( studioQueryParameters, item => item === phetioDebugTrueParameter );
+
+            queryParameters = studioQueryParameters.concat( [ {
+              value: 'phetioDebug=false',
+              text: 'Disable assertions for the sim inside Studio. Studio defaults to phetioDebug=true',
+              default: false
+            }, {
+              value: 'phetioElementsDisplay=all',
+              text: 'Show all elements',
+              default: true
+            }, {
+              value: 'phetioPrintMissingTandems',
+              default: false,
+              text: 'Print tandems that have not yet been added'
+            }
             ] );
           }
           else if ( wrapperName === 'playback' ) {
