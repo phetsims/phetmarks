@@ -56,6 +56,7 @@
     { value: 'supportsVoicing', text: 'Supports Voicing', default: false, type: 'boolean' },
     { value: 'voicingInitiallyEnabled', text: 'Voicing on by default' },
     { value: 'printVoicingResponses', text: 'console.log() voicing responses' },
+    { value: 'preferencesStorage', text: 'Remember previous values of preferences from localStorage.' },
     { value: 'webgl=false', text: 'No WebGL' }
   ];
 
