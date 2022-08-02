@@ -456,7 +456,8 @@
           text: 'Wrapper Unit Tests',
           group: 'PhET-iO',
           description: 'Test the PhET-iO API for this sim.',
-          url: `../phet-io-wrappers/phet-io-wrappers-tests.html?sim=${repo}`
+          url: `../phet-io-wrappers/phet-io-wrappers-tests.html?sim=${repo}`,
+          queryParameters: phetioWrapperQueryParameters
         } );
 
         // Add a link to the compiled wrapper index;
