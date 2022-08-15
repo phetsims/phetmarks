@@ -99,6 +99,10 @@
     value: 'phetioWrapperDebug=true',
     text: 'Enable assertions for wrapper-code, like assertions in Studio, State, or Client',
     default: true
+  }, {
+    value: 'locales=*',
+    text: 'Loads all the translated versions',
+    default: true
   } ] );
 
   // For phetio sim frame links
