@@ -108,6 +108,10 @@
     value: 'locales=*',
     text: 'Loads all the translated versions',
     default: true
+  }, {
+    value: 'keyboardLocaleSwitcher',
+    text: 'Enables keybard cycling through the locales',
+    default: true
   } ] );
 
   // For phetio sim frame links
