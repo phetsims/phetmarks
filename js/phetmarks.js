@@ -57,7 +57,12 @@
     { value: 'voicingInitiallyEnabled', text: 'Voicing on by default' },
     { value: 'printVoicingResponses', text: 'console.log() voicing responses' },
     { value: 'preferencesStorage', text: 'Remember previous values of preferences from localStorage.' },
-    { value: 'webgl=false', text: 'No WebGL' }
+    { value: 'webgl=false', text: 'No WebGL' },
+    {
+      value: 'locales=*', text: 'Load all locales', dependentQueryParameters: [
+        { value: 'localeKeyboardSwitcher', text: 'ctrl + u/i to cycle locales' }
+      ]
+    }
   ];
 
   const eaObject = { value: 'ea', text: 'Assertions', default: true };
