@@ -60,7 +60,7 @@
     { value: 'webgl=false', text: 'No WebGL' },
     {
       value: 'locales=*', text: 'Load all locales', dependentQueryParameters: [
-        { value: 'localeKeyboardSwitcher', text: 'ctrl + u/i to cycle locales' }
+        { value: 'keyboardLocaleSwitcher', text: 'ctrl + u/i to cycle locales' }
       ]
     }
   ];
