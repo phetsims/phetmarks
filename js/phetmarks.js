@@ -87,8 +87,23 @@
   }, {
     value: 'phetioCompareAPI&randomSeed=332211', // NOTE: DUPLICATION ALERT: random seed must match that of API generation, see generatePhetioMacroAPI.js
     text: 'Compare with reference API'
-  }
-  ];
+  }, {
+    value: 'phetioPrintMissingTandems',
+    default: false,
+    text: 'Print tandems that have not yet been added'
+  }, {
+    value: 'phetioPrintAPIProblems',
+    default: false,
+    text: 'Print problems found by phetioAPIValidation to the console instead of asserting each item.'
+  }, {
+    value: 'locales=*',
+    text: 'Loads all the translated versions',
+    default: true
+  }, {
+    value: 'keyboardLocaleSwitcher',
+    text: 'Enables keybard cycling through the locales',
+    default: true
+  } ];
 
   // See chipper/data/wrappers for format
   const nonPublishedPhetioWrappersToAddToPhetmarks = [ 'phet-io-wrappers/mirror-inputs' ];
@@ -104,14 +119,6 @@
     value: 'phetioWrapperDebug=true',
     text: 'Enable assertions for wrapper-code, like assertions in Studio, State, or Client',
     default: true
-  }, {
-    value: 'locales=*',
-    text: 'Loads all the translated versions',
-    default: true
-  }, {
-    value: 'keyboardLocaleSwitcher',
-    text: 'Enables keybard cycling through the locales',
-    default: true
   } ] );
 
   // For phetio sim frame links
@@ -121,6 +128,10 @@
       value: 'phetioPrintMissingTandems',
       default: false,
       text: 'Print tandems that have not yet been added'
+    }, {
+      value: 'phetioPrintAPIProblems',
+      default: false,
+      text: 'Print problems found by phetioAPIValidation to the console instead of asserting each item.'
     }, {
       value: 'phetioPrintAPI',
       default: false,
@@ -532,12 +543,7 @@
               value: 'phetioElementsDisplay=all',
               text: 'Show all elements',
               default: true
-            }, {
-              value: 'phetioPrintMissingTandems',
-              default: false,
-              text: 'Print tandems that have not yet been added'
-            }
-            ] );
+            } ] );
           }
           else if ( wrapperName === 'playback' ) {
             queryParameters = [];
