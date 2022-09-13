@@ -418,12 +418,6 @@
           description: 'Built browser version of the Haptics Playground app',
           url: '../quake/platforms/browser/www/haptics-playground.html'
         } );
-        modes.push( {
-          name: 'haptics-playground',
-          text: 'Haptics Playground HTML Prototype',
-          description: 'Interactive HTML page for experimenting with haptics',
-          url: '../quake/html/haptics-playground-prototype.html'
-        } );
       }
 
       if ( supportsInteractiveDescription ) {
