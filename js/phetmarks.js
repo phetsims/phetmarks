@@ -52,10 +52,12 @@
     { value: 'supportsInteractiveDescription', text: 'Supports Interactive Description', default: false, type: 'boolean' },
     { value: 'supportsSound', text: 'Supports Sound', default: false, type: 'boolean' },
     { value: 'supportsExtraSound', text: 'Supports Extra Sound', default: false, type: 'boolean' },
+    { value: 'extraSoundInitiallyEnabled', text: 'Extra Sound on by default' },
     { value: 'supportsPanAndZoom', text: 'Supports Pan and Zoom', default: true, type: 'boolean' },
     { value: 'supportsVoicing', text: 'Supports Voicing', default: false, type: 'boolean' },
     { value: 'voicingInitiallyEnabled', text: 'Voicing on by default' },
     { value: 'printVoicingResponses', text: 'console.log() voicing responses' },
+    { value: 'interactiveHighlightsInitiallyEnabled', text: 'Interactive Highlights on by default' },
     { value: 'preferencesStorage', text: 'Remember previous values of preferences from localStorage.' },
     { value: 'webgl=false', text: 'No WebGL' },
     {
