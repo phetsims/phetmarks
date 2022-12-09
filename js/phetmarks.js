@@ -107,7 +107,7 @@
     default: true
   } ];
 
-  // See chipper/data/wrappers for format
+  // See perennial/data/wrappers for format
   const nonPublishedPhetioWrappersToAddToPhetmarks = [ 'phet-io-wrappers/mirror-inputs' ];
 
   const phetioDebugTrueParameter = {
@@ -154,7 +154,7 @@
   }
 
   /**
-   * From the wrapper path in chipper/data/wrappers, get the name of the wrapper.
+   * From the wrapper path in perennial/data/wrappers, get the name of the wrapper.
    * @param {string} wrapper
    * @returns {string} - the name of the wrapper
    */
@@ -1055,7 +1055,7 @@
           const interactiveDescriptionSims = whiteSplitAndSort( accessibleSimsString );
 
           $.ajax( {
-            url: '../chipper/data/wrappers'
+            url: '../perennial/data/wrappers'
           } ).done( wrappersString => {
             const wrappers = whiteSplitAndSort( wrappersString ).sort();
 
