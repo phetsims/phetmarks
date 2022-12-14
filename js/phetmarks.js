@@ -270,14 +270,14 @@
       }
 
       if ( hasUnitTests ) {
-
         modes.push( {
           name: 'unitTestsRequirejs',
           text: 'Unit Tests (unbuilt)',
           description: 'Runs unit tests in unbuilt mode',
           url: `../${repo}/${repo}-tests.html`,
           queryParameters: [
-            { value: 'ea', text: 'Assertions', default: true }
+            { value: 'ea', text: 'Assertions', default: true },
+            ...( repo === 'phet-io-wrappers' ? [ { value: 'sim=gravity-and-orbits', text: 'addSim', default: true } ] : [] )
           ]
         } );
       }
