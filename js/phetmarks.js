@@ -313,6 +313,14 @@
           url: `../${repo}/tests/playground.html`
         } );
       }
+      if ( repo === 'scenery' ) {
+        modes.push( {
+          name: 'sandbox',
+          text: 'Sandbox',
+          description: 'Allows quick testing of Scenery features',
+          url: `../${repo}/tests/sandbox.html`
+        } );
+      }
       if ( repo === 'chipper' || repo === 'aqua' ) {
         const generalTestParams = 'ea&audio=disabled&testDuration=10000&testConcurrentBuilds=4';
         const fuzzTestParameter = [ {
