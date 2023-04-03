@@ -60,7 +60,7 @@
     { value: 'interactiveHighlightsInitiallyEnabled', text: 'Interactive Highlights on by default' },
     { value: 'preferencesStorage', text: 'Remember previous values of preferences from localStorage.' },
     { value: 'webgl=false', text: 'No WebGL' },
-    { value: 'shuffleListeners', text: 'Shuffle listener order' },
+    { value: 'listenerOrder=random', text: 'Randomize listener order' },
     {
       value: 'locales=*', text: 'Load all locales', dependentQueryParameters: [
         { value: 'keyboardLocaleSwitcher', text: 'ctrl + u/i to cycle locales' }
