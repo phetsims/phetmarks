@@ -108,7 +108,7 @@
     default: true
   } ];
 
-  // See perennial/data/wrappers for format
+  // See perennial-alias/data/wrappers for format
   const nonPublishedPhetioWrappersToAddToPhetmarks = [ 'phet-io-wrappers/mirror-inputs' ];
 
   const phetioDebugTrueParameter = {
@@ -155,7 +155,7 @@
   }
 
   /**
-   * From the wrapper path in perennial/data/wrappers, get the name of the wrapper.
+   * From the wrapper path in perennial-alias/data/wrappers, get the name of the wrapper.
    * @param {string} wrapper
    * @returns {string} - the name of the wrapper
    */
@@ -192,7 +192,7 @@
 
   /**
    * Fills out the modeData map with information about repositories, modes and query parameters. Parameters are largely
-   * repo lists from perennial/data files.
+   * repo lists from perennial-alias/data files.
    *
    * @param {Array.<string>} activeRunnables - from active-runnables
    * @param {Array.<string>} activeRepos - from active-repos
@@ -1033,7 +1033,7 @@
     resetButton.addEventListener( 'click', queryParameterSelector.reset );
   }
 
-  // Splits file strings (such as perennial/data/active-runnables) into a list of entries, ignoring blank lines.
+  // Splits file strings (such as perennial-alias/data/active-runnables) into a list of entries, ignoring blank lines.
   function whiteSplitAndSort( str ) {
     return str.split( '\n' ).map( line => {
       return line.replace( '\r', '' );
@@ -1044,32 +1044,32 @@
 
   // Load files serially, populate then render
   $.ajax( {
-    url: '../perennial/data/active-runnables'
+    url: '../perennial-alias/data/active-runnables'
   } ).done( activeRunnablesString => {
     const activeRunnables = whiteSplitAndSort( activeRunnablesString );
 
     $.ajax( {
-      url: '../perennial/data/active-repos'
+      url: '../perennial-alias/data/active-repos'
     } ).done( activeReposString => {
       const activeRepos = whiteSplitAndSort( activeReposString );
 
       $.ajax( {
-        url: '../perennial/data/phet-io'
+        url: '../perennial-alias/data/phet-io'
       } ).done( testPhetioString => {
         const phetioSims = whiteSplitAndSort( testPhetioString );
 
         $.ajax( {
-          url: '../perennial/data/interactive-description'
+          url: '../perennial-alias/data/interactive-description'
         } ).done( accessibleSimsString => {
           const interactiveDescriptionSims = whiteSplitAndSort( accessibleSimsString );
 
           $.ajax( {
-            url: '../perennial/data/wrappers'
+            url: '../perennial-alias/data/wrappers'
           } ).done( wrappersString => {
             const wrappers = whiteSplitAndSort( wrappersString ).sort();
 
             $.ajax( {
-              url: '../perennial/data/unit-tests'
+              url: '../perennial-alias/data/unit-tests'
             } ).done( unitTestsStrings => {
               const unitTestsRepos = whiteSplitAndSort( unitTestsStrings ).sort();
 
