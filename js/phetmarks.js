@@ -240,7 +240,7 @@
           name: 'production',
           text: 'Production',
           description: 'Runs the latest English simulation from the production server',
-          url: `https://phet.colorado.edu/sims/html/${repo}/latest/${repo}_en.html`,
+          url: `https://phet.colorado.edu/sims/html/${repo}/latest/${repo}_all.html`,
           queryParameters: simQueryParameters
         } );
         modes.push( {
