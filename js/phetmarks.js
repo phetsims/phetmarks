@@ -550,6 +550,13 @@
               default: true
             } ] );
           }
+          else if ( wrapperName === 'version-migration' ) {
+            queryParameters = [ ...phetioWrapperQueryParameters, {
+              value: 'strictMigrationRules',
+              text: 'Adds extra assertions for correctness in the MigrationEngine.',
+              default: false
+            } ];
+          }
           else if ( wrapperName === 'playback' ) {
             queryParameters = [];
           }
