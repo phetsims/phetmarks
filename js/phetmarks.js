@@ -550,7 +550,7 @@
               default: true
             } ] );
           }
-          else if ( wrapperName === 'version-migration' ) {
+          else if ( wrapperName === 'migration' ) {
             queryParameters = [ ...phetioWrapperQueryParameters, {
               value: 'strictMigrationRules',
               text: 'Adds extra assertions for correctness in the MigrationEngine.',
