@@ -551,18 +551,22 @@
             } ] );
           }
           else if ( wrapperName === 'migration' ) {
-            queryParameters = [ {
+            queryParameters = [ ...phetioWrapperQueryParameters, {
               value: 'strictMigrationRules',
               text: 'Adds extra assertions for correctness in the MigrationEngine.',
               default: false
-            }, ...phetioWrapperQueryParameters ];
+            } ];
           }
           else if ( wrapperName === 'state' ) {
-            queryParameters = [ {
+            queryParameters = [ ...phetioWrapperQueryParameters, {
               value: 'numberOfMillisecondsBetweenUpdates=1000',
               text: 'Customize the "set state" rate for how often a state is set to the downstream sim (in ms)',
               default: true
-            }, ...phetioWrapperQueryParameters ];
+            }, {
+              value: 'logTiming',
+              text: 'Console log the amount of time it took to set the state of the simulation.',
+              default: false
+            } ];
           }
           else if ( wrapperName === 'playback' ) {
             queryParameters = [];
