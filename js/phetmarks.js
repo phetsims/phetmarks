@@ -245,7 +245,7 @@
         } );
         modes.push( {
           name: 'spot',
-          text: 'Dev (spot)',
+          text: 'Dev (bayes)',
           description: 'Loads the location on phet-dev.colorado.edu with versions for each dev deploy',
           url: `https://phet-dev.colorado.edu/html/${repo}`
         } );
