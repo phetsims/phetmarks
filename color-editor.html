@@ -35,7 +35,10 @@
 </head>
 <body>
 <div id="main-container">
-  <div id="color-column"></div>
+  <div id="color-column">
+    <button id="export-button">Export changed colors (console.logged)</button>
+    <br>
+  </div>
   <iframe id="sim-iframe"></iframe>
 </div>
 
@@ -47,6 +50,7 @@
 
   const simFrame = document.getElementById( 'sim-iframe' );
   const colorColumn = document.getElementById( 'color-column' );
+  const exportButton = document.getElementById( 'export-button' );
   const updateIFrameDimensions = () => {
     const width = Math.round( window.innerWidth - colorColumn.getBoundingClientRect().width - 30 );
 
@@ -68,6 +72,7 @@
 
       const name = data.name;
       const value = data.value;
+      const alpha = data.alpha;
 
       // Lazily create color inputs, so we don't need an up-front sim-specific list
       let element = colorInputMap[ name ];
@@ -76,16 +81,16 @@
         const colorInput = document.createElement( 'input' );
         colorInput.type = 'color';
 
-        const slider = document.createElement( 'input' );
+        const alphaSlider = document.createElement( 'input' );
 
-        const sliderReadout = document.createElement( 'div' );
+        const alphaSliderReadout = document.createElement( 'div' );
         const applyColorToSim = () => {
-          sliderReadout.innerText = slider.valueAsNumber.toFixed( 2 );
+          alphaSliderReadout.innerText = alphaSlider.valueAsNumber.toFixed( 2 );
           document.getElementById( 'sim-iframe' ).contentWindow.postMessage( JSON.stringify( {
             type: 'setColor',
             name: name,
             value: colorInput.value,
-            alpha: slider.valueAsNumber
+            alpha: alphaSlider.valueAsNumber
           } ), '*' );
         };
         // Send user changes to the sim
@@ -94,17 +99,17 @@
         colorColumn.appendChild( colorInput );
 
         // DUPLICATION ALERT: Copied with code in PhetioElementView.js
-        slider.style.width = '100px';
-        slider.type = 'range';
-        slider.min = '0';
-        slider.max = '1';
-        slider.step = '0.01';
-        slider.value = data.alpha;
-        slider.addEventListener( 'input', applyColorToSim );
-        colorColumn.appendChild( sliderReadout );
-        colorColumn.appendChild( slider );
+        alphaSlider.style.width = '100px';
+        alphaSlider.type = 'range';
+        alphaSlider.min = '0';
+        alphaSlider.max = '1';
+        alphaSlider.step = '0.01';
+        alphaSlider.value = alpha;
+        alphaSlider.addEventListener( 'input', applyColorToSim );
+        colorColumn.appendChild( alphaSliderReadout );
+        colorColumn.appendChild( alphaSlider );
 
-        sliderReadout.innerText = data.alpha.toFixed( 2 );
+        alphaSliderReadout.innerText = alpha.toFixed( 2 );
 
         colorColumn.appendChild( document.createTextNode( ' ' + name ) );
         colorColumn.appendChild( document.createElement( 'br' ) );
@@ -112,15 +117,43 @@
         updateIFrameDimensions();
 
         element = {
-          input: colorInput,
-          slider: slider
+          initialColor: value,
+          initialAlpha: alpha,
+          colorInput: colorInput,
+          alphaSlider: alphaSlider
         };
         colorInputMap[ name ] = element;
       }
 
-      element.input.value = value;
-      element.slider.value = data.alpha;
+      element.colorInput.value = value;
+      element.alphaSlider.value = alpha;
     }
+  } );
+
+  exportButton.addEventListener( 'click', () => {
+
+    let report = '';
+    for ( const name in colorInputMap ) {
+      if ( colorInputMap.hasOwnProperty( name ) ) {
+        const data = colorInputMap[ name ];
+        const currentColor = data.colorInput.value;
+        const currentAlpha = data.alphaSlider.valueAsNumber;
+
+        // Don't include any colors that differ from their original color value
+        if ( data.initialColor !== currentColor || data.initialAlpha !== currentAlpha ) {
+
+          // Convert hex to rgb, copied from Color.set()
+          const hexString = currentColor.startsWith( '#' ) ? currentColor.slice( 1 ) : currentColor;
+          const hex = Number( `0x${hexString}` );
+          const red = ( hex >> 16 ) & 0xFF;
+          const green = ( hex >> 8 ) & 0xFF;
+          const blue = ( hex >> 0 ) & 0xFF;
+
+          report += ` ${name}: (${red}, ${green}, ${blue}${currentAlpha !== 1 ? `, ${currentAlpha}` : ''})\n`
+        }
+      }
+    }
+    console.log( 'Changed Colors:\n' + report );
   } );
 </script>
 </body>
