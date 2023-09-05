@@ -587,6 +587,10 @@
               value: 'strictMigrationRules',
               text: 'Adds extra assertions for correctness in the MigrationEngine.',
               default: false
+            }, {
+              value: 'phetioElementsDisplay=all',
+              text: 'Show all elements',
+              default: true
             } ];
           }
           else if ( wrapperName === 'state' ) {
