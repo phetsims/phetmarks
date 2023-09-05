@@ -591,7 +591,7 @@
           }
           else if ( wrapperName === 'state' ) {
             queryParameters = [ ...phetioWrapperQueryParameters, {
-              value: 'numberOfMillisecondsBetweenUpdates=1000',
+              value: 'setStateRate=1000',
               text: 'Customize the "set state" rate for how often a state is set to the downstream sim (in ms)',
               default: true
             }, {
