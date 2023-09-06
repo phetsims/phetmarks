@@ -273,11 +273,11 @@
       if ( repo === 'phet-io' ) {
         modes.push( {
           name: 'test-studio-sims',
-          text: 'Fuzz Test Studio',
-          description: 'Runs automated testing with fuzzing on studio, 10 second timer',
+          text: 'Fuzz Test Studio Wrapper',
+          description: 'Runs automated testing with fuzzing on studio, 15 second timer',
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
-            value: `testDuration=15000&fuzz&wrapperName=studio&wrapperContinuousTest={}&testSims=${phetioSims.join( ',' )}`,
+            value: `testDuration=15000&fuzz&wrapperName=studio&wrapperContinuousTest==%7B%7D&testSims=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
           }, {
@@ -292,6 +292,20 @@
           url: '../aqua/test-server/test-sims.html',
           queryParameters: [ {
             value: 'testDuration=30000&fuzz&wrapperName=migration&wrapperContinuousTest=%7B%7D&migrationRate=7000&testSims=beers-law-lab,calculus-grapher,circuit-construction-kit-dc,circuit-construction-kit-dc-virtual-lab,concentration,density,friction,geometric-optics,geometric-optics-basics,graphing-quadratics,gravity-and-orbits,molecule-polarity,molecule-shapes,molecule-shapes-basics,natural-selection,ph-scale,ph-scale-basics',
+            text: 'Fuzz Test PhET-IO sims',
+            default: true
+          }, {
+            value: 'randomize',
+            text: 'Randomize sim list'
+          } ]
+        } );
+        modes.push( {
+          name: 'test-state-sims',
+          text: 'Fuzz Test State Wrapper',
+          description: 'Runs automated testing with fuzzing on state, 15 second timer',
+          url: '../aqua/test-server/test-sims.html',
+          queryParameters: [ {
+            value: `testDuration=15000&fuzz&wrapperName=state&setStateRate=3000&wrapperContinuousTest=%7B%7D&testSims=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
           }, {
