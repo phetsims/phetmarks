@@ -158,6 +158,17 @@
     }
   ] );
 
+  const migrationQueryParameters = [ ...phetioWrapperQueryParameters, {
+    value: 'strictMigrationRules',
+    text: 'Adds extra assertions for correctness in the MigrationEngine.',
+    default: false
+  }, {
+    value: 'phetioElementsDisplay=all',
+    text: 'Show all elements',
+    default: true
+  } ];
+
+
   /**
    * Returns a local-storage key that has additional information included, to prevent collision with other applications (or in the future, previous
    * versions of phetmarks).
@@ -292,33 +303,33 @@
           text: 'Fuzz Test Studio Wrapper',
           description: 'Runs automated testing with fuzzing on studio, 15 second timer',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: [ {
+          queryParameters: testServerQueryParameters.concat( [ {
             value: `testDuration=15000&fuzz&wrapperName=studio&wrapperContinuousTest==%7B%7D&testSims=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
-          } ].concat( testServerQueryParameters )
+          } ] )
         } );
         modes.push( {
           name: 'test-migration-sims',
           text: 'Fuzz Test Migration',
           description: 'Runs automated testing with fuzzing on studio, 10 second timer',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: [ {
+          queryParameters: testServerQueryParameters.concat( migrationQueryParameters ).concat( [ {
             value: 'testDuration=30000&fuzz&wrapperName=migration&wrapperContinuousTest=%7B%7D&migrationRate=7000&testSims=beers-law-lab,calculus-grapher,circuit-construction-kit-dc,circuit-construction-kit-dc-virtual-lab,concentration,density,friction,geometric-optics,geometric-optics-basics,graphing-quadratics,gravity-and-orbits,molecule-polarity,molecule-shapes,molecule-shapes-basics,natural-selection,ph-scale,ph-scale-basics',
             text: 'Fuzz Test PhET-IO sims',
             default: true
-          } ].concat( testServerQueryParameters )
+          } ] )
         } );
         modes.push( {
           name: 'test-state-sims',
           text: 'Fuzz Test State Wrapper',
           description: 'Runs automated testing with fuzzing on state, 15 second timer',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: [ {
+          queryParameters: testServerQueryParameters.concat( [ {
             value: `testDuration=15000&fuzz&wrapperName=state&setStateRate=3000&wrapperContinuousTest=%7B%7D&testSims=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
-          } ].concat( testServerQueryParameters )
+          } ] )
         } );
       }
 
@@ -383,22 +394,22 @@
           text: 'Fuzz Test PhET Sims',
           description: 'Runs automated testing with fuzzing, 10 second timer',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: [ {
+          queryParameters: testServerQueryParameters.concat( [ {
             value: `${generalTestServerSimParams}&brand=phet&fuzz`,
             text: 'Test PhET sims',
             default: true
-          } ].concat( testServerQueryParameters )
+          } ] )
         } );
         modes.push( {
           name: 'test-phet-io-sims',
           text: 'Fuzz Test PhET-iO Sims',
           description: 'Runs automated testing with fuzzing, 10 second timer',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: [ {
+          queryParameters: testServerQueryParameters.concat( [ {
             value: `${generalTestServerSimParams}&brand=phet-io&fuzz&phetioStandalone&testSims=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
-          } ].concat( testServerQueryParameters )
+          } ] )
         } );
         modes.push( {
           name: 'test-interactive-description-sims',
@@ -413,11 +424,11 @@
             value: `${generalTestServerSimParams}&brand=phet&fuzz&supportsInteractiveDescription=true`,
             text: 'Normal Fuzz Test sims',
             default: false
-          }, {
+          } ].concat( testServerQueryParameters ).concat( [ {
             value: `testSims=${interactiveDescriptionSims.join( ',' )}`,
             text: 'Test only A11y sims',
             default: true
-          } ].concat( testServerQueryParameters )
+          } ] )
         } );
         modes.push( {
           name: 'fuzz-sims-load-only',
@@ -594,15 +605,7 @@
             } ] );
           }
           else if ( wrapperName === 'migration' ) {
-            queryParameters = [ ...phetioWrapperQueryParameters, {
-              value: 'strictMigrationRules',
-              text: 'Adds extra assertions for correctness in the MigrationEngine.',
-              default: false
-            }, {
-              value: 'phetioElementsDisplay=all',
-              text: 'Show all elements',
-              default: true
-            } ];
+            queryParameters = [ ...migrationQueryParameters ];
           }
           else if ( wrapperName === 'state' ) {
             queryParameters = [ ...phetioWrapperQueryParameters, {
