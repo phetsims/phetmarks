@@ -291,7 +291,7 @@
           name: 'test-studio-sims',
           text: 'Fuzz Test Studio Wrapper',
           description: 'Runs automated testing with fuzzing on studio, 15 second timer',
-          url: '../aqua/test-server/test-sims.html',
+          url: '../aqua/fuzz-lightyear/',
           queryParameters: [ {
             value: `testDuration=15000&fuzz&wrapperName=studio&wrapperContinuousTest==%7B%7D&testSims=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
@@ -302,7 +302,7 @@
           name: 'test-migration-sims',
           text: 'Fuzz Test Migration',
           description: 'Runs automated testing with fuzzing on studio, 10 second timer',
-          url: '../aqua/test-server/test-sims.html',
+          url: '../aqua/fuzz-lightyear/',
           queryParameters: [ {
             value: 'testDuration=30000&fuzz&wrapperName=migration&wrapperContinuousTest=%7B%7D&migrationRate=7000&testSims=beers-law-lab,calculus-grapher,circuit-construction-kit-dc,circuit-construction-kit-dc-virtual-lab,concentration,density,friction,geometric-optics,geometric-optics-basics,graphing-quadratics,gravity-and-orbits,molecule-polarity,molecule-shapes,molecule-shapes-basics,natural-selection,ph-scale,ph-scale-basics',
             text: 'Fuzz Test PhET-IO sims',
@@ -313,7 +313,7 @@
           name: 'test-state-sims',
           text: 'Fuzz Test State Wrapper',
           description: 'Runs automated testing with fuzzing on state, 15 second timer',
-          url: '../aqua/test-server/test-sims.html',
+          url: '../aqua/fuzz-lightyear/',
           queryParameters: [ {
             value: `testDuration=15000&fuzz&wrapperName=state&setStateRate=3000&wrapperContinuousTest=%7B%7D&testSims=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
@@ -380,9 +380,9 @@
 
         modes.push( {
           name: 'test-phet-sims',
-          text: 'Fuzz Test PhET Sims (Fast Build)',
+          text: 'Fuzz Test PhET Sims',
           description: 'Runs automated testing with fuzzing, 10 second timer',
-          url: '../aqua/test-server/test-sims.html',
+          url: '../aqua/fuzz-lightyear/',
           queryParameters: [ {
             value: `${generalTestServerSimParams}&brand=phet&fuzz`,
             text: 'Test PhET sims',
@@ -391,9 +391,9 @@
         } );
         modes.push( {
           name: 'test-phet-io-sims',
-          text: 'Fuzz Test PhET-iO Sims (Fast Build)',
+          text: 'Fuzz Test PhET-iO Sims',
           description: 'Runs automated testing with fuzzing, 10 second timer',
-          url: '../aqua/test-server/test-sims.html',
+          url: '../aqua/fuzz-lightyear/',
           queryParameters: [ {
             value: `${generalTestServerSimParams}&brand=phet-io&fuzz&phetioStandalone&testSims=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
@@ -402,9 +402,9 @@
         } );
         modes.push( {
           name: 'test-interactive-description-sims',
-          text: 'Fuzz Test Interactive Description Sims (Fast Build)',
+          text: 'Fuzz Test Interactive Description Sims',
           description: 'Runs automated testing with fuzzing, 10 second timer',
-          url: '../aqua/test-server/test-sims.html',
+          url: '../aqua/fuzz-lightyear/',
           queryParameters: [ {
             value: `${generalTestServerSimParams}&brand=phet&fuzzBoard&supportsInteractiveDescription=true`,
             text: 'Keyboard Fuzz Test sims',
@@ -420,10 +420,10 @@
           } ].concat( testServerQueryParameters )
         } );
         modes.push( {
-          name: 'test-sims-load-only',
-          text: 'Test Sims (Load Only)',
+          name: 'fuzz-sims-load-only',
+          text: 'Fuzz Sims (Load Only)',
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
-          url: '../aqua/test-server/test-sims.html',
+          url: '../aqua/fuzz-lightyear/',
           queryParameters: [ {
             value: 'ea&brand=phet&audio=disabled&testTask=false',
             text: 'Test Sims (Load Only)',
