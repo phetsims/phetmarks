@@ -136,7 +136,7 @@
   // Query parameters for the PhET-iO wrappers (including iframe tests)
   const phetioWrapperQueryParameters = phetioBaseParameters.concat( [ phetioDebugTrueParameter, {
     value: 'phetioWrapperDebug=true',
-    text: 'Enable assertions for wrapper-code, like assertions in Studio, State, or PhetioClient',
+    text: 'Enable assertions for wrapper-code, like assertions in Studio, State, or Client',
     default: true
   } ] );
 
