@@ -159,10 +159,6 @@
   ] );
 
   const migrationQueryParameters = [ ...phetioWrapperQueryParameters, {
-    value: 'strictMigrationRules',
-    text: 'Adds extra assertions for correctness in the MigrationEngine.',
-    default: true
-  }, {
     value: 'phetioElementsDisplay=all',
     text: 'Show all elements',
     default: true
