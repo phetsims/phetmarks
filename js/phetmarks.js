@@ -338,7 +338,7 @@
           queryParameters: [
             { value: 'ea', text: 'Assertions', default: true },
             { value: 'brand=phet-io', text: 'PhET-iO Brand', default: repo === 'phet-io' || repo === 'tandem' },
-            ...( repo === 'phet-io-wrappers' ? [ { value: 'sim=gravity-and-orbits', text: 'addSim', default: true } ] : [] )
+            ...( repo === 'phet-io-wrappers' ? [ { value: 'sim=gravity-and-orbits&noSimTest', text: 'neededTestParams', default: true } ] : [] )
           ]
         } );
       }
@@ -535,6 +535,8 @@
           text: 'Wrapper Unit Tests',
           group: 'PhET-iO',
           description: 'Test the PhET-iO API for this sim.',
+
+          // Each sim gets its own test, just run sim-less tests here
           url: `../phet-io-wrappers/phet-io-wrappers-tests.html?sim=${repo}`,
           queryParameters: phetioWrapperQueryParameters
         } );
