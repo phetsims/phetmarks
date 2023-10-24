@@ -338,7 +338,7 @@
           queryParameters: [
             { value: 'ea', text: 'Assertions', default: true },
             { value: 'brand=phet-io', text: 'PhET-iO Brand', default: repo === 'phet-io' || repo === 'tandem' },
-            ...( repo === 'phet-io-wrappers' ? [ { value: 'sim=gravity-and-orbits&noSimTest', text: 'neededTestParams', default: true } ] : [] )
+            ...( repo === 'phet-io-wrappers' ? [ { value: 'sim=gravity-and-orbits&noSimTests', text: 'neededTestParams', default: true } ] : [] )
           ]
         } );
       }
