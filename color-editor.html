@@ -41,7 +41,6 @@
   </div>
   <iframe id="sim-iframe"></iframe>
 </div>
-<!-- eslint-disable --> <!--TODO: fix lint https://github.com/phetsims/chipper/issues/1405-->
 
 <script type="text/javascript">
   const urlParams = new URLSearchParams( window.location.search );
@@ -67,8 +66,8 @@
   // Maps color keys {string} => input elements {HTMLInputElement}
   const colorInputMap = {};
 
-  window.addEventListener( 'message', function( evt ) {
-    var data = JSON.parse( evt.data );
+  window.addEventListener( 'message', event => {
+    const data = JSON.parse( event.data );
     if ( data.type === 'reportColor' ) {
 
       const name = data.name;
@@ -146,11 +145,11 @@
           // Convert hex to rgb, copied from Color.set()
           const hexString = currentColor.startsWith( '#' ) ? currentColor.slice( 1 ) : currentColor;
           const hex = Number( `0x${hexString}` );
-          const red = ( hex >> 16 ) & 0xFF;
-          const green = ( hex >> 8 ) & 0xFF;
-          const blue = ( hex >> 0 ) & 0xFF;
+          const red = ( hex >> 16 ) & 0xFF; // eslint-disable-line no-bitwise
+          const green = ( hex >> 8 ) & 0xFF; // eslint-disable-line no-bitwise
+          const blue = ( hex >> 0 ) & 0xFF; // eslint-disable-line no-bitwise
 
-          report += ` ${name}: (${red}, ${green}, ${blue}${currentAlpha !== 1 ? `, ${currentAlpha}` : ''})\n`
+          report += ` ${name}: (${red}, ${green}, ${blue}${currentAlpha !== 1 ? `, ${currentAlpha}` : ''})\n`;
         }
       }
     }
