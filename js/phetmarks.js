@@ -138,6 +138,10 @@
     value: 'phetioWrapperDebug=true',
     text: 'Enable assertions for wrapper-code, like assertions in Studio, State, or Client',
     default: true
+  }, {
+    value: 'phetioMigrationReport=dev',
+    default: false,
+    text: 'Dev-based reporting for migration (as opposed to tailed for the client to see)'
   } ] );
 
   // For phetio sim frame links
@@ -311,7 +315,7 @@
           description: 'Runs automated testing with fuzzing on studio, 10 second timer',
           url: '../aqua/fuzz-lightyear/',
           queryParameters: testServerQueryParameters.concat( migrationQueryParameters ).concat( [ {
-            value: 'testDuration=20000&fuzz&wrapperName=migration&wrapperContinuousTest=%7B%7D&migrationRate=2000&testSims=beers-law-lab,calculus-grapher,circuit-construction-kit-dc,circuit-construction-kit-dc-virtual-lab,concentration,density,friction,geometric-optics,geometric-optics-basics,graphing-quadratics,gravity-and-orbits,molecule-polarity,molecule-shapes,molecule-shapes-basics,natural-selection,ph-scale,ph-scale-basics',
+            value: 'testDuration=20000&fuzz&wrapperName=migration&wrapperContinuousTest=%7B%7D&migrationRate=2000&phetioMigrationReport=assert&testSims=beers-law-lab,calculus-grapher,circuit-construction-kit-dc,circuit-construction-kit-dc-virtual-lab,concentration,density,friction,geometric-optics,geometric-optics-basics,graphing-quadratics,gravity-and-orbits,molecule-polarity,molecule-shapes,molecule-shapes-basics,natural-selection,ph-scale,ph-scale-basics',
             text: 'Fuzz Test PhET-IO sims',
             default: true
           } ] )
@@ -603,7 +607,11 @@
             } ] );
           }
           else if ( wrapperName === 'migration' ) {
-            queryParameters = [ ...migrationQueryParameters ];
+            queryParameters = [ ...migrationQueryParameters, {
+              value: 'phetioMigrationReport=dev',
+              default: true,
+              text: 'Dev-based reporting for migration (as opposed to tailed for the client to see'
+            } ];
           }
           else if ( wrapperName === 'state' ) {
             queryParameters = [ ...phetioWrapperQueryParameters, {
