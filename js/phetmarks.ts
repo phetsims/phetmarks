@@ -63,8 +63,6 @@
   };
 
   type QueryParametersSelector = {
-    screenElement: HTMLElement;
-    phetioValidationElement: HTMLElement;
     toggleElement: HTMLElement;
     customElement: HTMLElement;
 
@@ -74,21 +72,7 @@
     reset: () => void;
   };
 
-  const screensQueryParameter: PhetmarksQueryParameter = {
-    value: 'screens',
-    text: 'Screens',
-    type: 'parameterValues',
-    parameterValues: [ 'all', '1', '2', '3', '4', '5', '6' ],
-    omitIfDefault: true
-  };
-
-  const phetioValidationQueryParameter: PhetmarksQueryParameter = {
-    value: 'phetioValidation',
-    text: 'if stricter PhET-iO validation is enabled',
-    type: 'parameterValues',
-    parameterValues: [ 'Simulation Default', 'true', 'false' ],
-    omitIfDefault: true
-  };
+  type ElementToParameterMap = Map<HTMLElement, PhetmarksQueryParameter>;
 
   // Query parameters used for the following modes: requirejs, compiled, production
   const simQueryParameters: PhetmarksQueryParameter[] = [
@@ -123,6 +107,12 @@
       value: 'locales=*', text: 'Load all locales', dependentQueryParameters: [
         { value: 'keyboardLocaleSwitcher', text: 'ctrl + u/i to cycle locales' }
       ]
+    }, {
+      value: 'screens',
+      text: 'Screens',
+      type: 'parameterValues',
+      parameterValues: [ 'all', '1', '2', '3', '4', '5', '6' ],
+      omitIfDefault: true
     } ];
 
   const eaObject: PhetmarksQueryParameter = { value: 'ea', text: 'Assertions', default: true };
@@ -161,8 +151,14 @@
     default: true
   }, {
     value: 'keyboardLocaleSwitcher',
-    text: 'Enables keybard cycling through the locales',
+    text: 'Enables keyboard cycling through the locales',
     default: true
+  }, {
+    value: 'phetioValidation',
+    text: 'if stricter PhET-iO validation is enabled',
+    type: 'parameterValues',
+    parameterValues: [ 'Simulation Default', 'true', 'false' ],
+    omitIfDefault: true
   } ];
 
   const testServerNoTestTaskQueryParameters: PhetmarksQueryParameter[] = [
@@ -862,7 +858,7 @@
   }
 
   // Boolean and flag checkboxes, but only if they are different from their default
-  function getQueryParameterForFlagsAndBooleans( toggleContainer: HTMLElement ): string[] {
+  function getFlagAndBooleanParameters( toggleContainer: HTMLElement ): string[] {
 
     const checkboxElements = $( toggleContainer ).find( '.flagOrBooleanParameter' )! as unknown as HTMLInputElement[];
 
@@ -886,126 +882,137 @@
     } );
   }
 
+  function createFlagBooleanSelector( parameter: PhetmarksQueryParameter, toggleContainer: HTMLElement,
+                                      elementToQueryParameter: ElementToParameterMap ): void {
+    const label = document.createElement( 'label' );
+    const checkbox = document.createElement( 'input' );
+    checkbox.type = 'checkbox';
+    checkbox.name = parameter.value;
+    checkbox.classList.add( 'flagOrBooleanParameter' );
+    label.appendChild( checkbox );
+    assert && assert( !elementToQueryParameter.has( checkbox ), 'sanity check for overwriting' );
+    elementToQueryParameter.set( checkbox, parameter );
+
+    let queryParameterDisplay = parameter.value;
+
+    // should the "=true" if boolean
+    if ( parameter.type === 'boolean' ) {
+      queryParameterDisplay += `=${parameter.default}`;
+    }
+    label.appendChild( document.createTextNode( `${parameter.text} (${queryParameterDisplay})` ) );
+    toggleContainer.appendChild( label );
+    toggleContainer.appendChild( document.createElement( 'br' ) );
+    checkbox.checked = !!parameter.default;
+
+    if ( parameter.dependentQueryParameters ) {
+
+      /**
+       * Creates a checkbox whose value is dependent on another checkbox, it is only used if the parent
+       * checkbox is checked.
+       */
+      const createDependentCheckbox = ( label: string, value: string, checked: boolean ): HTMLDivElement => {
+        const dependentQueryParametersContainer = document.createElement( 'div' );
+
+        const dependentCheckbox = document.createElement( 'input' );
+        dependentCheckbox.id = getDependentParameterControlId( value );
+        dependentCheckbox.type = 'checkbox';
+        dependentCheckbox.name = value;
+        dependentCheckbox.classList.add( 'flagOrBooleanParameter' );
+        dependentCheckbox.style.marginLeft = '40px';
+        dependentCheckbox.checked = checked;
+        const labelElement = document.createElement( 'label' );
+        labelElement.appendChild( document.createTextNode( label ) );
+        labelElement.htmlFor = dependentCheckbox.id;
+
+        dependentQueryParametersContainer.appendChild( dependentCheckbox );
+        dependentQueryParametersContainer.appendChild( labelElement );
+
+        // checkbox becomes unchecked and disabled if dependency checkbox is unchecked
+        const enableButton = () => {
+          dependentCheckbox.disabled = !checkbox.checked;
+          if ( !checkbox.checked ) {
+            dependentCheckbox.checked = false;
+          }
+        };
+        checkbox.addEventListener( 'change', enableButton );
+        enableButton();
+
+        return dependentQueryParametersContainer;
+      };
+
+      const containerDiv = document.createElement( 'div' );
+      parameter.dependentQueryParameters.forEach( relatedParameter => {
+        const dependentCheckbox = createDependentCheckbox( `${relatedParameter.text} (${relatedParameter.value})`, relatedParameter.value, !!relatedParameter.default );
+        containerDiv.appendChild( dependentCheckbox );
+      } );
+      toggleContainer.appendChild( containerDiv );
+    }
+
+    // mark changed events for boolean parameter support
+    checkbox.addEventListener( 'change', () => {
+      checkbox.dataset.changed = 'true';
+    } );
+    checkbox.dataset.queryParameterType = parameter.type;
+  }
+
   function createQueryParametersSelector( modeSelector: ModeSelector ): QueryParametersSelector {
-    const screenSelector = createParameterValuesSelector( screensQueryParameter );
-    const phetioValidationSelector = createParameterValuesSelector( phetioValidationQueryParameter );
 
     const customTextBox = document.createElement( 'input' );
     customTextBox.type = 'text';
 
     const toggleContainer = document.createElement( 'div' );
 
-    // get the ID for a checkbox that is "dependent" on another value
-    const getDependentParameterControlId = ( value: string ) => `dependent-checkbox-${value}`;
+    let elementToQueryParameter: ElementToParameterMap = new Map();
+    const parameterValuesSelectors: QueryParameterSelector[] = [];
 
     const selector: QueryParametersSelector = {
-      screenElement: screenSelector.element,
-      phetioValidationElement: phetioValidationSelector.element,
       toggleElement: toggleContainer,
       customElement: customTextBox,
       get value() {
 
         // Boolean and flag query parameters, in string form
-        const checkboxQueryParameters = getQueryParameterForFlagsAndBooleans( toggleContainer );
+        const flagAndBooleanQueryParameters = getFlagAndBooleanParameters( toggleContainer );
+        const parameterValuesQueryParameters = parameterValuesSelectors
+          .map( ( selector: QueryParameterSelector ) => selector.value )
+          .filter( ( queryParameter: string ) => queryParameter !== '' );
 
         const customQueryParameters = customTextBox.value.length ? [ customTextBox.value ] : [];
 
-        const screensValue = screenSelector.value;
-        const screenQueryParameters = screensValue.length ? [ screensValue ] : [];
-
-        const phetioValidationValue = phetioValidationSelector.value;
-        const phetioValidationQueryParameters = phetioValidationValue.length ? [ phetioValidationValue ] : [];
-
-        return checkboxQueryParameters.concat( customQueryParameters ).concat( screenQueryParameters )
-          .concat( phetioValidationQueryParameters ).join( '&' );
+        return flagAndBooleanQueryParameters.concat( parameterValuesQueryParameters ).concat( customQueryParameters ).join( '&' );
       },
       update: function() {
+        // Rebuild based on a new mode/repo change
+
+        elementToQueryParameter = new Map();
+        parameterValuesSelectors.length = 0;
         clearChildren( toggleContainer );
 
         const queryParameters = modeSelector.mode.queryParameters || [];
         queryParameters.forEach( parameter => {
-          const label = document.createElement( 'label' );
-          const checkbox = document.createElement( 'input' );
-          checkbox.type = 'checkbox';
-          checkbox.name = parameter.value;
-          checkbox.classList.add( 'flagOrBooleanParameter' );
-          label.appendChild( checkbox );
-
-          let queryParameterDisplay = parameter.value;
-
-          // should the "=true" if boolean
-          if ( parameter.type === 'boolean' ) {
-            queryParameterDisplay += `=${parameter.default}`;
+          if ( parameter.type === 'parameterValues' ) {
+            const selector = createParameterValuesSelector( parameter );
+            toggleContainer.appendChild( selector.element );
+            parameterValuesSelectors.push( selector );
           }
-          label.appendChild( document.createTextNode( `${parameter.text} (${queryParameterDisplay})` ) );
-          toggleContainer.appendChild( label );
-          toggleContainer.appendChild( document.createElement( 'br' ) );
-          checkbox.checked = !!parameter.default;
-
-          if ( parameter.dependentQueryParameters ) {
-
-            /**
-             * Creates a checkbox whose value is dependent on another checkbox, it is only used if the parent
-             * checkbox is checked.
-             */
-            const createDependentCheckbox = ( label: string, value: string, checked: boolean ): HTMLDivElement => {
-              const dependentQueryParametersContainer = document.createElement( 'div' );
-
-              const dependentCheckbox = document.createElement( 'input' );
-              dependentCheckbox.id = getDependentParameterControlId( value );
-              dependentCheckbox.type = 'checkbox';
-              dependentCheckbox.name = value;
-              dependentCheckbox.classList.add( 'flagOrBooleanParameter' );
-              dependentCheckbox.style.marginLeft = '40px';
-              dependentCheckbox.checked = checked;
-              const labelElement = document.createElement( 'label' );
-              labelElement.appendChild( document.createTextNode( label ) );
-              labelElement.htmlFor = dependentCheckbox.id;
-
-              dependentQueryParametersContainer.appendChild( dependentCheckbox );
-              dependentQueryParametersContainer.appendChild( labelElement );
-
-              // checkbox becomes unchecked and disabled if dependency checkbox is unchecked
-              const enableButton = () => {
-                dependentCheckbox.disabled = !checkbox.checked;
-                if ( !checkbox.checked ) {
-                  dependentCheckbox.checked = false;
-                }
-              };
-              checkbox.addEventListener( 'change', enableButton );
-              enableButton();
-
-              return dependentQueryParametersContainer;
-            };
-
-            const containerDiv = document.createElement( 'div' );
-            parameter.dependentQueryParameters.forEach( relatedParameter => {
-              const dependentCheckbox = createDependentCheckbox( `${relatedParameter.text} (${relatedParameter.value})`, relatedParameter.value, !!relatedParameter.default );
-              containerDiv.appendChild( dependentCheckbox );
-            } );
-            toggleContainer.appendChild( containerDiv );
+          else {
+            createFlagBooleanSelector( parameter, toggleContainer, elementToQueryParameter );
           }
-
-          // mark changed events for boolean parameter support
-          checkbox.addEventListener( 'change', () => {
-            checkbox.dataset.changed = 'true';
-          } );
-          checkbox.dataset.queryParameterType = parameter.type;
         } );
       },
       reset: function() {
-        screenSelector.reset();
-        phetioValidationSelector.reset();
+        // called on "Reset Query Parameters"
 
         customTextBox.value = '';
 
+        const checkboxes = $( toggleContainer ).find( '.flagOrBooleanParameter' ) as unknown as HTMLInputElement[];
+
         // For each checkbox, set it to its default
-        // @ts-expect-error - JQuery doesn't know how to appropriately give these elements
-        _.forEach( $( toggleContainer ).find( ':checkbox' ), ( checkbox: HTMLInputElement ) => {
+        _.forEach( checkboxes, ( checkbox: HTMLInputElement ) => {
 
           // Grab the parameter object
-          const parameter = _.filter( modeSelector.mode.queryParameters, param => param.value === checkbox.name )[ 0 ];
+          const parameter = elementToQueryParameter.get( checkbox );
 
+          // TODO: need this? https://github.com/phetsims/phetmarks/issues/44
           if ( parameter ) {
 
             // Handle when the default isn't defined (it would be false)
@@ -1019,6 +1026,25 @@
                 dependentCheckbox.checked = !!relatedParam.default;
               } );
             }
+          }
+        } );
+
+        const radioButtons = $( toggleContainer ).find( '.parameterValues' ) as unknown as HTMLInputElement[];
+
+        // For each checkbox, set it to its default
+        _.forEach( radioButtons, ( radioButton: HTMLInputElement ) => {
+
+
+          // Grab the parameter object
+          const parameter = elementToQueryParameter.get( radioButton )!;
+
+          assert && assert( parameter.parameterValues!.length > 0, 'sanity check' );
+
+          // TODO: need this? https://github.com/phetsims/phetmarks/issues/44
+          if ( parameter ) {
+
+            // Handle when the default isn't defined (it would be false)
+            radioButton.checked = radioButton.value === parameter.parameterValues![ 0 ];
           }
         } );
       }
@@ -1075,8 +1101,6 @@
     modeDiv.appendChild( launchButton );
     queryParametersDiv.appendChild( header( 'Query Parameters' ) );
     queryParametersDiv.appendChild( queryParameterSelector.toggleElement );
-    queryParametersDiv.appendChild( queryParameterSelector.phetioValidationElement );
-    queryParametersDiv.appendChild( queryParameterSelector.screenElement );
     queryParametersDiv.appendChild( document.createTextNode( 'Query Parameters: ' ) );
     queryParametersDiv.appendChild( queryParameterSelector.customElement );
     queryParametersDiv.appendChild( document.createElement( 'br' ) );
@@ -1138,6 +1162,9 @@
       return line.length > 0;
     } ).sort();
   }
+
+  // get the ID for a checkbox that is "dependent" on another value
+  const getDependentParameterControlId = ( value: string ) => `dependent-checkbox-${value}`;
 
   // Load files serially, populate then render
   const activeRunnables = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/active-runnables' } ) );
