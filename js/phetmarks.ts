@@ -75,8 +75,13 @@
 
   // Query parameters used for the following modes: requirejs, compiled, production
   const simQueryParameters: PhetmarksQueryParameter[] = [
-    { value: 'audio=disabled', text: 'Mute' },
     {
+      value: 'audio',
+      text: 'Audio support',
+      type: 'parameterValues',
+      parameterValues: [ 'enabled', 'disabled', 'muted' ],
+      omitIfDefault: true
+    }, {
       value: 'fuzz', text: 'Fuzz', dependentQueryParameters: [
         { value: 'fuzzPointers=2', text: 'Multitouch-fuzz' }
       ]
@@ -122,6 +127,14 @@
     eaObject,
     { value: 'eall', text: 'All Assertions' }
   ];
+
+  // TODO: support 'text' for parameterValues https://github.com/phetsims/phetmarks/issues/44
+  const phetioElementsDisplayParameter: PhetmarksQueryParameter = {
+    value: 'phetioElementsDisplay',
+    text: 'What PhET-iO Elements to show',
+    type: 'parameterValues',
+    parameterValues: [ 'all', 'featured' ]
+  };
 
   const phetioBaseParameters: PhetmarksQueryParameter[] = [ {
     value: 'phetioEmitHighFrequencyEvents',
@@ -214,12 +227,7 @@
     }
   ] );
 
-  const migrationQueryParameters: PhetmarksQueryParameter[] = [ ...phetioWrapperQueryParameters, {
-    value: 'phetioElementsDisplay=all',
-    text: 'Show all elements',
-    default: true
-  } ];
-
+  const migrationQueryParameters: PhetmarksQueryParameter[] = [ ...phetioWrapperQueryParameters, phetioElementsDisplayParameter ];
 
   /**
    * Returns a local-storage key that has additional information included, to prevent collision with other applications (or in the future, previous
@@ -643,11 +651,7 @@
               value: 'phetioDebug=false',
               text: 'Disable assertions for the sim inside Studio. Studio defaults to phetioDebug=true',
               default: false
-            }, {
-              value: 'phetioElementsDisplay=all',
-              text: 'Show all elements',
-              default: true
-            } ] );
+            }, phetioElementsDisplayParameter ] );
           }
           else if ( wrapperName === 'migration' ) {
             queryParameters = [ ...migrationQueryParameters, {
@@ -812,10 +816,10 @@
 
   // Create control for type 'parameterValues'
   function createParameterValuesSelector( queryParameter: PhetmarksQueryParameter ): QueryParameterSelector {
-
     assert && assert( queryParameter.type === 'parameterValues', `valueValues type only please: ${queryParameter.value} - ${queryParameter.type}` );
     assert && assert( queryParameter.parameterValues, 'parameterValues expected' );
     assert && assert( queryParameter.parameterValues!.length > 0, 'parameterValues expected (more than 0 of them)' );
+    assert && assert( !queryParameter.dependentQueryParameters, 'type=parameterValues does not support dependent query parameters at this time' );
 
     const div = document.createElement( 'div' );
     const queryParameterName = queryParameter.value;
