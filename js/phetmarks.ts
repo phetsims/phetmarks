@@ -203,10 +203,6 @@
     value: 'phetioWrapperDebug=true',
     text: 'Enable assertions for wrapper-code, like assertions in Studio, State, or Client',
     default: true
-  }, {
-    value: 'phetioMigrationReport=dev',
-    default: false,
-    text: 'Dev-based reporting for migration (as opposed to tailed for the client to see)'
   } ] );
 
   // For phetio sim frame links
@@ -655,9 +651,11 @@
           }
           else if ( wrapperName === 'migration' ) {
             queryParameters = [ ...migrationQueryParameters, {
-              value: 'phetioMigrationReport=dev',
-              default: true,
-              text: 'Dev-based reporting for migration (as opposed to tailed for the client to see'
+              value: 'phetioMigrationReport',
+              type: 'parameterValues',
+              text: 'How should the migration report be reported?',
+              parameterValues: [ 'dev', 'client', 'verbose', 'assert' ],
+              omitIfDefault: false
             } ];
           }
           else if ( wrapperName === 'state' ) {
