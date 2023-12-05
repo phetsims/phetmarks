@@ -3,55 +3,39 @@
 /*
  * Page for quickly launching phet-related tasks, such as simulations, automated/unit tests, or other utilities.
  *
- * Displays three columns:
+ * Displays three columns. See type information below for details:
  *
  * - Repositories: A list of repositories to select from, each one of which has a number of modes.
  * - Modes: Based on the repository selected. Decides what type of URL is loaded when "Launch" or the enter key is
  *          pressed.
  * - Query Parameters: If available, controls what optional query parameters will be added to the end of the URL.
- *
- * // TODO: Combine doc with Type info below, https://github.com/phetsims/phetmarks/issues/61
- * Mode has the format:
- * {
- *   name: {string} - Internal unique value (for looking up which option was chosen),
- *   text: {string} - Shown in the mode list,
- *   group: {string} - The optgroup that this mode belongs to
- *   description: {string} - Shown when hovering over the mode in the list,
- *   url: {string} - The base URL to visit (without added query parameters) when the mode is chosen,
- *   queryParameters: {Array.<QueryParameter>}
- * }
- *
- * QueryParameter has the format:
- * {
- *   value: {string} - The actual query parameter included in the URL,
- *   text: {string} - Shown in the query parameter list,
- *   [type]: {'boolean'} - if boolean, then it will add "=true" or "=false" to the checkbox value
- *   [default]: {boolean} - If true, the query parameter will be true by default
- * }
  */
 
 import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 
 ( async function(): Promise<void> {
 
+  // QueryParameter has the format
   type PhetmarksQueryParameter = {
-    value: string;
-    text: string;
-    type?: 'boolean' | 'something else';
-    default?: string | boolean; // TODO: make it a string only? https://github.com/phetsims/phetmarks/issues/61
+    value: string; // The actual query parameter included in the URL,
+    text: string; // Display string shown in the query parameter list,
+    type?: 'boolean'; // if boolean, then it will add "=true" or "=false" to the checkbox value
+    default?: string | boolean; // If true, the query parameter will be true by default // TODO: make it a string only? https://github.com/phetsims/phetmarks/issues/61
     dependentQueryParameters?: PhetmarksQueryParameter[];
   };
 
   type RepoName = string; // the name of a repo;
 
+  // "General" is the default
   type ModeGroup = 'PhET-iO' | 'General';
 
+  // Mode has the format
   type Mode = {
-    name: string;
-    text: string;
-    description: string;
-    url: string;
-    group?: ModeGroup;
+    name: string; // Internal unique value (for looking up which option was chosen),
+    text: string; // Shown in the mode list
+    group?: ModeGroup; // The optgroup that this mode belongs to, defaults to "General"
+    description: string; // Shown when hovering over the mode in the list,
+    url: string; // The base URL to visit (without added query parameters) when the mode is chosen,
     queryParameters?: PhetmarksQueryParameter[];
   };
   type ModeData = Record<RepoName, Mode[]>;
