@@ -59,7 +59,6 @@
   type QueryParameterSelector = {
     element: HTMLElement;
     value: string; // The single queryString, like `screens=1`, or '' if nothing should be added to the query string.
-    reset: () => void;
   };
 
   type QueryParametersSelector = {
@@ -856,10 +855,6 @@
         const radioButtonValue = $( `input[name=${queryParameterName}]:checked` ).val() + '';
         return queryParameter.omitIfDefault && radioButtonValue === defaultValue ? '' :
                `${queryParameterName}=${radioButtonValue}`;
-      },
-      reset: function() {
-        const inputElement = $( `input[name=${queryParameterName}]` )[ 0 ] as HTMLInputElement;
-        inputElement.checked = true;
       }
     };
   }
@@ -1111,7 +1106,7 @@
     }, false );
     launchButton.addEventListener( 'click', openCurrentURL );
 
-    // Reset
+    // Reset by redrawing everything
     resetButton.addEventListener( 'click', queryParameterSelector.update );
   }
 
