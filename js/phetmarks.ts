@@ -970,7 +970,7 @@
     let elementToQueryParameter: ElementToParameterMap = new Map();
     const parameterValuesSelectors: QueryParameterSelector[] = [];
 
-    const selector: QueryParametersSelector = {
+    return {
       toggleElement: toggleContainer,
       customElement: customTextBox,
       get value() {
@@ -1005,8 +1005,6 @@
         } );
       }
     };
-
-    return selector;
   }
 
   /**
@@ -1047,7 +1045,7 @@
     const queryParametersDiv = document.createElement( 'div' );
     queryParametersDiv.id = 'queryParameters';
 
-    // Layout of all of the major elements
+    // Layout of all the major elements
     repoDiv.appendChild( header( 'Repositories' ) );
     repoDiv.appendChild( repositorySelector.element );
     modeDiv.appendChild( header( 'Modes' ) );
