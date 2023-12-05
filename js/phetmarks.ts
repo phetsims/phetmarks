@@ -819,7 +819,11 @@
     assert && assert( queryParameter.type === 'parameterValues', `valueValues type only please: ${queryParameter.value} - ${queryParameter.type}` );
     assert && assert( queryParameter.parameterValues, 'parameterValues expected' );
     assert && assert( queryParameter.parameterValues!.length > 0, 'parameterValues expected (more than 0 of them)' );
-    assert && assert( !queryParameter.dependentQueryParameters, 'type=parameterValues does not support dependent query parameters at this time' );
+    assert && assert( !queryParameter.hasOwnProperty( 'dependentQueryParameters' ),
+      'type=parameterValues does not support dependent query parameters at this time' );
+    assert && assert( !queryParameter.hasOwnProperty( 'default' ),
+      'type=parameterValues does not need the default key, instead it is just the first item in the ' +
+      'parameterValues list. Also see omitIfDefault' );
 
     const div = document.createElement( 'div' );
     const queryParameterName = queryParameter.value;
@@ -887,6 +891,9 @@
 
   function createFlagBooleanSelector( parameter: PhetmarksQueryParameter, toggleContainer: HTMLElement,
                                       elementToQueryParameter: ElementToParameterMap ): void {
+    assert && assert( !parameter.hasOwnProperty( 'parameterValues' ), 'parameterValues are for type=parameterValues' );
+    assert && assert( !parameter.hasOwnProperty( 'omitIfDefault' ), 'omitIfDefault are for type=parameterValues' );
+
     const label = document.createElement( 'label' );
     const checkbox = document.createElement( 'input' );
     checkbox.type = 'checkbox';
