@@ -17,9 +17,16 @@
   type PhetmarksQueryParameter = {
     value: string; // The actual query parameter included in the URL,
     text: string; // Display string shown in the query parameter list,
-    type?: 'boolean'; // if boolean, then it will add "=true" or "=false" to the checkbox value
+
+    // defaults to flag. If boolean, then it will add "=true" or "=false" to the checkbox value, If parameterValues, must
+    // provide "parameterValues" key, where first one is the default.
+    type?: 'flag' | 'boolean' | 'parameterValues';
     default?: boolean; // If true, the query parameter will be included by default. This will be false if not provided
     dependentQueryParameters?: PhetmarksQueryParameter[];
+
+    // For type 'parameterValues'
+    parameterValues?: string[]; // values of the parameter.
+    omitIfDefault?: boolean; // if true, omit the default selection of the query parameter, only adding it when changed. Defaults to false
   };
 
   type RepoName = string; // the name of a repo;
@@ -51,7 +58,7 @@
 
   type QueryParameterSelector = {
     element: HTMLElement;
-    value: string;
+    value: string; // The single queryString, like `screens=1`, or '' if nothing should be added to the query string.
     reset: () => void;
   };
 
@@ -60,9 +67,19 @@
     phetioValidationElement: HTMLElement;
     toggleElement: HTMLElement;
     customElement: HTMLElement;
-    get value(): string;
+
+    // Get the current queryString value based on the current selection.
+    value: string;
     update: () => void;
     reset: () => void;
+  };
+
+  const screensQueryParameter: PhetmarksQueryParameter = {
+    value: 'screens',
+    text: 'Screens',
+    type: 'parameterValues',
+    parameterValues: [ 'all', '1', '2', '3', '4', '5', '6' ],
+    omitIfDefault: true
   };
 
   // Query parameters used for the following modes: requirejs, compiled, production
@@ -98,8 +115,7 @@
       value: 'locales=*', text: 'Load all locales', dependentQueryParameters: [
         { value: 'keyboardLocaleSwitcher', text: 'ctrl + u/i to cycle locales' }
       ]
-    }
-  ];
+    } ];
 
   const eaObject: PhetmarksQueryParameter = { value: 'ea', text: 'Assertions', default: true };
 
@@ -791,34 +807,47 @@
     return selector;
   }
 
-  function createScreenSelector(): QueryParameterSelector {
-    const div = document.createElement( 'div' );
+  // Create control for type 'parameterValues'
+  function createParameterValuesSelector( queryParameter: PhetmarksQueryParameter ): QueryParameterSelector {
 
-    function createScreenRadioButton( name: string, value: string, text: string ): HTMLElement {
+    assert && assert( queryParameter.type === 'parameterValues', `valueValues type only please: ${queryParameter.value} - ${queryParameter.type}` );
+    assert && assert( queryParameter.parameterValues, 'parameterValues expected' );
+    assert && assert( queryParameter.parameterValues!.length > 0, 'parameterValues expected (more than 0 of them)' );
+
+    const div = document.createElement( 'div' );
+    const queryParameterName = queryParameter.value;
+    const parameterValues = queryParameter.parameterValues!;
+
+    const createParameterValuesRadioButton = ( value: string, text: string ): HTMLElement => {
       const label = document.createElement( 'label' );
-      label.className = 'screenLabel';
+      label.className = 'choiceLabel';
       const radio = document.createElement( 'input' );
       radio.type = 'radio';
-      radio.name = name;
+      radio.name = queryParameterName;
       radio.value = value;
       radio.checked = value === 'all';
       label.appendChild( radio );
       label.appendChild( document.createTextNode( text ) );
       return label;
-    }
+    };
 
-    div.appendChild( createScreenRadioButton( 'screens', 'all', 'All screens' ) );
-    for ( let i = 1; i <= 6; i++ ) {
-      div.appendChild( createScreenRadioButton( 'screens', `${i}`, `${i}` ) );
+    const label = document.createElement( 'span' );
+    label.innerText = `• ${queryParameterName}=`;
+    div.appendChild( label );
+    for ( let i = 0; i < parameterValues.length; i++ ) {
+      // TODO: resurrect "All Screens?" I don't think so, https://github.com/phetsims/phetmarks/issues/44
+      div.appendChild( createParameterValuesRadioButton( parameterValues[ i ], parameterValues[ i ] ) );
     }
 
     return {
       element: div,
       get value() {
-        return $( 'input[name=screens]:checked' ).val() + '';
+        const radioButtonValue = $( `input[name=${queryParameterName}]:checked` ).val() + '';
+        return queryParameter.omitIfDefault && radioButtonValue === parameterValues[ 0 ] ? '' :
+               `${queryParameterName}=${radioButtonValue}`;
       },
       reset: function() {
-        const inputElement = $( 'input[name=screens]' )[ 0 ] as HTMLInputElement;
+        const inputElement = $( `input[name=${queryParameterName}]` )[ 0 ] as HTMLInputElement;
         inputElement.checked = true;
       }
     };
@@ -859,8 +888,33 @@
     };
   }
 
+  // Boolean and flag checkboxes, but only if they are different from their default
+  function getQueryParameterForFlagsAndBooleans( toggleContainer: HTMLElement ): string[] {
+
+    const checkboxElements = $( toggleContainer ).find( '.flagOrBooleanParameter' )! as unknown as HTMLInputElement[];
+
+    // Only changed checkboxes, not with default values
+    return _.filter( checkboxElements, ( checkbox: HTMLInputElement ) => {
+
+      // if a checkbox isn't checked, then we only care if it has been changed and is a boolean
+      if ( checkbox.dataset.queryParameterType === 'boolean' ) {
+        return checkbox.dataset.changed === 'true';
+      }
+      else {
+        return checkbox.checked;
+      }
+    } ).map( ( checkbox: HTMLInputElement ) => {
+
+      // support boolean parameters
+      if ( checkbox.dataset.queryParameterType === 'boolean' ) {
+        return `${checkbox.name}=${checkbox.checked}`;
+      }
+      return checkbox.name;
+    } );
+  }
+
   function createQueryParametersSelector( modeSelector: ModeSelector ): QueryParametersSelector {
-    const screenSelector = createScreenSelector();
+    const screenSelector = createParameterValuesSelector( screensQueryParameter );
     const phetioValidationSelector = createPhetioValidationSelector();
 
     const customTextBox = document.createElement( 'input' );
@@ -878,27 +932,11 @@
       customElement: customTextBox,
       get value() {
         const screensValue = screenSelector.value;
-        const checkboxes = $( toggleContainer ).find( ':checkbox' )! as unknown as HTMLInputElement[];
-        const usefulCheckboxes = _.filter( checkboxes, ( checkbox: HTMLInputElement ) => {
 
-          // if a checkbox isn't checked, then we only care if it has been changed and is a boolean
-          if ( checkbox.dataset.queryParameterType === 'boolean' ) {
-            return checkbox.dataset.changed === 'true';
-          }
-          else {
-            return checkbox.checked;
-          }
-        } );
-        const checkboxQueryParameters = usefulCheckboxes.map( ( checkbox: HTMLInputElement ) => {
-
-          // support boolean parameters
-          if ( checkbox.dataset.queryParameterType === 'boolean' ) {
-            return `${checkbox.name}=${checkbox.checked}`;
-          }
-          return checkbox.name;
-        } );
+        // Boolean and flag query parameters, in string form
+        const checkboxQueryParameters = getQueryParameterForFlagsAndBooleans( toggleContainer );
         const customQueryParameters = customTextBox.value.length ? [ customTextBox.value ] : [];
-        const screenQueryParameters = screensValue === 'all' ? [] : [ `screens=${screensValue}` ];
+        const screenQueryParameters = screensValue.length ? [ screensValue ] : [];
         const phetioValidationQueryParameters = phetioValidationSelector.value === 'simulation-default' ? [] :
                                                 phetioValidationSelector.value === 'true' ? [ 'phetioValidation=true' ] :
                                                 phetioValidationSelector.value === 'false' ? [ 'phetioValidation=false' ] :
@@ -918,6 +956,7 @@
           const checkbox = document.createElement( 'input' );
           checkbox.type = 'checkbox';
           checkbox.name = parameter.value;
+          checkbox.classList.add( 'flagOrBooleanParameter' );
           label.appendChild( checkbox );
 
           let queryParameterDisplay = parameter.value;
@@ -944,6 +983,7 @@
               dependentCheckbox.id = getDependentParameterControlId( value );
               dependentCheckbox.type = 'checkbox';
               dependentCheckbox.name = value;
+              dependentCheckbox.classList.add( 'flagOrBooleanParameter' );
               dependentCheckbox.style.marginLeft = '40px';
               dependentCheckbox.checked = checked;
               const labelElement = document.createElement( 'label' );
