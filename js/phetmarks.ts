@@ -82,6 +82,14 @@
     omitIfDefault: true
   };
 
+  const phetioValidationQueryParameter: PhetmarksQueryParameter = {
+    value: 'phetioValidation',
+    text: 'if stricter PhET-iO validation is enabled',
+    type: 'parameterValues',
+    parameterValues: [ 'Simulation Default', 'true', 'false' ],
+    omitIfDefault: true
+  };
+
   // Query parameters used for the following modes: requirejs, compiled, production
   const simQueryParameters: PhetmarksQueryParameter[] = [
     { value: 'audio=disabled', text: 'Mute' },
@@ -817,6 +825,7 @@
     const div = document.createElement( 'div' );
     const queryParameterName = queryParameter.value;
     const parameterValues = queryParameter.parameterValues!;
+    const defaultValue = parameterValues[ 0 ];
 
     const createParameterValuesRadioButton = ( value: string, text: string ): HTMLElement => {
       const label = document.createElement( 'label' );
@@ -825,14 +834,13 @@
       radio.type = 'radio';
       radio.name = queryParameterName;
       radio.value = value;
-      radio.checked = value === 'all';
+      radio.checked = value === defaultValue;
       label.appendChild( radio );
       label.appendChild( document.createTextNode( text ) );
       return label;
     };
 
-    const label = document.createElement( 'span' );
-    label.innerText = `• ${queryParameterName}=`;
+    const label = document.createTextNode( `• ${queryParameterName}=` );
     div.appendChild( label );
     for ( let i = 0; i < parameterValues.length; i++ ) {
       // TODO: resurrect "All Screens?" I don't think so, https://github.com/phetsims/phetmarks/issues/44
@@ -843,47 +851,12 @@
       element: div,
       get value() {
         const radioButtonValue = $( `input[name=${queryParameterName}]:checked` ).val() + '';
-        return queryParameter.omitIfDefault && radioButtonValue === parameterValues[ 0 ] ? '' :
+        return queryParameter.omitIfDefault && radioButtonValue === defaultValue ? '' :
                `${queryParameterName}=${radioButtonValue}`;
       },
       reset: function() {
         const inputElement = $( `input[name=${queryParameterName}]` )[ 0 ] as HTMLInputElement;
         inputElement.checked = true;
-      }
-    };
-  }
-
-  function createPhetioValidationSelector(): QueryParameterSelector {
-    const div = document.createElement( 'div' );
-
-    function createValidationRadioButton( name: string, value: string, text: string ): HTMLElement {
-      const label = document.createElement( 'label' );
-      label.className = 'validationLabel'; // https://github.com/phetsims/tandem/issues/191
-      const radio = document.createElement( 'input' );
-      radio.type = 'radio';
-      radio.name = name;
-      radio.value = value;
-      radio.checked = value === 'simulation-default';
-      label.appendChild( radio );
-      label.appendChild( document.createTextNode( text ) );
-      return label;
-    }
-
-    const span = document.createElement( 'span' );
-    span.textContent = 'phetioValidation=';
-    div.appendChild( span );
-    div.appendChild( createValidationRadioButton( 'validation', 'true', 'true' ) );
-    div.appendChild( createValidationRadioButton( 'validation', 'false', 'false' ) );
-    div.appendChild( createValidationRadioButton( 'validation', 'simulation-default', 'Simulation Default' ) );
-
-    return {
-      element: div,
-      get value() {
-        return $( 'input[name=validation]:checked' ).val() + '';
-      },
-      reset: function() {
-        const input = $( 'input[name=validation]' )[ 0 ] as HTMLInputElement;
-        input.checked = true;
       }
     };
   }
@@ -915,7 +888,7 @@
 
   function createQueryParametersSelector( modeSelector: ModeSelector ): QueryParametersSelector {
     const screenSelector = createParameterValuesSelector( screensQueryParameter );
-    const phetioValidationSelector = createPhetioValidationSelector();
+    const phetioValidationSelector = createParameterValuesSelector( phetioValidationQueryParameter );
 
     const customTextBox = document.createElement( 'input' );
     customTextBox.type = 'text';
@@ -931,19 +904,18 @@
       toggleElement: toggleContainer,
       customElement: customTextBox,
       get value() {
-        const screensValue = screenSelector.value;
 
         // Boolean and flag query parameters, in string form
         const checkboxQueryParameters = getQueryParameterForFlagsAndBooleans( toggleContainer );
+
         const customQueryParameters = customTextBox.value.length ? [ customTextBox.value ] : [];
+
+        const screensValue = screenSelector.value;
         const screenQueryParameters = screensValue.length ? [ screensValue ] : [];
-        const phetioValidationQueryParameters = phetioValidationSelector.value === 'simulation-default' ? [] :
-                                                phetioValidationSelector.value === 'true' ? [ 'phetioValidation=true' ] :
-                                                phetioValidationSelector.value === 'false' ? [ 'phetioValidation=false' ] :
-                                                'error';
-        if ( phetioValidationQueryParameters === 'error' ) {
-          throw new Error( 'bad value for phetioValidation' );
-        }
+
+        const phetioValidationValue = phetioValidationSelector.value;
+        const phetioValidationQueryParameters = phetioValidationValue.length ? [ phetioValidationValue ] : [];
+
         return checkboxQueryParameters.concat( customQueryParameters ).concat( screenQueryParameters )
           .concat( phetioValidationQueryParameters ).join( '&' );
       },
