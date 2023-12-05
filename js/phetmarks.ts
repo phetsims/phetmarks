@@ -77,7 +77,7 @@
   const simQueryParameters: PhetmarksQueryParameter[] = [
     {
       value: 'audio',
-      text: 'Audio support',
+      text: 'Audio support for the runtime',
       type: 'parameterValues',
       parameterValues: [ 'enabled', 'disabled', 'muted' ],
       omitIfDefault: true
@@ -113,7 +113,7 @@
       ]
     }, {
       value: 'screens',
-      text: 'Screens',
+      text: 'What sim screen to display',
       type: 'parameterValues',
       parameterValues: [ 'all', '1', '2', '3', '4', '5', '6' ],
       omitIfDefault: true
@@ -828,7 +828,7 @@
     const parameterValues = queryParameter.parameterValues!;
     const defaultValue = parameterValues[ 0 ];
 
-    const createParameterValuesRadioButton = ( value: string, text: string ): HTMLElement => {
+    const createParameterValuesRadioButton = ( value: string ): HTMLElement => {
       const label = document.createElement( 'label' );
       label.className = 'choiceLabel';
       const radio = document.createElement( 'input' );
@@ -837,16 +837,18 @@
       radio.value = value;
       radio.checked = value === defaultValue;
       label.appendChild( radio );
-      label.appendChild( document.createTextNode( text ) );
+      label.appendChild( document.createTextNode( value ) ); // use the query parameter value as the display text for clarity
       return label;
     };
 
     const label = document.createTextNode( `• ${queryParameterName}=` );
     div.appendChild( label );
     for ( let i = 0; i < parameterValues.length; i++ ) {
-      // TODO: resurrect "All Screens?" I don't think so, https://github.com/phetsims/phetmarks/issues/44
-      div.appendChild( createParameterValuesRadioButton( parameterValues[ i ], parameterValues[ i ] ) );
+      div.appendChild( createParameterValuesRadioButton( parameterValues[ i ] ) );
     }
+
+    const explanation = document.createTextNode( `– ${queryParameter.text}` );
+    div.appendChild( explanation );
 
     return {
       element: div,
