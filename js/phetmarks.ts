@@ -30,14 +30,9 @@
  * }
  */
 
-// TODO: just while working on https://github.com/phetsims/phetmarks/issues/61
-/* eslint-disable */
-// @ts-nocheck
-/* eslint-enable */
-
 import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 
-( async function(): void {
+( async function(): Promise<void> {
 
   type PhetmarkQueryParameter = {
     value: string;
@@ -48,12 +43,15 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
   };
 
   type RepoName = string; // the name of a repo;
+
+  type ModeGroup = 'PhET-iO' | 'General';
+
   type Mode = {
     name: string;
     text: string;
     description: string;
     url: string;
-    group?: 'PhET-iO';
+    group?: ModeGroup;
     queryParameters?: PhetmarkQueryParameter[];
   };
   type ModeData = Record<RepoName, Mode[]>;
@@ -67,6 +65,16 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
     get value(): string;
     get mode(): Mode;
     update: () => void;
+  };
+
+  type QueryParameterSelector = {
+    screenElement: HTMLElement;
+    phetioValidationElement: HTMLElement;
+    toggleElement: HTMLElement;
+    customElement: HTMLElement;
+    get value(): string;
+    update: () => void;
+    reset: () => void;
   };
 
   // TODO: What is this? Is it actually all one type? https://github.com/phetsims/phetmarks/issues/61
@@ -765,8 +773,8 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 
         clearChildren( select );
 
-        const groups = {};
-        modeData[ repositorySelector.value ].forEach( choice => {
+        const groups: Partial<Record<ModeGroup, HTMLOptGroupElement>> = {};
+        modeData[ repositorySelector.value ].forEach( ( choice: Mode ) => {
           const choiceOption = document.createElement( 'option' );
           choiceOption.value = choice.name;
           choiceOption.label = choice.text;
@@ -784,8 +792,8 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
             select.appendChild( optGroup );
           }
 
-          // add the choice to the propert group
-          groups[ choice.group ].appendChild( choiceOption );
+          // add the choice to the property group
+          groups[ choice.group ]!.appendChild( choiceOption );
         } );
 
         select.setAttribute( 'size', modeData[ repositorySelector.value ].length + Object.keys( groups ).length + '' );
@@ -860,12 +868,13 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
         return $( 'input[name=validation]:checked' ).val();
       },
       reset: function() {
-        $( 'input[name=validation]' )[ 0 ].checked = true;
+        const input = $( 'input[name=validation]' )[ 0 ] as HTMLInputElement;
+        input.checked = true;
       }
     };
   }
 
-  function createQueryParameterSelector( modeSelector: ModeSelector ): Selector {
+  function createQueryParameterSelector( modeSelector: ModeSelector ): QueryParameterSelector {
     const screenSelector = createScreenSelector();
     const phetioValidationSelector = createPhetioValidationSelector();
 
@@ -877,15 +886,15 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
     // get the ID for a checkbox that is "dependent" on another value
     const getDependentParameterControlId = ( value: string ) => `dependent-checkbox-${value}`;
 
-    const selector = {
+    const selector: QueryParameterSelector = {
       screenElement: screenSelector.element,
       phetioValidationElement: phetioValidationSelector.element,
       toggleElement: toggleContainer,
       customElement: customTextBox,
       get value() {
         const screensValue = screenSelector.value;
-        const checkboxes = $( toggleContainer ).find( ':checkbox' );
-        const usefulCheckboxes = _.filter( checkboxes, checkbox => {
+        const checkboxes = $( toggleContainer ).find( ':checkbox' )! as unknown as HTMLInputElement[];
+        const usefulCheckboxes = _.filter( checkboxes, ( checkbox: HTMLInputElement ) => {
 
           // if a checkbox isn't checked, then we only care if it has been changed and is a boolean
           if ( checkbox.dataset.queryParameterType === 'boolean' ) {
@@ -895,7 +904,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
             return checkbox.checked;
           }
         } );
-        const checkboxQueryParameters = _.map( usefulCheckboxes, checkbox => {
+        const checkboxQueryParameters = usefulCheckboxes.map( ( checkbox: HTMLInputElement ) => {
 
           // support boolean parameters
           if ( checkbox.dataset.queryParameterType === 'boolean' ) {
@@ -912,7 +921,8 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
         if ( phetioValidationQueryParameters === 'error' ) {
           throw new Error( 'bad value for phetioValidation' );
         }
-        return checkboxQueryParameters.concat( customQueryParameters ).concat( screenQueryParameters ).concat( phetioValidationQueryParameters ).join( '&' );
+        return checkboxQueryParameters.concat( customQueryParameters ).concat( screenQueryParameters )
+          .concat( phetioValidationQueryParameters ).join( '&' );
       },
       update: function() {
         clearChildren( toggleContainer );
@@ -993,7 +1003,8 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
         customTextBox.value = '';
 
         // For each checkbox, set it to its default
-        _.forEach( $( toggleContainer ).find( ':checkbox' ), checkbox => {
+        // @ts-expect-error - JQuery doesn't know how to appropriately give these elements
+        _.forEach( $( toggleContainer ).find( ':checkbox' ), ( checkbox: HTMLInputElement ) => {
 
           // Grab the parameter object
           const parameter = _.filter( modeSelector.mode.queryParameters, param => param.value === checkbox.name )[ 0 ];
@@ -1006,7 +1017,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
             // dependent parameter controls only enabled if parent checkbox is checked
             if ( parameter.dependentQueryParameters ) {
               parameter.dependentQueryParameters.forEach( relatedParam => {
-                const dependentCheckbox = document.getElementById( getDependentParameterControlId( relatedParam.value ) );
+                const dependentCheckbox = document.getElementById( getDependentParameterControlId( relatedParam.value ) ) as HTMLInputElement;
                 dependentCheckbox.disabled = !checkbox.checked;
                 dependentCheckbox.checked = !!relatedParam.default;
               } );
@@ -1140,4 +1151,6 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
   const unitTestsRepos = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/unit-tests' } ) );
 
   render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos ) );
-} )();
+} )().catch( ( e: Error ) => {
+  throw e;
+} );
