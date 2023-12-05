@@ -35,12 +35,9 @@
 // @ts-nocheck
 /* eslint-enable */
 
-/* eslint-disable @typescript-eslint/no-floating-promises */
-
 import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 
-( function() {
-
+( async function(): void {
 
   type PhetmarkQueryParameter = {
     value: string;
@@ -1135,40 +1132,12 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
   }
 
   // Load files serially, populate then render
-  $.ajax( {
-    url: '../perennial-alias/data/active-runnables'
-  } ).done( activeRunnablesString => {
-    const activeRunnables = whiteSplitAndSort( activeRunnablesString );
+  const activeRunnables = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/active-runnables' } ) );
+  const activeRepos = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/active-repos' } ) );
+  const phetioSims = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/phet-io' } ) );
+  const interactiveDescriptionSims = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/interactive-description' } ) );
+  const wrappers = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/wrappers' } ) );
+  const unitTestsRepos = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/unit-tests' } ) );
 
-    $.ajax( {
-      url: '../perennial-alias/data/active-repos'
-    } ).done( activeReposString => {
-      const activeRepos = whiteSplitAndSort( activeReposString );
-
-      $.ajax( {
-        url: '../perennial-alias/data/phet-io'
-      } ).done( testPhetioString => {
-        const phetioSims = whiteSplitAndSort( testPhetioString );
-
-        $.ajax( {
-          url: '../perennial-alias/data/interactive-description'
-        } ).done( accessibleSimsString => {
-          const interactiveDescriptionSims = whiteSplitAndSort( accessibleSimsString );
-
-          $.ajax( {
-            url: '../perennial-alias/data/wrappers'
-          } ).done( wrappersString => {
-            const wrappers = whiteSplitAndSort( wrappersString ).sort();
-
-            $.ajax( {
-              url: '../perennial-alias/data/unit-tests'
-            } ).done( unitTestsStrings => {
-              const unitTestsRepos = whiteSplitAndSort( unitTestsStrings ).sort();
-              render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos ) );
-            } );
-          } );
-        } );
-      } );
-    } );
-  } );
+  render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos ) );
 } )();
