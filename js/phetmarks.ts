@@ -18,7 +18,7 @@
     value: string; // The actual query parameter included in the URL,
     text: string; // Display string shown in the query parameter list,
     type?: 'boolean'; // if boolean, then it will add "=true" or "=false" to the checkbox value
-    default?: boolean; // If true, the query parameter will be true by default
+    default?: boolean; // If true, the query parameter will be included by default. This will be false if not provided
     dependentQueryParameters?: PhetmarksQueryParameter[];
   };
 
