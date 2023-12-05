@@ -34,12 +34,12 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 
 ( async function(): Promise<void> {
 
-  type PhetmarkQueryParameter = {
+  type PhetmarksQueryParameter = {
     value: string;
     text: string;
     type?: 'boolean' | 'something else';
     default?: string | boolean; // TODO: make it a string only? https://github.com/phetsims/phetmarks/issues/61
-    dependentQueryParameters?: PhetmarkQueryParameter[];
+    dependentQueryParameters?: PhetmarksQueryParameter[];
   };
 
   type RepoName = string; // the name of a repo;
@@ -52,7 +52,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
     description: string;
     url: string;
     group?: ModeGroup;
-    queryParameters?: PhetmarkQueryParameter[];
+    queryParameters?: PhetmarksQueryParameter[];
   };
   type ModeData = Record<RepoName, Mode[]>;
   type RepoSelector = {
@@ -81,7 +81,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
   type Selector = IntentionalAny;
 
   // Query parameters used for the following modes: requirejs, compiled, production
-  const simQueryParameters: PhetmarkQueryParameter[] = [
+  const simQueryParameters: PhetmarksQueryParameter[] = [
     { value: 'audio=disabled', text: 'Mute' },
     {
       value: 'fuzz', text: 'Fuzz', dependentQueryParameters: [
@@ -116,16 +116,16 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
     }
   ];
 
-  const eaObject: PhetmarkQueryParameter = { value: 'ea', text: 'Assertions', default: true };
+  const eaObject: PhetmarksQueryParameter = { value: 'ea', text: 'Assertions', default: true };
 
   // Query parameters used for requirejs and PhET-iO wrappers
-  const devSimQueryParameters: PhetmarkQueryParameter[] = [
+  const devSimQueryParameters: PhetmarksQueryParameter[] = [
     { value: 'brand=phet', text: 'PhET Brand', default: true },
     eaObject,
     { value: 'eall', text: 'All Assertions' }
   ];
 
-  const phetioBaseParameters: PhetmarkQueryParameter[] = [ {
+  const phetioBaseParameters: PhetmarksQueryParameter[] = [ {
     value: 'phetioEmitHighFrequencyEvents',
     default: true,
     type: 'boolean',
@@ -156,7 +156,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
     default: true
   } ];
 
-  const testServerNoTestTaskQueryParameters: PhetmarkQueryParameter[] = [
+  const testServerNoTestTaskQueryParameters: PhetmarksQueryParameter[] = [
     {
       value: 'loadTimeout=30000',
       text: 'how long the test has to load.',
@@ -166,7 +166,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
       text: 'Randomize sim list'
     }
   ];
-  const testServerQueryParameters: PhetmarkQueryParameter[] = testServerNoTestTaskQueryParameters.concat( {
+  const testServerQueryParameters: PhetmarksQueryParameter[] = testServerNoTestTaskQueryParameters.concat( {
     value: 'testTask=true',
     text: 'test fuzzing after loading, set to false if you just want to test loading',
     default: true
@@ -175,14 +175,14 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
   // See perennial-alias/data/wrappers for format
   const nonPublishedPhetioWrappersToAddToPhetmarks = [ 'phet-io-wrappers/mirror-inputs' ];
 
-  const phetioDebugTrueParameter: PhetmarkQueryParameter = {
+  const phetioDebugTrueParameter: PhetmarksQueryParameter = {
     value: 'phetioDebug=true',
     text: 'Enable assertions for the sim inside a wrapper, basically the phet-io version of ?ea',
     default: true
   };
 
   // Query parameters for the PhET-iO wrappers (including iframe tests)
-  const phetioWrapperQueryParameters: PhetmarkQueryParameter[] = phetioBaseParameters.concat( [ phetioDebugTrueParameter, {
+  const phetioWrapperQueryParameters: PhetmarksQueryParameter[] = phetioBaseParameters.concat( [ phetioDebugTrueParameter, {
     value: 'phetioWrapperDebug=true',
     text: 'Enable assertions for wrapper-code, like assertions in Studio, State, or Client',
     default: true
@@ -193,7 +193,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
   } ] );
 
   // For phetio sim frame links
-  const phetioSimQueryParameters: PhetmarkQueryParameter[] = phetioBaseParameters.concat( [
+  const phetioSimQueryParameters: PhetmarksQueryParameter[] = phetioBaseParameters.concat( [
     eaObject, // this needs to be first in this list
     { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' }, {
       value: 'phetioPrintMissingTandems',
@@ -210,7 +210,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
     }
   ] );
 
-  const migrationQueryParameters: PhetmarkQueryParameter[] = [ ...phetioWrapperQueryParameters, {
+  const migrationQueryParameters: PhetmarksQueryParameter[] = [ ...phetioWrapperQueryParameters, {
     value: 'phetioElementsDisplay=all',
     text: 'Show all elements',
     default: true
@@ -463,7 +463,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
             value: `${generalTestServerSimParams}&brand=phet&fuzz&supportsInteractiveDescription=true`,
             text: 'Normal Fuzz Test sims',
             default: false
-          } ] as PhetmarkQueryParameter[] ).concat( testServerQueryParameters ).concat( [ {
+          } ] as PhetmarksQueryParameter[] ).concat( testServerQueryParameters ).concat( [ {
             value: `testSims=${interactiveDescriptionSims.join( ',' )}`,
             text: 'Test only A11y sims',
             default: true
@@ -478,7 +478,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
             value: 'ea&brand=phet&audio=disabled&testTask=false',
             text: 'Test Sims (Load Only)',
             default: true
-          } ] as PhetmarkQueryParameter[] ).concat( testServerNoTestTaskQueryParameters )
+          } ] as PhetmarksQueryParameter[] ).concat( testServerNoTestTaskQueryParameters )
         } );
         modes.push( {
           name: 'continuous-testing',
@@ -627,7 +627,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
             url += '&console';
           }
 
-          let queryParameters: PhetmarkQueryParameter[] = [];
+          let queryParameters: PhetmarksQueryParameter[] = [];
           if ( wrapperName === 'studio' ) {
 
             const studioQueryParameters = [ ...phetioWrapperQueryParameters ];
