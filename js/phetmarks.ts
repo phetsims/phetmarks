@@ -37,9 +37,10 @@
 
 /* eslint-disable @typescript-eslint/no-floating-promises */
 
+import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
+
 ( function() {
 
-  import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 
   type PhetmarkQueryParameter = {
     value: string;
