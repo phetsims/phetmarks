@@ -10,6 +10,7 @@
  *          pressed.
  * - Query Parameters: If available, controls what optional query parameters will be added to the end of the URL.
  *
+ * // TODO: Combine doc with Type info below, https://github.com/phetsims/phetmarks/issues/61
  * Mode has the format:
  * {
  *   name: {string} - Internal unique value (for looking up which option was chosen),
@@ -29,11 +30,52 @@
  * }
  */
 
+// TODO: just while working on https://github.com/phetsims/phetmarks/issues/61
+/* eslint-disable */
+// @ts-nocheck
+/* eslint-enable */
+
+/* eslint-disable @typescript-eslint/no-floating-promises */
+
 ( function() {
 
+  import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
+
+  type PhetmarkQueryParameter = {
+    value: string;
+    text: string;
+    type?: 'boolean' | 'something else';
+    default?: string | boolean; // TODO: make it a string only? https://github.com/phetsims/phetmarks/issues/61
+    dependentQueryParameters?: PhetmarkQueryParameter[];
+  };
+
+  type RepoName = string; // the name of a repo;
+  type Mode = {
+    name: string;
+    text: string;
+    description: string;
+    url: string;
+    group?: 'PhET-iO';
+    queryParameters?: PhetmarkQueryParameter[];
+  };
+  type ModeData = Record<RepoName, Mode[]>;
+  type RepoSelector = {
+    element: HTMLSelectElement;
+    get value(): string;
+  };
+
+  type ModeSelector = {
+    element: HTMLSelectElement;
+    get value(): string;
+    get mode(): Mode;
+    update: () => void;
+  };
+
+  // TODO: What is this? Is it actually all one type? https://github.com/phetsims/phetmarks/issues/61
+  type Selector = IntentionalAny;
 
   // Query parameters used for the following modes: requirejs, compiled, production
-  const simQueryParameters = [
+  const simQueryParameters: PhetmarkQueryParameter[] = [
     { value: 'audio=disabled', text: 'Mute' },
     {
       value: 'fuzz', text: 'Fuzz', dependentQueryParameters: [
@@ -68,16 +110,16 @@
     }
   ];
 
-  const eaObject = { value: 'ea', text: 'Assertions', default: true };
+  const eaObject: PhetmarkQueryParameter = { value: 'ea', text: 'Assertions', default: true };
 
   // Query parameters used for requirejs and PhET-iO wrappers
-  const devSimQueryParameters = [
+  const devSimQueryParameters: PhetmarkQueryParameter[] = [
     { value: 'brand=phet', text: 'PhET Brand', default: true },
     eaObject,
     { value: 'eall', text: 'All Assertions' }
   ];
 
-  const phetioBaseParameters = [ {
+  const phetioBaseParameters: PhetmarkQueryParameter[] = [ {
     value: 'phetioEmitHighFrequencyEvents',
     default: true,
     type: 'boolean',
@@ -108,7 +150,7 @@
     default: true
   } ];
 
-  const testServerNoTestTaskQueryParameters = [
+  const testServerNoTestTaskQueryParameters: PhetmarkQueryParameter[] = [
     {
       value: 'loadTimeout=30000',
       text: 'how long the test has to load.',
@@ -118,7 +160,7 @@
       text: 'Randomize sim list'
     }
   ];
-  const testServerQueryParameters = testServerNoTestTaskQueryParameters.concat( {
+  const testServerQueryParameters: PhetmarkQueryParameter[] = testServerNoTestTaskQueryParameters.concat( {
     value: 'testTask=true',
     text: 'test fuzzing after loading, set to false if you just want to test loading',
     default: true
@@ -127,14 +169,14 @@
   // See perennial-alias/data/wrappers for format
   const nonPublishedPhetioWrappersToAddToPhetmarks = [ 'phet-io-wrappers/mirror-inputs' ];
 
-  const phetioDebugTrueParameter = {
+  const phetioDebugTrueParameter: PhetmarkQueryParameter = {
     value: 'phetioDebug=true',
     text: 'Enable assertions for the sim inside a wrapper, basically the phet-io version of ?ea',
     default: true
   };
 
   // Query parameters for the PhET-iO wrappers (including iframe tests)
-  const phetioWrapperQueryParameters = phetioBaseParameters.concat( [ phetioDebugTrueParameter, {
+  const phetioWrapperQueryParameters: PhetmarkQueryParameter[] = phetioBaseParameters.concat( [ phetioDebugTrueParameter, {
     value: 'phetioWrapperDebug=true',
     text: 'Enable assertions for wrapper-code, like assertions in Studio, State, or Client',
     default: true
@@ -145,7 +187,7 @@
   } ] );
 
   // For phetio sim frame links
-  const phetioSimQueryParameters = phetioBaseParameters.concat( [
+  const phetioSimQueryParameters: PhetmarkQueryParameter[] = phetioBaseParameters.concat( [
     eaObject, // this needs to be first in this list
     { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' }, {
       value: 'phetioPrintMissingTandems',
@@ -162,7 +204,7 @@
     }
   ] );
 
-  const migrationQueryParameters = [ ...phetioWrapperQueryParameters, {
+  const migrationQueryParameters: PhetmarkQueryParameter[] = [ ...phetioWrapperQueryParameters, {
     value: 'phetioElementsDisplay=all',
     text: 'Show all elements',
     default: true
@@ -172,21 +214,15 @@
   /**
    * Returns a local-storage key that has additional information included, to prevent collision with other applications (or in the future, previous
    * versions of phetmarks).
-   * @public
-   *
-   * @param {string} key
-   * @returns {string}
    */
-  function storageKey( key ) {
+  function storageKey( key: string ): string {
     return `phetmarks-${key}`;
   }
 
   /**
    * From the wrapper path in perennial-alias/data/wrappers, get the name of the wrapper.
-   * @param {string} wrapper
-   * @returns {string} - the name of the wrapper
    */
-  const getWrapperName = function( wrapper ) {
+  const getWrapperName = function( wrapper: string ): string {
 
     // If the wrapper has its own individual repo, then get the name 'classroom-activity' from 'phet-io-wrapper-classroom-activity'
     // Maintain compatibility for wrappers in 'phet-io-wrappers-'
@@ -208,11 +244,13 @@
     shiftPressed = event.shiftKey;
   } );
 
-  function openURL( url ) {
+  function openURL( url: string ): void {
     if ( shiftPressed ) {
       window.open( url, '_blank' );
     }
     else {
+
+      // @ts-expect-error - the browser supports setting to a string.
       window.location = url;
     }
   }
@@ -221,19 +259,14 @@
    * Fills out the modeData map with information about repositories, modes and query parameters. Parameters are largely
    * repo lists from perennial-alias/data files.
    *
-   * @param {Array.<string>} activeRunnables - from active-runnables
-   * @param {Array.<string>} activeRepos - from active-repos
-   * @param {Array.<string>} phetioSims - from phet-io
-   * @param {Array.<string>} interactiveDescriptionSims - from interactive-description
-   * @param {Array.<string>} wrappers - from wrappers
-   * @param {Array.<string>} unitTestsRepos - Has unit tests
-   * @returns {Object} - Maps from {string} repository name => {Mode}
    */
-  function populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos ) {
-    const modeData = {};
+  function populate( activeRunnables: RepoName[], activeRepos: RepoName[], phetioSims: RepoName[],
+                     interactiveDescriptionSims: RepoName[], wrappers: string[],
+                     unitTestsRepos: RepoName[] ): ModeData {
+    const modeData: ModeData = {};
 
-    activeRepos.forEach( repo => {
-      const modes = [];
+    activeRepos.forEach( ( repo: RepoName ) => {
+      const modes: Mode[] = [];
       modeData[ repo ] = modes;
 
       const isPhetio = _.includes( phetioSims, repo );
@@ -416,7 +449,7 @@
           text: 'Fuzz Test Interactive Description Sims',
           description: 'Runs automated testing with fuzzing, 10 second timer',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: [ {
+          queryParameters: ( [ {
             value: `${generalTestServerSimParams}&brand=phet&fuzzBoard&supportsInteractiveDescription=true`,
             text: 'Keyboard Fuzz Test sims',
             default: true
@@ -424,7 +457,7 @@
             value: `${generalTestServerSimParams}&brand=phet&fuzz&supportsInteractiveDescription=true`,
             text: 'Normal Fuzz Test sims',
             default: false
-          } ].concat( testServerQueryParameters ).concat( [ {
+          } ] as PhetmarkQueryParameter[] ).concat( testServerQueryParameters ).concat( [ {
             value: `testSims=${interactiveDescriptionSims.join( ',' )}`,
             text: 'Test only A11y sims',
             default: true
@@ -435,11 +468,11 @@
           text: 'Fuzz Sims (Load Only)',
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: [ {
+          queryParameters: ( [ {
             value: 'ea&brand=phet&audio=disabled&testTask=false',
             text: 'Test Sims (Load Only)',
             default: true
-          } ].concat( testServerNoTestTaskQueryParameters )
+          } ] as PhetmarkQueryParameter[] ).concat( testServerNoTestTaskQueryParameters )
         } );
         modes.push( {
           name: 'continuous-testing',
@@ -572,7 +605,7 @@
           let url = '';
 
           // Process for dedicated wrapper repos
-          if ( wrapper.indexOf( 'phet-io-wrapper-' ) === 0 ) {
+          if ( wrapper.startsWith( 'phet-io-wrapper-' ) ) {
 
             // Special use case for the sonification wrapper
             url = wrapperName === 'sonification' ? `../phet-io-wrapper-${wrapperName}/${repo}-sonification.html?sim=${repo}` :
@@ -588,7 +621,7 @@
             url += '&console';
           }
 
-          let queryParameters = [];
+          let queryParameters: PhetmarkQueryParameter[] = [];
           if ( wrapperName === 'studio' ) {
 
             const studioQueryParameters = [ ...phetioWrapperQueryParameters ];
@@ -656,15 +689,11 @@
     return modeData;
   }
 
-  function clearChildren( element ) {
+  function clearChildren( element: HTMLElement ): void {
     while ( element.childNodes.length ) { element.removeChild( element.childNodes[ 0 ] ); }
   }
 
-  /**
-   * @param {Array.<string>} repositories - All repository names
-   * @returns { element: {HTMLSelectElement}, get value(): {string} }
-   */
-  function createRepositorySelector( repositories ) {
+  function createRepositorySelector( repositories: RepoName[] ): RepoSelector {
     const select = document.createElement( 'select' );
     select.autofocus = true;
     repositories.forEach( repo => {
@@ -674,8 +703,9 @@
     } );
 
     // IE or no-scrollIntoView will need to be height-limited
-    if ( select.scrollIntoView && navigator.userAgent.indexOf( 'Trident/' ) < 0 ) {
-      select.setAttribute( 'size', repositories.length );
+    // @ts-expect-error
+    if ( select.scrollIntoView && !navigator.userAgent.includes( 'Trident/' ) ) {
+      select.setAttribute( 'size', `${repositories.length}` );
     }
     else {
       select.setAttribute( 'size', '30' );
@@ -683,16 +713,20 @@
 
     // Select a repository if it's been stored in localStorage before
     const repoKey = storageKey( 'repo' );
-    if ( localStorage.getItem( repoKey ) ) {
-      select.value = localStorage.getItem( repoKey );
+    const value = localStorage.getItem( repoKey );
+    if ( value ) {
+      select.value = value;
     }
 
     select.focus();
 
     // Scroll to the selected element
-    function tryScroll() {
-      const element = select.childNodes[ select.selectedIndex ];
+    function tryScroll(): void {
+      const element = select.childNodes[ select.selectedIndex ] as HTMLElement;
+
+      // @ts-expect-error
       if ( element.scrollIntoViewIfNeeded ) {
+        // @ts-expect-error
         element.scrollIntoViewIfNeeded();
       }
       else if ( element.scrollIntoView ) {
@@ -708,20 +742,13 @@
     return {
       element: select,
       get value() {
+        // @ts-expect-error - it is an HTMLElement, not just a node
         return select.childNodes[ select.selectedIndex ].value;
       }
     };
   }
 
-  /**
-   * @param {Object} modeData - Maps from {string} repository name => {Mode}
-   * @param {Object} repositorySelector
-   * @returns { element: {HTMLSelectElement},
-   *            get value(): {string},
-   *            get mode(): {Mode},
-   *            update: function() }
-   */
-  function createModeSelector( modeData, repositorySelector ) {
+  function createModeSelector( modeData: ModeData, repositorySelector: RepoSelector ): ModeSelector {
     const select = document.createElement( 'select' );
 
     const selector = {
@@ -763,7 +790,7 @@
           groups[ choice.group ].appendChild( choiceOption );
         } );
 
-        select.setAttribute( 'size', modeData[ repositorySelector.value ].length + Object.keys( groups ).length );
+        select.setAttribute( 'size', modeData[ repositorySelector.value ].length + Object.keys( groups ).length + '' );
         if ( select.selectedIndex < 0 ) {
           select.selectedIndex = 0;
         }
@@ -773,10 +800,10 @@
     return selector;
   }
 
-  function createScreenSelector() {
+  function createScreenSelector(): Selector {
     const div = document.createElement( 'div' );
 
-    function createScreenRadioButton( name, value, text ) {
+    function createScreenRadioButton( name: string, value: string, text: string ): HTMLElement {
       const label = document.createElement( 'label' );
       label.className = 'screenLabel';
       const radio = document.createElement( 'input' );
@@ -800,15 +827,16 @@
         return $( 'input[name=screens]:checked' ).val();
       },
       reset: function() {
-        $( 'input[name=screens]' )[ 0 ].checked = true;
+        const inputElement = $( 'input[name=screens]' )[ 0 ] as HTMLInputElement;
+        inputElement.checked = true;
       }
     };
   }
 
-  function createPhetioValidationSelector() {
+  function createPhetioValidationSelector(): Selector {
     const div = document.createElement( 'div' );
 
-    function createValidationRadioButton( name, value, text ) {
+    function createValidationRadioButton( name: string, value: string, text: string ): HTMLElement {
       const label = document.createElement( 'label' );
       label.className = 'validationLabel'; // https://github.com/phetsims/tandem/issues/191
       const radio = document.createElement( 'input' );
@@ -839,12 +867,7 @@
     };
   }
 
-
-  /**
-   * @param {Object} modeSelector
-   * @returns { element: {HTMLSelectElement}, get value(): {string} }
-   */
-  function createQueryParameterSelector( modeSelector ) {
+  function createQueryParameterSelector( modeSelector: ModeSelector ): Selector {
     const screenSelector = createScreenSelector();
     const phetioValidationSelector = createPhetioValidationSelector();
 
@@ -854,7 +877,7 @@
     const toggleContainer = document.createElement( 'div' );
 
     // get the ID for a checkbox that is "dependent" on another value
-    const getDependentParameterControlId = value => `dependent-checkbox-${value}`;
+    const getDependentParameterControlId = ( value: string ) => `dependent-checkbox-${value}`;
 
     const selector = {
       screenElement: screenSelector.element,
@@ -920,12 +943,8 @@
             /**
              * Creates a checkbox whose value is dependent on another checkbox, it is only used if the parent
              * checkbox is checked.
-             * @param {string} label
-             * @param {string} value
-             * @param {boolean} checked - initial checked state
-             * @returns {HTMLDivElement}
              */
-            const createDependentCheckbox = ( label, value, checked ) => {
+            const createDependentCheckbox = ( label: string, value: string, checked: boolean ): HTMLDivElement => {
               const dependentQueryParametersContainer = document.createElement( 'div' );
 
               const dependentCheckbox = document.createElement( 'input' );
@@ -1004,18 +1023,16 @@
 
   /**
    * Create the view and hook everything up.
-   *
-   * @param {Object} modeData - Maps from {string} repository name => {Mode}
    */
-  function render( modeData ) {
+  function render( modeData: ModeData ): void {
     const repositorySelector = createRepositorySelector( Object.keys( modeData ) );
     const modeSelector = createModeSelector( modeData, repositorySelector );
     const queryParameterSelector = createQueryParameterSelector( modeSelector );
 
-    function getCurrentURL() {
+    function getCurrentURL(): string {
       const queryParameters = queryParameterSelector.value;
       const url = modeSelector.mode.url;
-      const separator = url.indexOf( '?' ) < 0 ? '?' : '&';
+      const separator = url.includes( '?' ) ? '&' : '?';
       return url + ( queryParameters.length ? separator + queryParameters : '' );
     }
 
@@ -1028,9 +1045,9 @@
     resetButton.name = 'reset';
     resetButton.innerHTML = 'Reset Query Parameters';
 
-    function header( str ) {
+    function header( string: string ): HTMLElement {
       const head = document.createElement( 'h3' );
-      head.appendChild( document.createTextNode( str ) );
+      head.appendChild( document.createTextNode( string ) );
       return head;
     }
 
@@ -1062,12 +1079,12 @@
     document.body.appendChild( modeDiv );
     document.body.appendChild( queryParametersDiv );
 
-    function updateQueryParameterVisibility() {
+    function updateQueryParameterVisibility(): void {
       queryParametersDiv.style.visibility = modeSelector.mode.queryParameters ? 'inherit' : 'hidden';
     }
 
     // Align panels based on width
-    function layout() {
+    function layout(): void {
       modeDiv.style.left = `${repositorySelector.element.clientWidth + 20}px`;
       queryParametersDiv.style.left = `${repositorySelector.element.clientWidth + +modeDiv.clientWidth + 40}px`;
     }
@@ -1075,12 +1092,12 @@
     window.addEventListener( 'resize', layout );
 
     // Hook updates to change listeners
-    function onRepositoryChanged() {
+    function onRepositoryChanged(): void {
       modeSelector.update();
       onModeChanged();
     }
 
-    function onModeChanged() {
+    function onModeChanged(): void {
       queryParameterSelector.update();
       updateQueryParameterVisibility();
       layout();
@@ -1091,7 +1108,7 @@
     onRepositoryChanged();
 
     // Clicking 'Launch' or pressing 'enter' opens the URL
-    function openCurrentURL() {
+    function openCurrentURL(): void {
       openURL( getCurrentURL() );
     }
 
@@ -1108,8 +1125,8 @@
   }
 
   // Splits file strings (such as perennial-alias/data/active-runnables) into a list of entries, ignoring blank lines.
-  function whiteSplitAndSort( str ) {
-    return str.split( '\n' ).map( line => {
+  function whiteSplitAndSort( rawDataList: string ): RepoName[] {
+    return rawDataList.split( '\n' ).map( line => {
       return line.replace( '\r', '' );
     } ).filter( line => {
       return line.length > 0;
@@ -1146,7 +1163,6 @@
               url: '../perennial-alias/data/unit-tests'
             } ).done( unitTestsStrings => {
               const unitTestsRepos = whiteSplitAndSort( unitTestsStrings ).sort();
-
               render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos ) );
             } );
           } );
@@ -1154,5 +1170,4 @@
       } );
     } );
   } );
-
 } )();

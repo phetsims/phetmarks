@@ -1,0 +1,9 @@
+{
+  "extends": "../chipper/tsconfig-core.json",
+  "include": [
+    "js/**/*",
+    "images/**/*",
+    "mipmaps/**/*",
+    "sounds/**/*"
+  ]
+}
