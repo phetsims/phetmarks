@@ -11,8 +11,6 @@
  * - Query Parameters: If available, controls what optional query parameters will be added to the end of the URL.
  */
 
-import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
-
 ( async function(): Promise<void> {
 
   // QueryParameter has the format
@@ -46,12 +44,18 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
 
   type ModeSelector = {
     element: HTMLSelectElement;
-    get value(): string;
-    get mode(): Mode;
+    value: string;
+    mode: Mode;
     update: () => void;
   };
 
   type QueryParameterSelector = {
+    element: HTMLElement;
+    value: string;
+    reset: () => void;
+  };
+
+  type QueryParametersSelector = {
     screenElement: HTMLElement;
     phetioValidationElement: HTMLElement;
     toggleElement: HTMLElement;
@@ -60,9 +64,6 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
     update: () => void;
     reset: () => void;
   };
-
-  // TODO: What is this? Is it actually all one type? https://github.com/phetsims/phetmarks/issues/61
-  type Selector = IntentionalAny;
 
   // Query parameters used for the following modes: requirejs, compiled, production
   const simQueryParameters: PhetmarksQueryParameter[] = [
@@ -790,7 +791,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
     return selector;
   }
 
-  function createScreenSelector(): Selector {
+  function createScreenSelector(): QueryParameterSelector {
     const div = document.createElement( 'div' );
 
     function createScreenRadioButton( name: string, value: string, text: string ): HTMLElement {
@@ -814,7 +815,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
     return {
       element: div,
       get value() {
-        return $( 'input[name=screens]:checked' ).val();
+        return $( 'input[name=screens]:checked' ).val() + '';
       },
       reset: function() {
         const inputElement = $( 'input[name=screens]' )[ 0 ] as HTMLInputElement;
@@ -823,7 +824,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
     };
   }
 
-  function createPhetioValidationSelector(): Selector {
+  function createPhetioValidationSelector(): QueryParameterSelector {
     const div = document.createElement( 'div' );
 
     function createValidationRadioButton( name: string, value: string, text: string ): HTMLElement {
@@ -849,7 +850,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
     return {
       element: div,
       get value() {
-        return $( 'input[name=validation]:checked' ).val();
+        return $( 'input[name=validation]:checked' ).val() + '';
       },
       reset: function() {
         const input = $( 'input[name=validation]' )[ 0 ] as HTMLInputElement;
@@ -858,7 +859,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
     };
   }
 
-  function createQueryParameterSelector( modeSelector: ModeSelector ): QueryParameterSelector {
+  function createQueryParametersSelector( modeSelector: ModeSelector ): QueryParametersSelector {
     const screenSelector = createScreenSelector();
     const phetioValidationSelector = createPhetioValidationSelector();
 
@@ -870,7 +871,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
     // get the ID for a checkbox that is "dependent" on another value
     const getDependentParameterControlId = ( value: string ) => `dependent-checkbox-${value}`;
 
-    const selector: QueryParameterSelector = {
+    const selector: QueryParametersSelector = {
       screenElement: screenSelector.element,
       phetioValidationElement: phetioValidationSelector.element,
       toggleElement: toggleContainer,
@@ -1020,7 +1021,7 @@ import IntentionalAny from '../../phet-core/js/types/IntentionalAny.js';
   function render( modeData: ModeData ): void {
     const repositorySelector = createRepositorySelector( Object.keys( modeData ) );
     const modeSelector = createModeSelector( modeData, repositorySelector );
-    const queryParameterSelector = createQueryParameterSelector( modeSelector );
+    const queryParameterSelector = createQueryParametersSelector( modeSelector );
 
     function getCurrentURL(): string {
       const queryParameters = queryParameterSelector.value;
