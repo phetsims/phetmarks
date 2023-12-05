@@ -69,7 +69,6 @@
     // Get the current queryString value based on the current selection.
     value: string;
     update: () => void;
-    reset: () => void;
   };
 
   type ElementToParameterMap = Map<HTMLElement, PhetmarksQueryParameter>;
@@ -998,55 +997,6 @@
             createFlagBooleanSelector( parameter, toggleContainer, elementToQueryParameter );
           }
         } );
-      },
-      reset: function() {
-        // called on "Reset Query Parameters"
-
-        customTextBox.value = '';
-
-        const checkboxes = $( toggleContainer ).find( '.flagOrBooleanParameter' ) as unknown as HTMLInputElement[];
-
-        // For each checkbox, set it to its default
-        _.forEach( checkboxes, ( checkbox: HTMLInputElement ) => {
-
-          // Grab the parameter object
-          const parameter = elementToQueryParameter.get( checkbox );
-
-          // TODO: need this? https://github.com/phetsims/phetmarks/issues/44
-          if ( parameter ) {
-
-            // Handle when the default isn't defined (it would be false)
-            checkbox.checked = !!parameter.default;
-
-            // dependent parameter controls only enabled if parent checkbox is checked
-            if ( parameter.dependentQueryParameters ) {
-              parameter.dependentQueryParameters.forEach( relatedParam => {
-                const dependentCheckbox = document.getElementById( getDependentParameterControlId( relatedParam.value ) ) as HTMLInputElement;
-                dependentCheckbox.disabled = !checkbox.checked;
-                dependentCheckbox.checked = !!relatedParam.default;
-              } );
-            }
-          }
-        } );
-
-        const radioButtons = $( toggleContainer ).find( '.parameterValues' ) as unknown as HTMLInputElement[];
-
-        // For each checkbox, set it to its default
-        _.forEach( radioButtons, ( radioButton: HTMLInputElement ) => {
-
-
-          // Grab the parameter object
-          const parameter = elementToQueryParameter.get( radioButton )!;
-
-          assert && assert( parameter.parameterValues!.length > 0, 'sanity check' );
-
-          // TODO: need this? https://github.com/phetsims/phetmarks/issues/44
-          if ( parameter ) {
-
-            // Handle when the default isn't defined (it would be false)
-            radioButton.checked = radioButton.value === parameter.parameterValues![ 0 ];
-          }
-        } );
       }
     };
 
@@ -1151,7 +1101,7 @@
     launchButton.addEventListener( 'click', openCurrentURL );
 
     // Reset
-    resetButton.addEventListener( 'click', queryParameterSelector.reset );
+    resetButton.addEventListener( 'click', queryParameterSelector.update );
   }
 
   // Splits file strings (such as perennial-alias/data/active-runnables) into a list of entries, ignoring blank lines.
