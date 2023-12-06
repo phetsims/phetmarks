@@ -31,6 +31,11 @@
 
   type RepoName = string; // the name of a repo;
 
+  type MigrationData = {
+    sim: string;
+    version: string;
+  };
+
   // "General" is the default
   type ModeGroup = 'PhET-iO' | 'General';
 
@@ -275,7 +280,7 @@
    */
   function populate( activeRunnables: RepoName[], activeRepos: RepoName[], phetioSims: RepoName[],
                      interactiveDescriptionSims: RepoName[], wrappers: string[],
-                     unitTestsRepos: RepoName[] ): ModeData {
+                     unitTestsRepos: RepoName[], migrationSims: MigrationData[] ): ModeData {
     const modeData: ModeData = {};
 
     activeRepos.forEach( ( repo: RepoName ) => {
@@ -361,7 +366,8 @@
           description: 'Runs automated testing with fuzzing on studio, 10 second timer',
           url: '../aqua/fuzz-lightyear/',
           queryParameters: testServerQueryParameters.concat( migrationQueryParameters ).concat( [ {
-            value: 'testDuration=20000&fuzz&wrapperName=migration&wrapperContinuousTest=%7B%7D&migrationRate=2000&phetioMigrationReport=assert&testSims=beers-law-lab,calculus-grapher,circuit-construction-kit-dc,circuit-construction-kit-dc-virtual-lab,concentration,density,friction,geometric-optics,geometric-optics-basics,graphing-quadratics,gravity-and-orbits,molecule-polarity,molecule-shapes,molecule-shapes-basics,natural-selection,ph-scale,ph-scale-basics',
+            value: 'testDuration=20000&fuzz&wrapperName=migration&wrapperContinuousTest=%7B%7D&migrationRate=2000&' +
+                   `phetioMigrationReport=assert&testSims=${migrationSims.map( simData => simData.sim ).join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
           } ] )
@@ -1127,8 +1133,9 @@
   const interactiveDescriptionSims = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/interactive-description' } ) );
   const wrappers = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/wrappers' } ) );
   const unitTestsRepos = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/unit-tests' } ) );
+  const migrationSims = await $.ajax( { url: '../perennial-alias/data/phet-io-migration.json' } );
 
-  render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos ) );
+  render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos, migrationSims ) );
 } )().catch( ( e: Error ) => {
   throw e;
 } );
