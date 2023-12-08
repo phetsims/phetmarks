@@ -1133,7 +1133,7 @@
   const interactiveDescriptionSims = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/interactive-description' } ) );
   const wrappers = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/wrappers' } ) );
   const unitTestsRepos = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/unit-tests' } ) );
-  const migrationSims = await $.ajax( { url: '../perennial-alias/data/phet-io-migration.json' } );
+  const migrationSims = await $.ajax( { url: '../perennial-alias/data/phet-io-hydrogen.json' } );
 
   render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos, migrationSims ) );
 } )().catch( ( e: Error ) => {
