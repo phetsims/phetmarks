@@ -385,6 +385,15 @@
         } );
       }
 
+      if ( repo === 'phet-io-website' ) {
+        modes.push( {
+          name: 'viewRoot',
+          text: 'View Local',
+          description: 'view the local roon of the website',
+          url: `../${repo}/root/`
+        } );
+      }
+
       if ( hasUnitTests ) {
         modes.push( {
           name: 'unitTestsRequirejs',
