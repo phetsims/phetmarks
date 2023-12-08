@@ -280,7 +280,7 @@
    */
   function populate( activeRunnables: RepoName[], activeRepos: RepoName[], phetioSims: RepoName[],
                      interactiveDescriptionSims: RepoName[], wrappers: string[],
-                     unitTestsRepos: RepoName[], migrationSims: MigrationData[] ): ModeData {
+                     unitTestsRepos: RepoName[], phetioHydrogenSims: MigrationData[] ): ModeData {
     const modeData: ModeData = {};
 
     activeRepos.forEach( ( repo: RepoName ) => {
@@ -367,7 +367,7 @@
           url: '../aqua/fuzz-lightyear/',
           queryParameters: testServerQueryParameters.concat( migrationQueryParameters ).concat( [ {
             value: 'testDuration=20000&fuzz&wrapperName=migration&wrapperContinuousTest=%7B%7D&migrationRate=2000&' +
-                   `phetioMigrationReport=assert&testSims=${migrationSims.map( simData => simData.sim ).join( ',' )}`,
+                   `phetioMigrationReport=assert&testSims=${phetioHydrogenSims.map( simData => simData.sim ).join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
           } ] )
@@ -1133,9 +1133,9 @@
   const interactiveDescriptionSims = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/interactive-description' } ) );
   const wrappers = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/wrappers' } ) );
   const unitTestsRepos = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/unit-tests' } ) );
-  const migrationSims = await $.ajax( { url: '../perennial-alias/data/phet-io-hydrogen.json' } );
+  const phetioHydrogenSims = await $.ajax( { url: '../perennial-alias/data/phet-io-hydrogen.json' } );
 
-  render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos, migrationSims ) );
+  render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos, phetioHydrogenSims ) );
 } )().catch( ( e: Error ) => {
   throw e;
 } );
