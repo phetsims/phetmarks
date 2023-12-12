@@ -109,12 +109,12 @@
     { value: 'showPointerAreas', text: 'Pointer Areas' },
     { value: 'showFittedBlockBounds', text: 'Fitted Block Bounds' },
     { value: 'showCanvasNodeBounds', text: 'CanvasNode Bounds' },
-    { value: 'supportsInteractiveDescription', text: 'Supports Interactive Description', default: false, type: 'boolean' },
-    { value: 'supportsSound', text: 'Supports Sound', default: false, type: 'boolean' },
-    { value: 'supportsExtraSound', text: 'Supports Extra Sound', default: false, type: 'boolean' },
+    { value: 'supportsInteractiveDescription', text: 'Supports Interactive Description', type: 'boolean' },
+    { value: 'supportsSound', text: 'Supports Sound', type: 'boolean' },
+    { value: 'supportsExtraSound', text: 'Supports Extra Sound', type: 'boolean' },
     { value: 'extraSoundInitiallyEnabled', text: 'Extra Sound on by default' },
-    { value: 'supportsPanAndZoom', text: 'Supports Pan and Zoom', default: true, type: 'boolean' },
-    { value: 'supportsVoicing', text: 'Supports Voicing', default: false, type: 'boolean' },
+    { value: 'supportsPanAndZoom', text: 'Supports Pan and Zoom', type: 'boolean' },
+    { value: 'supportsVoicing', text: 'Supports Voicing', type: 'boolean' },
     { value: 'voicingInitiallyEnabled', text: 'Voicing on by default' },
     { value: 'printVoicingResponses', text: 'console.log() voicing responses' },
     { value: 'interactiveHighlightsInitiallyEnabled', text: 'Interactive Highlights on by default' },
@@ -158,12 +158,10 @@
 
   const phetioBaseParameters: PhetmarksQueryParameter[] = [ {
     value: 'phetioEmitHighFrequencyEvents',
-    default: true,
     type: 'boolean',
     text: 'Emit events that occur often'
   }, {
     value: 'phetioEmitStates',
-    default: false,
     type: 'boolean',
     text: 'Emit state events'
   }, {
@@ -903,12 +901,10 @@
 
   // get Flag checkboxes as their individual query strings (in a list), but only if they are different from their default.
   function getFlagParameters( toggleContainer: HTMLElement ): string[] {
-
     const checkboxElements = $( toggleContainer ).find( '.flagParameter' )! as unknown as HTMLInputElement[];
 
     // Only checked boxed.
-    return checkboxElements
-      .filter( ( checkbox: HTMLInputElement ) => checkbox.checked )
+    return _.filter( checkboxElements, ( checkbox: HTMLInputElement ) => checkbox.checked )
       .map( ( checkbox: HTMLInputElement ) => checkbox.name );
   }
 
@@ -996,15 +992,15 @@
       customElement: customTextBox,
       get value() {
 
-        // Boolean and flag query parameters, in string form
-        const flagAndBooleanQueryParameters = getFlagParameters( toggleContainer );
+        // flag query parameters, in string form
+        const flagQueryParameters = getFlagParameters( toggleContainer );
         const parameterValuesQueryParameters = parameterValuesSelectors
           .map( ( selector: QueryParameterSelector ) => selector.value )
           .filter( ( queryParameter: string ) => queryParameter !== '' );
 
         const customQueryParameters = customTextBox.value.length ? [ customTextBox.value ] : [];
 
-        return flagAndBooleanQueryParameters.concat( parameterValuesQueryParameters ).concat( customQueryParameters ).join( '&' );
+        return flagQueryParameters.concat( parameterValuesQueryParameters ).concat( customQueryParameters ).join( '&' );
       },
       update: function() {
         // Rebuild based on a new mode/repo change
