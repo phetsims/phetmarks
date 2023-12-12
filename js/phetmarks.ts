@@ -180,11 +180,9 @@
     text: 'Compare with reference API'
   }, {
     value: 'phetioPrintMissingTandems',
-    default: false,
     text: 'Print uninstrumented tandems'
   }, {
     value: 'phetioPrintAPIProblems',
-    default: false,
     text: 'Print all API problems at once'
   }, _.extend( { default: true }, localesQueryParameter ), {
     value: 'phetioValidation',
@@ -234,15 +232,12 @@
     eaObject, // this needs to be first in this list
     { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' }, {
       value: 'phetioPrintMissingTandems',
-      default: false,
       text: 'Print tandems that have not yet been added'
     }, {
       value: 'phetioPrintAPIProblems',
-      default: false,
       text: 'Print problems found by phetioAPIValidation to the console instead of asserting each item.'
     }, {
       value: 'phetioPrintAPI',
-      default: false,
       text: 'Print the API to the console'
     }
   ] );
@@ -503,8 +498,7 @@
             default: true
           }, {
             value: `${generalTestServerSimParams}&brand=phet&fuzz&supportsInteractiveDescription=true`,
-            text: 'Normal Fuzz Test sims',
-            default: false
+            text: 'Normal Fuzz Test sims'
           } ] as PhetmarksQueryParameter[] ).concat( testServerQueryParameters ).concat( [ {
             value: `testSims=${interactiveDescriptionSims.join( ',' )}`,
             text: 'Test only A11y sims',
@@ -588,12 +582,10 @@
             default: true
           }, {
             value: 'parseX=10',
-            text: 'Test only 10 sessions',
-            default: false
+            text: 'Test only 10 sessions'
           }, {
             value: 'forSpreadsheet',
-            text: 'Create output for a spreadsheet.',
-            default: false
+            text: 'Create output for a spreadsheet.'
           } ]
         } );
       }
@@ -696,9 +688,7 @@
               default: true
             }, {
               value: 'logTiming',
-              text: 'Console log the amount of time it took to set the state of the simulation.',
-              // TODO: default false is redundant, https://github.com/phetsims/phetmarks/issues/62
-              default: false
+              text: 'Console log the amount of time it took to set the state of the simulation.'
             } ];
           }
           else if ( wrapperName === 'playback' ) {
