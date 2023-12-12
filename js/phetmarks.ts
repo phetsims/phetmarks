@@ -77,11 +77,11 @@
 
   type ElementToParameterMap = Map<HTMLElement, PhetmarksQueryParameter>;
 
-  // Query parameters used for the following modes: requirejs, compiled, production
-  const simQueryParameters: PhetmarksQueryParameter[] = [
+  // Query parameters used for the following modes: unbuilt, compiled, production
+  const simNoLocalesQueryParameters: PhetmarksQueryParameter[] = [
     {
       value: 'audio',
-      text: 'Audio support for the runtime',
+      text: 'Audio support',
       type: 'parameterValues',
       parameterValues: [ 'enabled', 'disabled', 'muted' ],
       omitIfDefault: true
@@ -108,24 +108,31 @@
     { value: 'voicingInitiallyEnabled', text: 'Voicing on by default' },
     { value: 'printVoicingResponses', text: 'console.log() voicing responses' },
     { value: 'interactiveHighlightsInitiallyEnabled', text: 'Interactive Highlights on by default' },
-    { value: 'preferencesStorage', text: 'Remember previous values of preferences from localStorage.' },
+    { value: 'preferencesStorage', text: 'Load Preferences from localStorage.' },
     { value: 'webgl=false', text: 'No WebGL' },
-    { value: 'listenerOrder=random', text: 'Randomize listener order' },
-    {
-      value: 'locales=*', text: 'Load all locales', dependentQueryParameters: [
-        { value: 'keyboardLocaleSwitcher', text: 'ctrl + u/i to cycle locales' }
-      ]
-    }, {
-      value: 'screens',
-      text: 'What sim screen to display',
-      type: 'parameterValues',
-      parameterValues: [ 'all', '1', '2', '3', '4', '5', '6' ],
-      omitIfDefault: true
-    } ];
+    { value: 'listenerOrder=random', text: 'Randomize listener order' } ];
+
+  const localesQueryParameter: PhetmarksQueryParameter = {
+    value: 'locales=*', text: 'Load all locales', dependentQueryParameters: [
+      { value: 'keyboardLocaleSwitcher', text: 'ctrl + u/i to cycle locales' }
+    ]
+  };
+
+  // This weirdness is to keep the order the same (screens last), while allowing phet-io to change the default of locales=*;
+  const simQueryParameters = simNoLocalesQueryParameters.concat( [ localesQueryParameter ] );
+  const screenQueryParameter: PhetmarksQueryParameter = {
+    value: 'screens',
+    text: 'Sim Screen',
+    type: 'parameterValues',
+    parameterValues: [ 'all', '1', '2', '3', '4', '5', '6' ],
+    omitIfDefault: true
+  };
+  simQueryParameters.push( screenQueryParameter );
+  simNoLocalesQueryParameters.push( screenQueryParameter );
 
   const eaObject: PhetmarksQueryParameter = { value: 'ea', text: 'Assertions', default: true };
 
-  // Query parameters used for requirejs and PhET-iO wrappers
+  // Query parameters used for unbuilt and PhET-iO wrappers
   const devSimQueryParameters: PhetmarksQueryParameter[] = [
     { value: 'brand=phet', text: 'PhET Brand', default: true },
     eaObject,
@@ -148,32 +155,22 @@
     value: 'phetioEmitStates',
     default: false,
     type: 'boolean',
-    text: 'Emit states to the data stream'
+    text: 'Emit state events'
   }, {
     value: 'phetioCompareAPI&randomSeed=332211', // NOTE: DUPLICATION ALERT: random seed must match that of API generation, see generatePhetioMacroAPI.js
     text: 'Compare with reference API'
   }, {
     value: 'phetioPrintMissingTandems',
     default: false,
-    text: 'Print tandems that have not yet been added'
+    text: 'Print uninstrumented tandems'
   }, {
     value: 'phetioPrintAPIProblems',
     default: false,
-    text: 'Print problems found by phetioAPIValidation to the console instead of asserting each item.'
-  }, {
-    value: 'locales=*',
-    text: 'Loads all the translated versions',
-    default: true
-  }, {
-    value: 'keyboardLocaleSwitcher',
-    text: 'Enables keyboard cycling through the locales',
-    default: true
-  }, {
+    text: 'Print all API problems at once'
+  }, _.extend( { default: true }, localesQueryParameter ), {
     value: 'phetioValidation',
-    text: 'if stricter PhET-iO validation is enabled',
-    type: 'parameterValues',
-    parameterValues: [ 'Simulation Default', 'true', 'false' ],
-    omitIfDefault: true
+    text: 'Stricter, PhET-iO-specific validation',
+    type: 'boolean'
   } ];
 
   const testServerNoTestTaskQueryParameters: PhetmarksQueryParameter[] = [
@@ -293,7 +290,7 @@
 
       if ( isRunnable ) {
         modes.push( {
-          name: 'requirejs',
+          name: 'unbuilt',
           text: 'Unbuilt',
           description: 'Runs the simulation from the top-level development HTML in unbuilt mode',
           url: `../${repo}/${repo}_en.html`,
@@ -395,7 +392,7 @@
 
       if ( hasUnitTests ) {
         modes.push( {
-          name: 'unitTestsRequirejs',
+          name: 'unitTestsUnbuilt',
           text: 'Unit Tests (unbuilt)',
           description: 'Runs unit tests in unbuilt mode',
           url: `../${repo}/${repo}-tests.html`,
@@ -621,7 +618,7 @@
           group: 'PhET-iO',
           description: 'Runs the sim in phet-io brand with the standalone query parameter',
           url: `../${repo}/${repo}_en.html?brand=phet-io&phetioStandalone`,
-          queryParameters: phetioSimQueryParameters.concat( simQueryParameters )
+          queryParameters: phetioSimQueryParameters.concat( simNoLocalesQueryParameters )
         } );
 
         // phet-io wrappers
