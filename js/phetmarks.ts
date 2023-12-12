@@ -18,18 +18,28 @@
     value: string; // The actual query parameter included in the URL,
     text: string; // Display string shown in the query parameter list,
 
-    // defaults to flag. If boolean, then it will add "=true" or "=false" to the checkbox value, If parameterValues, must
-    // provide "parameterValues" key, where first one is the default.
+    // defaults to flag, with a checkbox to add the parameter.
+    // If boolean, then it will map over to a parameterValues with true/false/sim default radio buttons
+    // If parameterValues, must provide "parameterValues" key, where first one is the default.
     type?: 'flag' | 'boolean' | 'parameterValues';
-    default?: boolean; // If true, the query parameter will be included by default. This will be false if not provided
+
+    // * For type=flag: If true, the query parameter will be included by default. This will be false if not provided.
+    // * For type=boolean|parameterValues: default should be the defaultValue, and must be in the parameter values and
+    // defaults to the first element in parameterValues
+    default?: boolean | string;
+
+    // For type='flag' only A "sub query parameter" list that is nested underneath another, and is only available if the parent is checked.
     dependentQueryParameters?: PhetmarksQueryParameter[];
 
-    // For type 'parameterValues'
+    // Must be provided for type 'parameterValues', if type='boolean', then this is filled in as sim default, true, and false.
     parameterValues?: string[]; // values of the parameter.
     omitIfDefault?: boolean; // if true, omit the default selection of the query parameter, only adding it when changed. Defaults to false
   };
 
   type RepoName = string; // the name of a repo;
+
+  // Use this as a parameter value to omit the query parameter selection (even if not the default selection)
+  const SIMULATION_DEFAULT = 'Simulation Default';
 
   type MigrationData = {
     sim: string;
@@ -822,21 +832,39 @@
     return selector;
   }
 
-  // Create control for type 'parameterValues'
+  // Create control for type 'parameterValues', and also 'boolean' which has hard coded values true/false/sim default.
   function createParameterValuesSelector( queryParameter: PhetmarksQueryParameter ): QueryParameterSelector {
-    assert && assert( queryParameter.type === 'parameterValues', `valueValues type only please: ${queryParameter.value} - ${queryParameter.type}` );
+
+    // We don't want to mutate the provided data
+    queryParameter = _.extend( {}, queryParameter );
+
+    const providedADefault = queryParameter.hasOwnProperty( 'default' );
+
+    if ( queryParameter.type === 'boolean' ) {
+      assert && assert( !queryParameter.hasOwnProperty( 'parameterValues' ), 'parameterValues are filled in for boolean' );
+      assert && assert( !queryParameter.hasOwnProperty( 'omitIfDefault' ), 'omitIfDefault is filled in for boolean' );
+      queryParameter.parameterValues = [ SIMULATION_DEFAULT, 'true', 'false' ];
+      queryParameter.omitIfDefault = !providedADefault; // omit only if you didn't specify the default
+    }
+    else {
+      assert && assert( queryParameter.type === 'parameterValues', `parameterValues type only please: ${queryParameter.value} - ${queryParameter.type}` );
+    }
     assert && assert( queryParameter.parameterValues, 'parameterValues expected' );
     assert && assert( queryParameter.parameterValues!.length > 0, 'parameterValues expected (more than 0 of them)' );
     assert && assert( !queryParameter.hasOwnProperty( 'dependentQueryParameters' ),
-      'type=parameterValues does not support dependent query parameters at this time' );
-    assert && assert( !queryParameter.hasOwnProperty( 'default' ),
-      'type=parameterValues does not need the default key, instead it is just the first item in the ' +
-      'parameterValues list. Also see omitIfDefault' );
+      'type=parameterValues and type=boolean do not support dependent query parameters at this time.' );
 
     const div = document.createElement( 'div' );
     const queryParameterName = queryParameter.value;
     const parameterValues = queryParameter.parameterValues!;
-    const defaultValue = parameterValues[ 0 ];
+
+    const theProvidedDefault = queryParameter.default + '';
+    if ( providedADefault ) {
+      assert && assert( parameterValues.includes( theProvidedDefault ),
+        `parameter default for ${queryParameterName} is not an available value: ${theProvidedDefault}` );
+    }
+
+    const defaultValue = providedADefault ? theProvidedDefault : parameterValues[ 0 ];
 
     const createParameterValuesRadioButton = ( value: string ): HTMLElement => {
       const label = document.createElement( 'label' );
@@ -851,71 +879,59 @@
       return label;
     };
 
-    const label = document.createTextNode( `• ${queryParameterName}=` );
+    const bullet = document.createElement( 'span' );
+    bullet.innerHTML = '⚫';
+    bullet.className = 'bullet';
+    div.appendChild( bullet );
+    const label = document.createTextNode( `${queryParameter.text} (?${queryParameterName})` );
     div.appendChild( label );
     for ( let i = 0; i < parameterValues.length; i++ ) {
       div.appendChild( createParameterValuesRadioButton( parameterValues[ i ] ) );
     }
-
-    const explanation = document.createTextNode( `– ${queryParameter.text}` );
-    div.appendChild( explanation );
-
     return {
       element: div,
       get value() {
         const radioButtonValue = $( `input[name=${queryParameterName}]:checked` ).val() + '';
-        return queryParameter.omitIfDefault && radioButtonValue === defaultValue ? '' :
-               `${queryParameterName}=${radioButtonValue}`;
+
+        // A value of "Simulation Default" tells us not to provide the query parameter.
+        const omitQueryParameter = radioButtonValue === SIMULATION_DEFAULT ||
+                                   ( queryParameter.omitIfDefault && radioButtonValue === defaultValue );
+        return omitQueryParameter ? '' : `${queryParameterName}=${radioButtonValue}`;
       }
     };
   }
 
-  // Boolean and flag checkboxes, but only if they are different from their default
-  function getFlagAndBooleanParameters( toggleContainer: HTMLElement ): string[] {
+  // get Flag checkboxes as their individual query strings (in a list), but only if they are different from their default.
+  function getFlagParameters( toggleContainer: HTMLElement ): string[] {
 
-    const checkboxElements = $( toggleContainer ).find( '.flagOrBooleanParameter' )! as unknown as HTMLInputElement[];
+    const checkboxElements = $( toggleContainer ).find( '.flagParameter' )! as unknown as HTMLInputElement[];
 
-    // Only changed checkboxes, not with default values
-    return _.filter( checkboxElements, ( checkbox: HTMLInputElement ) => {
-
-      // if a checkbox isn't checked, then we only care if it has been changed and is a boolean
-      if ( checkbox.dataset.queryParameterType === 'boolean' ) {
-        return checkbox.dataset.changed === 'true';
-      }
-      else {
-        return checkbox.checked;
-      }
-    } ).map( ( checkbox: HTMLInputElement ) => {
-
-      // support boolean parameters
-      if ( checkbox.dataset.queryParameterType === 'boolean' ) {
-        return `${checkbox.name}=${checkbox.checked}`;
-      }
-      return checkbox.name;
-    } );
+    // Only checked boxed.
+    return checkboxElements
+      .filter( ( checkbox: HTMLInputElement ) => checkbox.checked )
+      .map( ( checkbox: HTMLInputElement ) => checkbox.name );
   }
 
-  function createFlagBooleanSelector( parameter: PhetmarksQueryParameter, toggleContainer: HTMLElement,
-                                      elementToQueryParameter: ElementToParameterMap ): void {
+  // Create a checkbox to toggle if the flag parameter should be added to the mode URL
+  function createFlagSelector( parameter: PhetmarksQueryParameter, toggleContainer: HTMLElement,
+                               elementToQueryParameter: ElementToParameterMap ): void {
     assert && assert( !parameter.hasOwnProperty( 'parameterValues' ), 'parameterValues are for type=parameterValues' );
     assert && assert( !parameter.hasOwnProperty( 'omitIfDefault' ), 'omitIfDefault are for type=parameterValues' );
+
+    assert && parameter.hasOwnProperty( 'default' ) && assert( typeof parameter.default === 'boolean', 'default is a boolean for flags' );
 
     const label = document.createElement( 'label' );
     const checkbox = document.createElement( 'input' );
     checkbox.type = 'checkbox';
     checkbox.name = parameter.value;
-    checkbox.classList.add( 'flagOrBooleanParameter' );
+    checkbox.classList.add( 'flagParameter' );
     label.appendChild( checkbox );
     assert && assert( !elementToQueryParameter.has( checkbox ), 'sanity check for overwriting' );
     elementToQueryParameter.set( checkbox, parameter );
 
-    let queryParameterDisplay = parameter.value;
+    const queryParameterDisplay = parameter.value;
 
-    // should the "=true" if boolean
-    if ( parameter.type === 'boolean' ) {
-      queryParameterDisplay += `=${parameter.default}`;
-    }
-    label.appendChild( document.createTextNode( `${parameter.text} (${queryParameterDisplay})` ) );
+    label.appendChild( document.createTextNode( `${parameter.text} (?${queryParameterDisplay})` ) );
     toggleContainer.appendChild( label );
     toggleContainer.appendChild( document.createElement( 'br' ) );
     checkbox.checked = !!parameter.default;
@@ -933,7 +949,7 @@
         dependentCheckbox.id = getDependentParameterControlId( value );
         dependentCheckbox.type = 'checkbox';
         dependentCheckbox.name = value;
-        dependentCheckbox.classList.add( 'flagOrBooleanParameter' );
+        dependentCheckbox.classList.add( 'flagParameter' );
         dependentCheckbox.style.marginLeft = '40px';
         dependentCheckbox.checked = checked;
         const labelElement = document.createElement( 'label' );
@@ -963,12 +979,6 @@
       } );
       toggleContainer.appendChild( containerDiv );
     }
-
-    // mark changed events for boolean parameter support
-    checkbox.addEventListener( 'change', () => {
-      checkbox.dataset.changed = 'true';
-    } );
-    checkbox.dataset.queryParameterType = parameter.type;
   }
 
   function createQueryParametersSelector( modeSelector: ModeSelector ): QueryParametersSelector {
@@ -987,7 +997,7 @@
       get value() {
 
         // Boolean and flag query parameters, in string form
-        const flagAndBooleanQueryParameters = getFlagAndBooleanParameters( toggleContainer );
+        const flagAndBooleanQueryParameters = getFlagParameters( toggleContainer );
         const parameterValuesQueryParameters = parameterValuesSelectors
           .map( ( selector: QueryParameterSelector ) => selector.value )
           .filter( ( queryParameter: string ) => queryParameter !== '' );
@@ -1005,13 +1015,13 @@
 
         const queryParameters = modeSelector.mode.queryParameters || [];
         queryParameters.forEach( parameter => {
-          if ( parameter.type === 'parameterValues' ) {
+          if ( parameter.type === 'parameterValues' || parameter.type === 'boolean' ) {
             const selector = createParameterValuesSelector( parameter );
             toggleContainer.appendChild( selector.element );
             parameterValuesSelectors.push( selector );
           }
           else {
-            createFlagBooleanSelector( parameter, toggleContainer, elementToQueryParameter );
+            createFlagSelector( parameter, toggleContainer, elementToQueryParameter );
           }
         } );
       }
