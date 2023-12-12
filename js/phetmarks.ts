@@ -119,8 +119,19 @@
     { value: 'printVoicingResponses', text: 'console.log() voicing responses' },
     { value: 'interactiveHighlightsInitiallyEnabled', text: 'Interactive Highlights on by default' },
     { value: 'preferencesStorage', text: 'Load Preferences from localStorage.' },
-    { value: 'webgl=false', text: 'No WebGL' },
-    { value: 'listenerOrder=random', text: 'Randomize listener order' } ];
+    { value: 'webgl', text: 'WebGL', type: 'boolean' },
+    {
+      value: 'listenerOrder',
+      text: 'Alter listener order',
+      type: 'parameterValues',
+      omitIfDefault: true,
+      parameterValues: [
+        'default',
+        'reverse',
+        'random',
+        'random(42)' // very random, do not change
+      ]
+    } ];
 
   const localesQueryParameter: PhetmarksQueryParameter = {
     value: 'locales=*', text: 'Load all locales', dependentQueryParameters: [
@@ -200,16 +211,21 @@
   // See perennial-alias/data/wrappers for format
   const nonPublishedPhetioWrappersToAddToPhetmarks = [ 'phet-io-wrappers/mirror-inputs' ];
 
-  const phetioDebugTrueParameter: PhetmarksQueryParameter = {
-    value: 'phetioDebug=true',
-    text: 'Enable assertions for the sim inside a wrapper, basically the phet-io version of ?ea',
-    default: true
+
+  const phetioDebugParameter: PhetmarksQueryParameter = {
+    value: 'phetioDebug',
+    text: 'Enable sim assertions from wrapper',
+    type: 'boolean'
   };
+  const phetioDebugTrueParameter: PhetmarksQueryParameter = _.assign( {
+    default: true
+  }, phetioDebugParameter );
 
   // Query parameters for the PhET-iO wrappers (including iframe tests)
   const phetioWrapperQueryParameters: PhetmarksQueryParameter[] = phetioBaseParameters.concat( [ phetioDebugTrueParameter, {
-    value: 'phetioWrapperDebug=true',
-    text: 'Enable assertions for wrapper-code, like assertions in Studio, State, or Client',
+    value: 'phetioWrapperDebug',
+    text: 'Enable wrapper-side assertions',
+    type: 'boolean',
     default: true
   } ] );
 
@@ -656,16 +672,13 @@
           let queryParameters: PhetmarksQueryParameter[] = [];
           if ( wrapperName === 'studio' ) {
 
+            // So we don't mutate the common list
             const studioQueryParameters = [ ...phetioWrapperQueryParameters ];
 
-            // Studio defaults to phetioDebug=true, so this parameter doesn't make sense
+            // Studio defaults to phetioDebug=true, so this parameter can't be on by default
             _.remove( studioQueryParameters, item => item === phetioDebugTrueParameter );
 
-            queryParameters = studioQueryParameters.concat( [ {
-              value: 'phetioDebug=false',
-              text: 'Disable assertions for the sim inside Studio. Studio defaults to phetioDebug=true',
-              default: false
-            }, phetioElementsDisplayParameter ] );
+            queryParameters = studioQueryParameters.concat( [ phetioDebugParameter, phetioElementsDisplayParameter ] );
           }
           else if ( wrapperName === 'migration' ) {
             queryParameters = [ ...migrationQueryParameters, {
@@ -684,6 +697,7 @@
             }, {
               value: 'logTiming',
               text: 'Console log the amount of time it took to set the state of the simulation.',
+              // TODO: default false is redundant, https://github.com/phetsims/phetmarks/issues/62
               default: false
             } ];
           }
@@ -711,7 +725,7 @@
           group: 'PhET-iO',
           description: 'Show the colorized event log in the console of the stand alone sim.',
           url: `../${repo}/${repo}_en.html?brand=phet-io&phetioConsoleLog=colorized&phetioStandalone&phetioEmitHighFrequencyEvents=false`,
-          queryParameters: phetioSimQueryParameters.concat( simQueryParameters )
+          queryParameters: phetioSimQueryParameters.concat( simNoLocalesQueryParameters )
         } );
       }
     } );
@@ -840,7 +854,11 @@
       assert && assert( !queryParameter.hasOwnProperty( 'parameterValues' ), 'parameterValues are filled in for boolean' );
       assert && assert( !queryParameter.hasOwnProperty( 'omitIfDefault' ), 'omitIfDefault is filled in for boolean' );
       queryParameter.parameterValues = [ 'true', 'false', SIMULATION_DEFAULT ];
-      queryParameter.default = SIMULATION_DEFAULT;
+
+      // sim default is the default for booleans
+      if ( !queryParameter.hasOwnProperty( 'default' ) ) {
+        queryParameter.default = SIMULATION_DEFAULT;
+      }
     }
     else {
       assert && assert( queryParameter.type === 'parameterValues', `parameterValues type only please: ${queryParameter.value} - ${queryParameter.type}` );
