@@ -132,7 +132,6 @@
     { value: 'eall', text: 'All Assertions' }
   ];
 
-  // TODO: support 'text' for parameterValues https://github.com/phetsims/phetmarks/issues/44
   const phetioElementsDisplayParameter: PhetmarksQueryParameter = {
     value: 'phetioElementsDisplay',
     text: 'What PhET-iO Elements to show',
