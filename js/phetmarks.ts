@@ -836,13 +836,11 @@
     // We don't want to mutate the provided data
     queryParameter = _.extend( {}, queryParameter );
 
-    const providedADefault = queryParameter.hasOwnProperty( 'default' );
-
     if ( queryParameter.type === 'boolean' ) {
       assert && assert( !queryParameter.hasOwnProperty( 'parameterValues' ), 'parameterValues are filled in for boolean' );
       assert && assert( !queryParameter.hasOwnProperty( 'omitIfDefault' ), 'omitIfDefault is filled in for boolean' );
-      queryParameter.parameterValues = [ SIMULATION_DEFAULT, 'true', 'false' ];
-      queryParameter.omitIfDefault = !providedADefault; // omit only if you didn't specify the default
+      queryParameter.parameterValues = [ 'true', 'false', SIMULATION_DEFAULT ];
+      queryParameter.default = SIMULATION_DEFAULT;
     }
     else {
       assert && assert( queryParameter.type === 'parameterValues', `parameterValues type only please: ${queryParameter.value} - ${queryParameter.type}` );
@@ -856,6 +854,7 @@
     const queryParameterName = queryParameter.value;
     const parameterValues = queryParameter.parameterValues!;
 
+    const providedADefault = queryParameter.hasOwnProperty( 'default' );
     const theProvidedDefault = queryParameter.default + '';
     if ( providedADefault ) {
       assert && assert( parameterValues.includes( theProvidedDefault ),
