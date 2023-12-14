@@ -1035,22 +1035,22 @@
 
   // Load files serially, populate then render
   $.ajax( {
-    url: '../perennial/data/active-runnables'
+    url: '../perennial-alias/data/active-runnables'
   } ).done( activeRunnablesString => {
     const activeRunnables = whiteSplitAndSort( activeRunnablesString );
 
     $.ajax( {
-      url: '../perennial/data/active-repos'
+      url: '../perennial-alias/data/active-repos'
     } ).done( activeReposString => {
       const activeRepos = whiteSplitAndSort( activeReposString );
 
       $.ajax( {
-        url: '../perennial/data/phet-io'
+        url: '../perennial-alias/data/phet-io'
       } ).done( testPhetioString => {
         const phetioSims = whiteSplitAndSort( testPhetioString );
 
         $.ajax( {
-          url: '../perennial/data/interactive-description'
+          url: '../perennial-alias/data/interactive-description'
         } ).done( accessibleSimsString => {
           const interactiveDescriptionSims = whiteSplitAndSort( accessibleSimsString );
 
@@ -1060,7 +1060,7 @@
             const wrappers = whiteSplitAndSort( wrappersString ).sort();
 
             $.ajax( {
-              url: '../perennial/data/unit-tests'
+              url: '../perennial-alias/data/unit-tests'
             } ).done( unitTestsStrings => {
               const unitTestsRepos = whiteSplitAndSort( unitTestsStrings ).sort();
 
