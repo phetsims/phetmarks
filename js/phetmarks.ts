@@ -370,7 +370,7 @@
           description: 'Runs automated testing with fuzzing on studio, 15 second timer',
           url: '../aqua/fuzz-lightyear/',
           queryParameters: testServerQueryParameters.concat( [ {
-            value: `testDuration=15000&fuzz&wrapperName=studio&wrapperContinuousTest==%7B%7D&testSims=${phetioSims.join( ',' )}`,
+            value: `testDuration=15000&fuzz&wrapperName=studio&wrapperContinuousTest=%7B%7D&testSims=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
           } ] )
