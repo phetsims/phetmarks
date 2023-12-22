@@ -838,7 +838,7 @@
   function createParameterValuesSelector( queryParameter: PhetmarksQueryParameter ): QueryParameterSelector {
 
     // We don't want to mutate the provided data
-    queryParameter = _.extend( {}, queryParameter );
+    queryParameter = _.assignIn( {}, queryParameter );
 
     if ( queryParameter.type === 'boolean' ) {
       assert && assert( !queryParameter.hasOwnProperty( 'parameterValues' ), 'parameterValues are filled in for boolean' );
