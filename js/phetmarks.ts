@@ -131,6 +131,10 @@
         'random',
         'random(42)' // very random, do not change
       ]
+    }, {
+      value: 'strictAxonDependencies',
+      text: 'Strict Axon Dependencies',
+      type: 'boolean'
     } ];
 
   const localesQueryParameter: PhetmarksQueryParameter = {
