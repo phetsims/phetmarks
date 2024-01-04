@@ -76,72 +76,73 @@
     } );
   };
 
+  // create a new input for a color, and store it in the colorInputMap
+  const reportForColor = ( name, value, alpha ) => {
+
+    // Lazily create color inputs, so we don't need an up-front sim-specific list
+    let colorData = colorInputMap[ name ];
+    if ( !colorData ) {
+
+      const colorInput = document.createElement( 'input' );
+      colorInput.type = 'color';
+
+      const alphaSlider = document.createElement( 'input' );
+
+      const alphaSliderReadout = document.createElement( 'div' );
+      const applyColorToSim = () => {
+        alphaSliderReadout.innerText = alphaSlider.valueAsNumber.toFixed( 2 );
+        document.getElementById( 'sim-iframe' ).contentWindow.postMessage( JSON.stringify( {
+          type: 'setColor',
+          name: name,
+          value: colorInput.value,
+          alpha: alphaSlider.valueAsNumber
+        } ), '*' );
+      };
+      // Send user changes to the sim
+      colorInput.addEventListener( 'input', applyColorToSim );
+
+      // The HTML element that holds the entire control for this color
+      const element = document.createElement( 'span' );
+
+      element.appendChild( colorInput );
+
+      // DUPLICATION ALERT: Copied with code in PhetioElementView.js
+      alphaSlider.style.width = '100px';
+      alphaSlider.type = 'range';
+      alphaSlider.min = '0';
+      alphaSlider.max = '1';
+      alphaSlider.step = '0.01';
+      alphaSlider.value = alpha;
+      alphaSlider.addEventListener( 'input', applyColorToSim );
+      element.appendChild( alphaSliderReadout );
+      element.appendChild( alphaSlider );
+
+      alphaSliderReadout.innerText = alpha.toFixed( 2 );
+
+      element.appendChild( document.createTextNode( ' ' + name ) );
+      element.appendChild( document.createElement( 'br' ) );
+
+      updateIFrameDimensions();
+
+      colorData = {
+        initialColor: value,
+        initialAlpha: alpha,
+        colorInput: colorInput,
+        alphaSlider: alphaSlider,
+        elementDiv: element
+      };
+      colorInputMap[ name ] = colorData;
+    }
+
+    colorData.colorInput.value = value;
+    colorData.alphaSlider.value = alpha;
+    populate();
+  };
+
   window.addEventListener( 'message', event => {
     const data = JSON.parse( event.data );
     if ( data.type === 'reportColor' ) {
-
-      const name = data.name;
-      const value = data.value;
-      const alpha = data.alpha;
-
-      // Lazily create color inputs, so we don't need an up-front sim-specific list
-      let colorData = colorInputMap[ name ];
-      if ( !colorData ) {
-
-        const colorInput = document.createElement( 'input' );
-        colorInput.type = 'color';
-
-        const alphaSlider = document.createElement( 'input' );
-
-        const alphaSliderReadout = document.createElement( 'div' );
-        const applyColorToSim = () => {
-          alphaSliderReadout.innerText = alphaSlider.valueAsNumber.toFixed( 2 );
-          document.getElementById( 'sim-iframe' ).contentWindow.postMessage( JSON.stringify( {
-            type: 'setColor',
-            name: name,
-            value: colorInput.value,
-            alpha: alphaSlider.valueAsNumber
-          } ), '*' );
-        };
-        // Send user changes to the sim
-        colorInput.addEventListener( 'input', applyColorToSim );
-
-        // The HTML element that holds the entire control for this color
-        const element = document.createElement( 'span' );
-
-        element.appendChild( colorInput );
-
-        // DUPLICATION ALERT: Copied with code in PhetioElementView.js
-        alphaSlider.style.width = '100px';
-        alphaSlider.type = 'range';
-        alphaSlider.min = '0';
-        alphaSlider.max = '1';
-        alphaSlider.step = '0.01';
-        alphaSlider.value = alpha;
-        alphaSlider.addEventListener( 'input', applyColorToSim );
-        element.appendChild( alphaSliderReadout );
-        element.appendChild( alphaSlider );
-
-        alphaSliderReadout.innerText = alpha.toFixed( 2 );
-
-        element.appendChild( document.createTextNode( ' ' + name ) );
-        element.appendChild( document.createElement( 'br' ) );
-
-        updateIFrameDimensions();
-
-        colorData = {
-          initialColor: value,
-          initialAlpha: alpha,
-          colorInput: colorInput,
-          alphaSlider: alphaSlider,
-          elementDiv: element
-        };
-        colorInputMap[ name ] = colorData;
-      }
-
-      colorData.colorInput.value = value;
-      colorData.alphaSlider.value = alpha;
-      populate();
+      reportForColor( data.name, data.value, data.alpha );
     }
   } );
 
