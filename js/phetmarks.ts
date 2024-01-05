@@ -1,6 +1,6 @@
 // Copyright 2016-2024, University of Colorado Boulder
 
-/*
+/**
  * Page for quickly launching phet-related tasks, such as simulations, automated/unit tests, or other utilities.
  *
  * Displays three columns. See type information below for details:
@@ -9,6 +9,7 @@
  * - Modes: Based on the repository selected. Decides what type of URL is loaded when "Launch" or the enter key is
  *          pressed.
  * - Query Parameters: If available, controls what optional query parameters will be added to the end of the URL.
+ * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
 ( async function(): Promise<void> {
