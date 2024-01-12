@@ -67,7 +67,7 @@
   const colorInputMap = {};
 
   // Re-populate all color controls, sorted by color name.
-  const populate = () => {
+  const reorganize = () => {
     colorColumn.innerHTML = '';
     colorColumn.appendChild( exportButton );
     colorColumn.appendChild( document.createElement( 'br' ) );
@@ -78,10 +78,12 @@
 
   // create a new input for a color, and store it in the colorInputMap
   const reportForColor = ( name, value, alpha ) => {
+    let created = false;
 
     // Lazily create color inputs, so we don't need an up-front sim-specific list
     let colorData = colorInputMap[ name ];
     if ( !colorData ) {
+      created = true;
 
       const colorInput = document.createElement( 'input' );
       colorInput.type = 'color';
@@ -136,7 +138,7 @@
 
     colorData.colorInput.value = value;
     colorData.alphaSlider.value = alpha;
-    populate();
+    created && reorganize();
   };
 
   window.addEventListener( 'message', event => {
