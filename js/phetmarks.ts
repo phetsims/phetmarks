@@ -121,6 +121,7 @@
     { value: 'interactiveHighlightsInitiallyEnabled', text: 'Interactive Highlights on by default' },
     { value: 'preferencesStorage', text: 'Load Preferences from localStorage.' },
     { value: 'webgl', text: 'WebGL', type: 'boolean' },
+    { value: 'disableModals', text: 'Disable Modals' },
     {
       value: 'listenerOrder',
       text: 'Alter listener order',
