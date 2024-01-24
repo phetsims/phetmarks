@@ -88,6 +88,9 @@
 
   type ElementToParameterMap = Map<HTMLElement, PhetmarksQueryParameter>;
 
+  // Query parameters that appear in multiple arrays.
+  const eaQueryParameter: PhetmarksQueryParameter = { value: 'ea', text: 'Assertions', default: true };
+
   const audioQueryParameter: PhetmarksQueryParameter = {
     value: 'audio',
     text: 'Audio support',
@@ -159,12 +162,10 @@
   simQueryParameters.push( screenQueryParameter );
   simNoLocalesQueryParameters.push( screenQueryParameter );
 
-  const eaObject: PhetmarksQueryParameter = { value: 'ea', text: 'Assertions', default: true };
-
   // Query parameters used for unbuilt and PhET-iO wrappers
   const devSimQueryParameters: PhetmarksQueryParameter[] = [
     { value: 'brand=phet', text: 'PhET Brand', default: true },
-    eaObject,
+    eaQueryParameter,
     { value: 'eall', text: 'All Assertions' }
   ];
 
@@ -237,7 +238,7 @@
 
   // For phetio sim frame links
   const phetioSimQueryParameters: PhetmarksQueryParameter[] = phetioBaseParameters.concat( [
-    eaObject, // this needs to be first in this list
+    eaQueryParameter, // this needs to be first in this list
     { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' }, {
       value: 'phetioPrintMissingTandems',
       text: 'Print tandems that have not yet been added'
