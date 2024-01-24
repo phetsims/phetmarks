@@ -176,28 +176,30 @@
     parameterValues: [ 'all', 'featured' ]
   };
 
-  const phetioBaseParameters: PhetmarksQueryParameter[] = [ audioQueryParameter, {
-    value: 'phetioEmitHighFrequencyEvents',
-    type: 'boolean',
-    text: 'Emit events that occur often'
-  }, {
-    value: 'phetioEmitStates',
-    type: 'boolean',
-    text: 'Emit state events'
-  }, {
-    value: 'phetioCompareAPI&randomSeed=332211', // NOTE: DUPLICATION ALERT: random seed must match that of API generation, see generatePhetioMacroAPI.js
-    text: 'Compare with reference API'
-  }, {
-    value: 'phetioPrintMissingTandems',
-    text: 'Print uninstrumented tandems'
-  }, {
-    value: 'phetioPrintAPIProblems',
-    text: 'Print all API problems at once'
-  }, _.extend( { default: true }, localesQueryParameter ), {
-    value: 'phetioValidation',
-    text: 'Stricter, PhET-iO-specific validation',
-    type: 'boolean'
-  } ];
+  const phetioBaseParameters: PhetmarksQueryParameter[] = [
+    audioQueryParameter, {
+      value: 'phetioEmitHighFrequencyEvents',
+      type: 'boolean',
+      text: 'Emit events that occur often'
+    }, {
+      value: 'phetioEmitStates',
+      type: 'boolean',
+      text: 'Emit state events'
+    }, {
+      value: 'phetioCompareAPI&randomSeed=332211', // NOTE: DUPLICATION ALERT: random seed must match that of API generation, see generatePhetioMacroAPI.js
+      text: 'Compare with reference API'
+    }, {
+      value: 'phetioPrintMissingTandems',
+      text: 'Print uninstrumented tandems'
+    }, {
+      value: 'phetioPrintAPIProblems',
+      text: 'Print all API problems at once'
+    }, _.extend( { default: true }, localesQueryParameter ), {
+      value: 'phetioValidation',
+      text: 'Stricter, PhET-iO-specific validation',
+      type: 'boolean'
+    }
+  ];
 
   const testServerNoTestTaskQueryParameters: PhetmarksQueryParameter[] = [
     {
