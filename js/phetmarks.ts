@@ -13,7 +13,14 @@
  */
 
 ( async function(): Promise<void> {
-
+  type PackageJSON = {
+    version: string;
+    phet: {
+      'phet-io': {
+        wrappers: string[];
+      };
+    };
+  };
   // QueryParameter has the format
   type PhetmarksQueryParameter = {
     value: string; // The actual query parameter included in the URL,
@@ -275,7 +282,10 @@
     // If the wrapper has its own individual repo, then get the name 'classroom-activity' from 'phet-io-wrapper-classroom-activity'
     // Maintain compatibility for wrappers in 'phet-io-wrappers-'
     const wrapperParts = wrapper.split( 'phet-io-wrapper-' );
-    const wrapperName = wrapperParts.length === 1 ? wrapperParts[ 0 ] : wrapperParts[ 1 ];
+    const wrapperName = wrapperParts.length > 1 ?
+                        wrapperParts[ 1 ] :
+                        wrapper.startsWith( 'phet-io-sim-specific' ) ? wrapper.split( '/' )[ wrapper.split( '/' ).length - 1 ]
+                                                                     : wrapper;
 
     // If the wrapper still has slashes in it, then it looks like 'phet-io-wrappers/active'
     const splitOnSlash = wrapperName.split( '/' );
@@ -310,7 +320,7 @@
    */
   function populate( activeRunnables: RepoName[], activeRepos: RepoName[], phetioSims: RepoName[],
                      interactiveDescriptionSims: RepoName[], wrappers: string[],
-                     unitTestsRepos: RepoName[], phetioHydrogenSims: MigrationData[] ): ModeData {
+                     unitTestsRepos: RepoName[], phetioHydrogenSims: MigrationData[], phetioPackageJSONs: Record<RepoName, PackageJSON> ): ModeData {
     const modeData: ModeData = {};
 
     activeRepos.forEach( ( repo: RepoName ) => {
@@ -652,8 +662,11 @@
           queryParameters: phetioSimQueryParameters.concat( simNoLocalesQueryParameters )
         } );
 
+        const simSpecificWrappers = phetioPackageJSONs[ repo ]?.phet[ 'phet-io' ]?.wrappers || [];
+        const allWrappers = wrappers.concat( nonPublishedPhetioWrappersToAddToPhetmarks ).concat( simSpecificWrappers );
+
         // phet-io wrappers
-        wrappers.concat( nonPublishedPhetioWrappersToAddToPhetmarks ).sort().forEach( wrapper => {
+        _.sortBy( allWrappers, getWrapperName ).forEach( wrapper => {
 
           const wrapperName = getWrapperName( wrapper );
 
@@ -1147,6 +1160,14 @@
     resetButton.addEventListener( 'click', queryParameterSelector.update );
   }
 
+  async function loadPackageJSONs( repos: RepoName[] ): Promise<Record<RepoName, PackageJSON>> {
+    const packageJSONs: Record<RepoName, PackageJSON> = {};
+    for ( const repo of repos ) {
+      packageJSONs[ repo ] = await $.ajax( { url: `../${repo}/package.json` } );
+    }
+    return packageJSONs;
+  }
+
   // Splits file strings (such as perennial-alias/data/active-runnables) into a list of entries, ignoring blank lines.
   function whiteSplitAndSort( rawDataList: string ): RepoName[] {
     return rawDataList.split( '\n' ).map( line => {
@@ -1167,8 +1188,9 @@
   const wrappers = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/wrappers' } ) );
   const unitTestsRepos = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/unit-tests' } ) );
   const phetioHydrogenSims = await $.ajax( { url: '../perennial-alias/data/phet-io-hydrogen.json' } );
+  const phetioPackageJSONs = await loadPackageJSONs( phetioSims );
 
-  render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos, phetioHydrogenSims ) );
+  render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos, phetioHydrogenSims, phetioPackageJSONs ) );
 } )().catch( ( e: Error ) => {
   throw e;
 } );
