@@ -89,13 +89,52 @@
   type ElementToParameterMap = Map<HTMLElement, PhetmarksQueryParameter>;
 
   // Query parameters that appear in multiple arrays.
-  const eaQueryParameter: PhetmarksQueryParameter = { value: 'ea', text: 'Assertions', default: true };
-
   const audioQueryParameter: PhetmarksQueryParameter = {
     value: 'audio',
     text: 'Audio support',
     type: 'parameterValues',
     parameterValues: [ 'enabled', 'disabled', 'muted' ],
+    omitIfDefault: true
+  };
+  const eaQueryParameter: PhetmarksQueryParameter = {
+    value: 'ea',
+    text: 'Assertions',
+    default: true
+  };
+  const localesQueryParameter: PhetmarksQueryParameter = {
+    value: 'locales=*',
+    text: 'Load all locales',
+    dependentQueryParameters: [
+      { value: 'keyboardLocaleSwitcher', text: 'ctrl + u/i to cycle locales' }
+    ]
+  };
+  const phetioDebugParameter: PhetmarksQueryParameter = {
+    value: 'phetioDebug',
+    text: 'Enable sim assertions from wrapper',
+    type: 'boolean'
+  };
+  const phetioDebugTrueParameter: PhetmarksQueryParameter = _.assign( {
+    default: true
+  }, phetioDebugParameter );
+  const phetioElementsDisplayParameter: PhetmarksQueryParameter = {
+    value: 'phetioElementsDisplay',
+    text: 'What PhET-iO Elements to show',
+    type: 'parameterValues',
+    parameterValues: [ 'all', 'featured' ]
+  };
+  const phetioPrintAPIProblemsQueryParameter: PhetmarksQueryParameter = {
+    value: 'phetioPrintAPIProblems',
+    text: 'Print all API problems at once'
+  };
+  const phetioPrintMissingTandemsQueryParameter: PhetmarksQueryParameter = {
+    value: 'phetioPrintMissingTandems',
+    text: 'Print uninstrumented tandems'
+  };
+  const screenQueryParameter: PhetmarksQueryParameter = {
+    value: 'screens',
+    text: 'Sim Screen',
+    type: 'parameterValues',
+    parameterValues: [ 'all', '1', '2', '3', '4', '5', '6' ],
     omitIfDefault: true
   };
 
@@ -142,23 +181,11 @@
       value: 'strictAxonDependencies',
       text: 'Strict Axon Dependencies',
       type: 'boolean'
-    } ];
-
-  const localesQueryParameter: PhetmarksQueryParameter = {
-    value: 'locales=*', text: 'Load all locales', dependentQueryParameters: [
-      { value: 'keyboardLocaleSwitcher', text: 'ctrl + u/i to cycle locales' }
-    ]
-  };
+    }
+  ];
 
   // This weirdness is to keep the order the same (screens last), while allowing phet-io to change the default of locales=*;
   const simQueryParameters = simNoLocalesQueryParameters.concat( [ localesQueryParameter ] );
-  const screenQueryParameter: PhetmarksQueryParameter = {
-    value: 'screens',
-    text: 'Sim Screen',
-    type: 'parameterValues',
-    parameterValues: [ 'all', '1', '2', '3', '4', '5', '6' ],
-    omitIfDefault: true
-  };
   simQueryParameters.push( screenQueryParameter );
   simNoLocalesQueryParameters.push( screenQueryParameter );
 
@@ -168,13 +195,6 @@
     eaQueryParameter,
     { value: 'eall', text: 'All Assertions' }
   ];
-
-  const phetioElementsDisplayParameter: PhetmarksQueryParameter = {
-    value: 'phetioElementsDisplay',
-    text: 'What PhET-iO Elements to show',
-    type: 'parameterValues',
-    parameterValues: [ 'all', 'featured' ]
-  };
 
   const phetioBaseParameters: PhetmarksQueryParameter[] = [
     audioQueryParameter, {
@@ -188,13 +208,10 @@
     }, {
       value: 'phetioCompareAPI&randomSeed=332211', // NOTE: DUPLICATION ALERT: random seed must match that of API generation, see generatePhetioMacroAPI.js
       text: 'Compare with reference API'
-    }, {
-      value: 'phetioPrintMissingTandems',
-      text: 'Print uninstrumented tandems'
-    }, {
-      value: 'phetioPrintAPIProblems',
-      text: 'Print all API problems at once'
-    }, _.extend( { default: true }, localesQueryParameter ), {
+    },
+    phetioPrintMissingTandemsQueryParameter,
+    phetioPrintAPIProblemsQueryParameter,
+    _.extend( { default: true }, localesQueryParameter ), {
       value: 'phetioValidation',
       text: 'Stricter, PhET-iO-specific validation',
       type: 'boolean'
@@ -211,6 +228,7 @@
       text: 'Randomize sim list'
     }
   ];
+
   const testServerQueryParameters: PhetmarksQueryParameter[] = testServerNoTestTaskQueryParameters.concat( {
     value: 'testTask=true',
     text: 'test fuzzing after loading, set to false if you just want to test loading',
@@ -219,16 +237,6 @@
 
   // See perennial-alias/data/wrappers for format
   const nonPublishedPhetioWrappersToAddToPhetmarks = [ 'phet-io-wrappers/mirror-inputs' ];
-
-
-  const phetioDebugParameter: PhetmarksQueryParameter = {
-    value: 'phetioDebug',
-    text: 'Enable sim assertions from wrapper',
-    type: 'boolean'
-  };
-  const phetioDebugTrueParameter: PhetmarksQueryParameter = _.assign( {
-    default: true
-  }, phetioDebugParameter );
 
   // Query parameters for the PhET-iO wrappers (including iframe tests)
   const phetioWrapperQueryParameters: PhetmarksQueryParameter[] = phetioBaseParameters.concat( [ phetioDebugTrueParameter, {
@@ -241,13 +249,9 @@
   // For phetio sim frame links
   const phetioSimQueryParameters: PhetmarksQueryParameter[] = phetioBaseParameters.concat( [
     eaQueryParameter, // this needs to be first in this list
-    { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' }, {
-      value: 'phetioPrintMissingTandems',
-      text: 'Print tandems that have not yet been added'
-    }, {
-      value: 'phetioPrintAPIProblems',
-      text: 'Print problems found by phetioAPIValidation to the console instead of asserting each item.'
-    }, {
+    { value: 'brand=phet-io&phetioStandalone&phetioConsoleLog=colorized', text: 'Formatted PhET-IO Console Output' },
+    phetioPrintMissingTandemsQueryParameter,
+    phetioPrintAPIProblemsQueryParameter, {
       value: 'phetioPrintAPI',
       text: 'Print the API to the console'
     }
