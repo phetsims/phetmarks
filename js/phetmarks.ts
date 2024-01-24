@@ -88,15 +88,17 @@
 
   type ElementToParameterMap = Map<HTMLElement, PhetmarksQueryParameter>;
 
+  const audioQueryParameter: PhetmarksQueryParameter = {
+    value: 'audio',
+    text: 'Audio support',
+    type: 'parameterValues',
+    parameterValues: [ 'enabled', 'disabled', 'muted' ],
+    omitIfDefault: true
+  };
+
   // Query parameters used for the following modes: unbuilt, compiled, production
   const simNoLocalesQueryParameters: PhetmarksQueryParameter[] = [
-    {
-      value: 'audio',
-      text: 'Audio support',
-      type: 'parameterValues',
-      parameterValues: [ 'enabled', 'disabled', 'muted' ],
-      omitIfDefault: true
-    }, {
+    audioQueryParameter, {
       value: 'fuzz', text: 'Fuzz', dependentQueryParameters: [
         { value: 'fuzzPointers=2', text: 'Multitouch-fuzz' }
       ]
@@ -173,7 +175,7 @@
     parameterValues: [ 'all', 'featured' ]
   };
 
-  const phetioBaseParameters: PhetmarksQueryParameter[] = [ {
+  const phetioBaseParameters: PhetmarksQueryParameter[] = [ audioQueryParameter, {
     value: 'phetioEmitHighFrequencyEvents',
     type: 'boolean',
     text: 'Emit events that occur often'
