@@ -130,7 +130,7 @@
     value: 'phetioPrintMissingTandems',
     text: 'Print uninstrumented tandems'
   };
-  const screenQueryParameter: PhetmarksQueryParameter = {
+  const screensQueryParameter: PhetmarksQueryParameter = {
     value: 'screens',
     text: 'Sim Screen',
     type: 'parameterValues',
@@ -186,8 +186,8 @@
 
   // This weirdness is to keep the order the same (screens last), while allowing phet-io to change the default of locales=*;
   const simQueryParameters = simNoLocalesQueryParameters.concat( [ localesQueryParameter ] );
-  simQueryParameters.push( screenQueryParameter );
-  simNoLocalesQueryParameters.push( screenQueryParameter );
+  simQueryParameters.push( screensQueryParameter );
+  simNoLocalesQueryParameters.push( screensQueryParameter );
 
   // Query parameters used for unbuilt and PhET-iO wrappers
   const devSimQueryParameters: PhetmarksQueryParameter[] = [
