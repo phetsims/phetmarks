@@ -174,6 +174,21 @@
     { value: 'webgl', text: 'WebGL', type: 'boolean' },
     { value: 'disableModals', text: 'Disable Modals' },
     {
+      value: 'regionAndCulture',
+      text: 'Initial Region and Culture',
+      type: 'parameterValues',
+      omitIfDefault: true,
+      parameterValues: [
+        'default',
+        'usa',
+        'africa',
+        'africaModest',
+        'asia',
+        'latinAmerica',
+        'oceania',
+        'multi'
+      ]
+    }, {
       value: 'listenerOrder',
       text: 'Alter listener order',
       type: 'parameterValues',
