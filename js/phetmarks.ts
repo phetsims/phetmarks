@@ -240,18 +240,32 @@
     }
   ];
 
-  const testServerNoTestTaskQueryParameters: PhetmarksQueryParameter[] = [
+  // See aqua/fuzz-lightyear for details
+  const fuzzLightyearNoTestTaskQueryParameters: PhetmarksQueryParameter[] = [
+    { value: 'randomize', text: 'Randomize' },
+    { value: 'reverse', text: 'Reverse' },
     {
       value: 'loadTimeout=30000',
-      text: 'how long the test has to load.',
+      text: 'time sim has to load',
       default: true
     }, {
-      value: 'randomize',
-      text: 'Randomize sim list'
+      value: 'testDuration=10000',
+      text: 'fuzz time after load'
+    },
+    {
+      value: 'wrapperName',
+      text: 'PhET-iO Wrapper',
+      type: 'parameterValues',
+      omitIfDefault: true,
+      parameterValues: [
+        'default',
+        'studio',
+        'state'
+      ]
     }
   ];
 
-  const testServerQueryParameters: PhetmarksQueryParameter[] = testServerNoTestTaskQueryParameters.concat( {
+  const fuzzLightyearQueryParamaters: PhetmarksQueryParameter[] = fuzzLightyearNoTestTaskQueryParameters.concat( {
     value: 'testTask=true',
     text: 'test fuzzing after loading, set to false if you just want to test loading',
     default: true
@@ -409,7 +423,7 @@
           text: 'Fuzz Test Studio Wrapper',
           description: 'Runs automated testing with fuzzing on studio, 15 second timer',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: testServerQueryParameters.concat( [ {
+          queryParameters: fuzzLightyearQueryParamaters.concat( [ {
             value: `testDuration=15000&fuzz&wrapperName=studio&wrapperContinuousTest=%7B%7D&testSims=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
@@ -420,7 +434,7 @@
           text: 'Fuzz Test Migration',
           description: 'Runs automated testing with fuzzing on studio, 10 second timer',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: testServerQueryParameters.concat( migrationQueryParameters ).concat( [ {
+          queryParameters: fuzzLightyearQueryParamaters.concat( migrationQueryParameters ).concat( [ {
             value: 'testDuration=20000&fuzz&wrapperName=migration&wrapperContinuousTest=%7B%7D&migrationRate=2000&' +
                    `phetioMigrationReport=assert&testSims=${phetioHydrogenSims.map( simData => simData.sim ).join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
@@ -432,7 +446,7 @@
           text: 'Fuzz Test State Wrapper',
           description: 'Runs automated testing with fuzzing on state, 15 second timer',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: testServerQueryParameters.concat( [ {
+          queryParameters: fuzzLightyearQueryParamaters.concat( [ {
             value: `testDuration=15000&fuzz&wrapperName=state&setStateRate=3000&wrapperContinuousTest=%7B%7D&testSims=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
@@ -510,7 +524,7 @@
           text: 'Fuzz Test PhET Sims',
           description: 'Runs automated testing with fuzzing, 10 second timer',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: testServerQueryParameters.concat( [ {
+          queryParameters: fuzzLightyearQueryParamaters.concat( [ {
             value: `${generalTestServerSimParams}&brand=phet&fuzz`,
             text: 'Test PhET sims',
             default: true
@@ -521,7 +535,7 @@
           text: 'Fuzz Test PhET-iO Sims',
           description: 'Runs automated testing with fuzzing, 10 second timer',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: testServerQueryParameters.concat( [ {
+          queryParameters: fuzzLightyearQueryParamaters.concat( [ {
             value: `${generalTestServerSimParams}&brand=phet-io&fuzz&phetioStandalone&testSims=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
@@ -539,7 +553,7 @@
           }, {
             value: `${generalTestServerSimParams}&brand=phet&fuzz&supportsInteractiveDescription=true`,
             text: 'Normal Fuzz Test sims'
-          } ] as PhetmarksQueryParameter[] ).concat( testServerQueryParameters ).concat( [ {
+          } ] as PhetmarksQueryParameter[] ).concat( fuzzLightyearQueryParamaters ).concat( [ {
             value: `testSims=${interactiveDescriptionSims.join( ',' )}`,
             text: 'Test only A11y sims',
             default: true
@@ -547,14 +561,14 @@
         } );
         modes.push( {
           name: 'fuzz-sims-load-only',
-          text: 'Fuzz Sims (Load Only)',
+          text: 'Load Sims',
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
           url: '../aqua/fuzz-lightyear/',
           queryParameters: ( [ {
             value: 'ea&brand=phet&audio=disabled&testTask=false',
             text: 'Test Sims (Load Only)',
             default: true
-          } ] as PhetmarksQueryParameter[] ).concat( testServerNoTestTaskQueryParameters )
+          } ] as PhetmarksQueryParameter[] ).concat( fuzzLightyearNoTestTaskQueryParameters )
         } );
         modes.push( {
           name: 'continuous-testing',
