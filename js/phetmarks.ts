@@ -47,7 +47,7 @@
   type RepoName = string; // the name of a repo;
 
   // Use this as a parameter value to omit the query parameter selection (even if not the default selection)
-  const SIMULATION_DEFAULT = 'Simulation Default';
+  const NO_VALUE = 'No Value';
 
   type MigrationData = {
     sim: string;
@@ -580,7 +580,44 @@
           name: 'snapshot-comparison',
           text: 'Snapshot Comparison',
           description: 'Sets up snapshot screenshot comparison that can be run on different SHAs',
-          url: '../aqua/html/snapshot-comparison.html'
+          url: '../aqua/html/snapshot-comparison.html',
+          queryParameters: [
+            {
+              value: 'sims=density,buoyancy',
+              text: 'Sims to compare',
+              default: true
+            },
+            {
+              value: 'simSeed=123',
+              text: 'Custom seed (defaults to a non random value)'
+            },
+            {
+              value: `simWidth=${1024 / 2}`,
+              text: 'Larger sim width'
+            },
+            {
+              value: `simHeight=${768 / 2}`,
+              text: 'Larger sim height'
+            },
+            {
+              value: 'simQueryParameters=ea',
+              text: 'sim frame parameters'
+            },
+            {
+              value: 'numFrames=30',
+              text: 'more comparison frames'
+            },
+            {
+              value: 'showTime',
+              text: 'show time taken for each snpashot',
+              type: 'boolean'
+            },
+            {
+              value: 'compareDescription',
+              text: 'compare description PDOM and text too',
+              type: 'boolean'
+            }
+          ]
         } );
         modes.push( {
           name: 'multi-snapshot-comparison',
@@ -900,11 +937,11 @@
     if ( queryParameter.type === 'boolean' ) {
       assert && assert( !queryParameter.hasOwnProperty( 'parameterValues' ), 'parameterValues are filled in for boolean' );
       assert && assert( !queryParameter.hasOwnProperty( 'omitIfDefault' ), 'omitIfDefault is filled in for boolean' );
-      queryParameter.parameterValues = [ 'true', 'false', SIMULATION_DEFAULT ];
+      queryParameter.parameterValues = [ 'true', 'false', NO_VALUE ];
 
       // sim default is the default for booleans
       if ( !queryParameter.hasOwnProperty( 'default' ) ) {
-        queryParameter.default = SIMULATION_DEFAULT;
+        queryParameter.default = NO_VALUE;
       }
     }
     else {
@@ -956,7 +993,7 @@
         const radioButtonValue = $( `input[name=${queryParameterName}]:checked` ).val() + '';
 
         // A value of "Simulation Default" tells us not to provide the query parameter.
-        const omitQueryParameter = radioButtonValue === SIMULATION_DEFAULT ||
+        const omitQueryParameter = radioButtonValue === NO_VALUE ||
                                    ( queryParameter.omitIfDefault && radioButtonValue === defaultValue );
         return omitQueryParameter ? '' : `${queryParameterName}=${radioButtonValue}`;
       }
