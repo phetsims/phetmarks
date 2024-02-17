@@ -470,7 +470,7 @@
           description: 'Runs unit tests in unbuilt mode',
           url: `../${repo}/${repo}-tests.html`,
           queryParameters: [
-            { value: 'ea', text: 'Assertions', default: true },
+            eaQueryParameter,
             { value: 'brand=phet-io', text: 'PhET-iO Brand', default: repo === 'phet-io' || repo === 'tandem' || repo === 'phet-io-wrappers' },
             ...( repo === 'phet-io-wrappers' ? [ { value: 'sim=gravity-and-orbits', text: 'neededTestParams', default: true } ] : [] )
           ]
@@ -582,10 +582,14 @@
           description: 'Sets up snapshot screenshot comparison that can be run on different SHAs',
           url: '../aqua/html/snapshot-comparison.html',
           queryParameters: [
+            eaQueryParameter,
             {
               value: 'sims=density,buoyancy',
-              text: 'Sims to compare',
-              default: true
+              text: 'Sims to compare'
+            },
+            {
+              value: 'randomSims=10',
+              text: 'Test a random number of sims'
             },
             {
               value: 'simSeed=123',
@@ -667,11 +671,7 @@
           text: 'Preprocessor',
           description: 'Load the preprocessor for parsing data logs down to a size that can be used by the simulation.',
           url: `../${repo}/preprocessor.html`,
-          queryParameters: [ {
-            value: 'ea',
-            text: 'Enable Assertions',
-            default: true
-          }, {
+          queryParameters: [ eaQueryParameter, {
             value: 'parseX=10',
             text: 'Test only 10 sessions'
           }, {
