@@ -211,9 +211,11 @@
   simQueryParameters.push( screensQueryParameter );
   simNoLocalesQueryParameters.push( screensQueryParameter );
 
+  const phetBrandQueryParameter = { value: 'brand=phet', text: 'PhET Brand', default: true };
+
   // Query parameters used for unbuilt and PhET-iO wrappers
   const devSimQueryParameters: PhetmarksQueryParameter[] = [
-    { value: 'brand=phet', text: 'PhET Brand', default: true },
+    phetBrandQueryParameter,
     eaQueryParameter,
     { value: 'eall', text: 'All Assertions' }
   ];
@@ -406,7 +408,8 @@
           name: 'colors',
           text: 'Color Editor',
           description: 'Runs the top-level -colors.html file (allows editing/viewing different profile colors)',
-          url: `color-editor.html?sim=${repo}&brand=phet`
+          url: `color-editor.html?sim=${repo}`,
+          queryParameters: [ phetBrandQueryParameter ]
         } );
       }
 
@@ -550,25 +553,26 @@
           text: 'Fuzz Test Interactive Description Sims',
           description: 'Runs automated testing with fuzzing, 10 second timer',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: getFuzzLightyearParameters().concat( [ {
-            value: 'brand=phet&fuzzBoard&supportsInteractiveDescription=true',
-            text: 'Keyboard Fuzz Test sims',
-            default: true
-          }, {
-            value: 'brand=phet&fuzz&supportsInteractiveDescription=true',
-            text: 'Normal Fuzz Test sims'
-          }, {
-            value: `testSims=${interactiveDescriptionSims.join( ',' )}`,
-            text: 'Test only A11y sims',
-            default: true
-          } ] )
+          queryParameters: getFuzzLightyearParameters().concat( [
+            phetBrandQueryParameter, {
+              value: 'fuzzBoard&supportsInteractiveDescription=true',
+              text: 'Keyboard Fuzz Test sims',
+              default: true
+            }, {
+              value: 'fuzz&supportsInteractiveDescription=true',
+              text: 'Normal Fuzz Test sims'
+            }, {
+              value: `testSims=${interactiveDescriptionSims.join( ',' )}`,
+              text: 'Test only A11y sims',
+              default: true
+            } ] )
         } );
         modes.push( {
           name: 'fuzz-sims-load-only',
           text: 'Load Sims',
           description: 'Runs automated testing that just loads sims (without fuzzing or building)',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: getFuzzLightyearParameters( 10000, false )
+          queryParameters: getFuzzLightyearParameters( 10000, false ).concat( [ phetBrandQueryParameter ] )
         } );
         modes.push( {
           name: 'continuous-testing',
