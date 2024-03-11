@@ -44,6 +44,15 @@
     omitIfDefault?: boolean; // if true, omit the default selection of the query parameter, only adding it when changed. Defaults to false
   };
 
+  const demoRepos = [
+    'bamboo',
+    'griddle',
+    'scenery-phet',
+    'sun',
+    'tambo',
+    'vegas'
+  ];
+
   type RepoName = string; // the name of a repo;
 
   // Use this as a parameter value to omit the query parameter selection (even if not the default selection)
@@ -144,6 +153,11 @@
     parameterValues: [ 'all', '1', '2', '3', '4', '5', '6' ],
     omitIfDefault: true
   };
+
+  const demosQueryParameters: PhetmarksQueryParameter[] = [ {
+    value: 'component=Something',
+    text: 'Component selection'
+  } ];
 
   // Query parameters used for the following modes: unbuilt, compiled, production
   const simNoLocalesQueryParameters: PhetmarksQueryParameter[] = [
@@ -371,7 +385,11 @@
           text: 'Unbuilt',
           description: 'Runs the simulation from the top-level development HTML in unbuilt mode',
           url: `../${repo}/${repo}_en.html`,
-          queryParameters: devSimQueryParameters.concat( simQueryParameters )
+          queryParameters: [
+            ...devSimQueryParameters,
+            ...( demoRepos.includes( repo ) ? demosQueryParameters : [] ),
+            ...simQueryParameters
+          ]
         } );
         modes.push( {
           name: 'compiled',
@@ -400,10 +418,8 @@
           description: 'Loads the location on phet-dev.colorado.edu with versions for each dev deploy',
           url: `https://phet-dev.colorado.edu/html/${repo}`
         } );
-      }
 
-      // Color picker UI
-      if ( isRunnable ) {
+        // Color picker UI
         modes.push( {
           name: 'colors',
           text: 'Color Editor',
