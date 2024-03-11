@@ -53,6 +53,14 @@
     'vegas'
   ];
 
+  const docRepos = [
+    'scenery',
+    'kite',
+    'dot',
+    'phet-io',
+    'binder'
+  ];
+
   type RepoName = string; // the name of a repo;
 
   // Use this as a parameter value to omit the query parameter selection (even if not the default selection)
@@ -497,12 +505,12 @@
           ]
         } );
       }
-      if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' || repo === 'phet-io' ) {
+      if ( docRepos.includes( repo ) ) {
         modes.push( {
           name: 'documentation',
           text: 'Documentation',
           description: 'Browse HTML documentation',
-          url: `../${repo}/doc/`
+          url: `../${repo}/doc${repo === 'binder' ? 's' : ''}/`
         } );
       }
       if ( repo === 'scenery' ) {
