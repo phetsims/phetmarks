@@ -604,6 +604,26 @@
           description: 'Link to the continuous testing on Bayes.',
           url: 'https://bayes.colorado.edu/continuous-testing/aqua/html/continuous-report.html'
         } );
+
+        // Shared by old and multi snapshop comparison.
+        const sharedComparisonQueryParameters: PhetmarksQueryParameter[] = [
+          {
+            value: 'simSeed=123',
+            text: 'Custom seed (defaults to a non random value)'
+          },
+          {
+            value: `simWidth=${1024 / 2}`,
+            text: 'Larger sim width'
+          },
+          {
+            value: `simHeight=${768 / 2}`,
+            text: 'Larger sim height'
+          },
+          {
+            value: 'numFrames=30',
+            text: 'more comparison frames'
+          }
+        ];
         modes.push( {
           name: 'snapshot-comparison',
           text: 'Snapshot Comparison',
@@ -619,18 +639,7 @@
               value: 'randomSims=10',
               text: 'Test a random number of sims'
             },
-            {
-              value: 'simSeed=123',
-              text: 'Custom seed (defaults to a non random value)'
-            },
-            {
-              value: `simWidth=${1024 / 2}`,
-              text: 'Larger sim width'
-            },
-            {
-              value: `simHeight=${768 / 2}`,
-              text: 'Larger sim height'
-            },
+            ...sharedComparisonQueryParameters,
             {
               value: 'simQueryParameters=ea',
               text: 'sim frame parameters'
@@ -655,7 +664,29 @@
           name: 'multi-snapshot-comparison',
           text: 'Multi-snapshot Comparison',
           description: 'Sets up snapshot screenshot comparison for two different checkouts',
-          url: '../aqua/html/multi-snapshot-comparison.html'
+          url: '../aqua/html/multi-snapshot-comparison.html',
+          queryParameters: [
+            eaQueryParameter,
+            {
+              value: 'runnables=density,buoyancy',
+              text: 'Sims to compare'
+            },
+            {
+              value: 'urls=http://localhost,http://localhost:8080',
+              text: 'Testing urls',
+              default: true
+            },
+            ...sharedComparisonQueryParameters,
+            {
+              value: 'simQueryParameters=ea',
+              text: 'sim parameters (not ?brand)',
+              default: true
+            },
+            {
+              value: 'copies=1',
+              text: 'IFrames per column'
+            }
+          ]
         } );
       }
       if ( repo === 'yotta' ) {
