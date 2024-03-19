@@ -678,6 +678,11 @@
             },
             ...sharedComparisonQueryParameters,
             {
+              value: 'testPhetio',
+              type: 'boolean',
+              text: 'Test PhET-iO Brand'
+            },
+            {
               value: 'simQueryParameters=ea',
               text: 'sim parameters (not ?brand)',
               default: true
