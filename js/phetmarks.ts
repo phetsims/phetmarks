@@ -645,10 +645,6 @@
               text: 'sim frame parameters'
             },
             {
-              value: 'numFrames=30',
-              text: 'more comparison frames'
-            },
-            {
               value: 'showTime',
               text: 'show time taken for each snpashot',
               type: 'boolean'
