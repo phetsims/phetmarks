@@ -453,7 +453,7 @@
           description: 'Runs automated testing with fuzzing on studio, 15 second timer',
           url: '../aqua/fuzz-lightyear/',
           queryParameters: getFuzzLightyearParameters( 15000 ).concat( [ {
-            value: `fuzz&wrapperName=studio&wrapperContinuousTest=%7B%7D&testSims=${phetioSims.join( ',' )}`,
+            value: `fuzz&wrapperName=studio&wrapperContinuousTest=%7B%7D&repos=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
           } ] )
@@ -465,7 +465,7 @@
           url: '../aqua/fuzz-lightyear/',
           queryParameters: getFuzzLightyearParameters( 20000 ).concat( migrationQueryParameters ).concat( [ {
             value: 'fuzz&wrapperName=migration&wrapperContinuousTest=%7B%7D&migrationRate=2000&' +
-                   `phetioMigrationReport=assert&testSims=${phetioHydrogenSims.map( simData => simData.sim ).join( ',' )}`,
+                   `phetioMigrationReport=assert&repos=${phetioHydrogenSims.map( simData => simData.sim ).join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
           } ] )
@@ -476,7 +476,7 @@
           description: 'Runs automated testing with fuzzing on state, 15 second timer',
           url: '../aqua/fuzz-lightyear/',
           queryParameters: getFuzzLightyearParameters( 15000 ).concat( [ {
-            value: `fuzz&wrapperName=state&setStateRate=3000&wrapperContinuousTest=%7B%7D&testSims=${phetioSims.join( ',' )}`,
+            value: `fuzz&wrapperName=state&setStateRate=3000&wrapperContinuousTest=%7B%7D&repos=${phetioSims.join( ',' )}`,
             text: 'Fuzz Test PhET-IO sims',
             default: true
           } ] )
@@ -567,7 +567,7 @@
             text: 'Fuzz PhET-IO brand',
             default: true
           }, {
-            value: `testSims=${phetioSims.join( ',' )}`,
+            value: `repos=${phetioSims.join( ',' )}`,
             text: 'Test only PhET-iO sims',
             default: true
           } ] )
@@ -586,7 +586,7 @@
               value: 'fuzz&supportsInteractiveDescription=true',
               text: 'Normal Fuzz Test sims'
             }, {
-              value: `testSims=${interactiveDescriptionSims.join( ',' )}`,
+              value: `repos=${interactiveDescriptionSims.join( ',' )}`,
               text: 'Test only A11y sims',
               default: true
             } ] )
@@ -632,7 +632,7 @@
           queryParameters: [
             eaQueryParameter,
             {
-              value: 'sims=density,buoyancy',
+              value: 'repos=density,buoyancy',
               text: 'Sims to compare'
             },
             {
@@ -664,7 +664,7 @@
           queryParameters: [
             eaQueryParameter,
             {
-              value: 'runnables=density,buoyancy',
+              value: 'repos=density,buoyancy',
               text: 'Sims to compare'
             },
             {
