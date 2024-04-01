@@ -278,6 +278,10 @@
         value: `testDuration=${duration}`,
         text: 'fuzz time after load',
         default: true
+      }, {
+        value: 'fuzzers=2',
+        text: 'More fuzzers',
+        default: true
       },
       {
         value: 'wrapperName',
