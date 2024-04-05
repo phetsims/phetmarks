@@ -1066,7 +1066,7 @@
 
   // get Flag checkboxes as their individual query strings (in a list), but only if they are different from their default.
   function getFlagParameters( toggleContainer: HTMLElement ): string[] {
-    const checkboxElements = $( toggleContainer ).find( '.flagParameter' )! as unknown as HTMLInputElement[];
+    const checkboxElements = $( toggleContainer ).find( '.flagParameter' ) as unknown as HTMLInputElement[];
 
     // Only checked boxed.
     return _.filter( checkboxElements, ( checkbox: HTMLInputElement ) => checkbox.checked )
