@@ -265,7 +265,7 @@
   ];
 
   // See aqua/fuzz-lightyear for details
-  const getFuzzLightyearParameters = ( duration = 10000, testTask = true ): PhetmarksQueryParameter[] => {
+  const getFuzzLightyearParameters = ( duration = 10000, testTask = true, moreFuzzers = true ): PhetmarksQueryParameter[] => {
     return [
       { value: 'ea&audio=disabled', text: 'general sim params to include', default: true },
       { value: 'randomize', text: 'Randomize' },
@@ -281,7 +281,7 @@
       }, {
         value: 'fuzzers=2',
         text: 'More fuzzers',
-        default: true
+        default: moreFuzzers
       },
       {
         value: 'wrapperName',
@@ -581,7 +581,9 @@
           text: 'Fuzz Test Interactive Description Sims',
           description: 'Runs automated testing with fuzzing, 10 second timer',
           url: '../aqua/fuzz-lightyear/',
-          queryParameters: getFuzzLightyearParameters().concat( [
+
+          // only one fuzzer because two iframes cannot both receive focus/blur events
+          queryParameters: getFuzzLightyearParameters( 10000, true, false ).concat( [
             phetBrandQueryParameter, {
               value: 'fuzzBoard&supportsInteractiveDescription=true',
               text: 'Keyboard Fuzz Test sims',
