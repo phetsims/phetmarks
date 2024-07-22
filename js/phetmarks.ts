@@ -167,6 +167,8 @@
     text: 'Component selection'
   } ];
 
+  const webGLParameter: PhetmarksQueryParameter = { value: 'webgl', text: 'WebGL', type: 'boolean' };
+
   // Query parameters used for the following modes: unbuilt, compiled, production
   const simNoLocalesQueryParameters: PhetmarksQueryParameter[] = [
     audioQueryParameter, {
@@ -193,7 +195,7 @@
     { value: 'printVoicingResponses', text: 'console.log() voicing responses' },
     { value: 'interactiveHighlightsInitiallyEnabled', text: 'Interactive Highlights on by default' },
     { value: 'preferencesStorage', text: 'Load Preferences from localStorage.' },
-    { value: 'webgl', text: 'WebGL', type: 'boolean' },
+    webGLParameter,
     { value: 'disableModals', text: 'Disable Modals' },
     {
       value: 'regionAndCulture',
@@ -829,13 +831,16 @@
             queryParameters = studioQueryParameters.concat( [ phetioDebugParameter, phetioElementsDisplayParameter ] );
           }
           else if ( wrapperName === 'migration' ) {
-            queryParameters = [ ...migrationQueryParameters, {
-              value: 'phetioMigrationReport',
-              type: 'parameterValues',
-              text: 'How should the migration report be reported?',
-              parameterValues: [ 'dev', 'client', 'verbose', 'assert' ],
-              omitIfDefault: false
-            } ];
+            queryParameters = [
+              ...migrationQueryParameters,
+              { ...webGLParameter, default: true }, { // eslint-disable-line no-object-spread-on-non-literals
+                value: 'phetioMigrationReport',
+                type: 'parameterValues',
+                text: 'How should the migration report be reported?',
+                parameterValues: [ 'dev', 'client', 'verbose', 'assert' ],
+                omitIfDefault: false
+              }
+            ];
           }
           else if ( wrapperName === 'state' ) {
             queryParameters = [ ...phetioWrapperQueryParameters, {
