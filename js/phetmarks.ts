@@ -606,7 +606,13 @@
           name: 'continuous-testing',
           text: 'Continuous Testing',
           description: 'Link to the continuous testing on Bayes.',
-          url: 'https://bayes.colorado.edu/continuous-testing/aqua/html/continuous-report.html'
+          url: 'sparky.colorado.edu/continuous-testing/aqua/html/continuous-report.html?maxColumns=10'
+        } );
+        modes.push( {
+          name: 'continuous-testing-local',
+          text: 'Continuous Testing (local unbuilt)',
+          description: 'Link to the continuous testing on Bayes.',
+          url: '../aqua/html/continuous-unbuilt-report.html?server=https://sparky.colorado.edu/&maxColumns=10'
         } );
 
         // Shared by old and multi snapshop comparison.
