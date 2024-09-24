@@ -10,18 +10,6 @@
     "grunt": "~1.5.3"
   },
   "eslintConfig": {
-    "extends": "../chipper/eslint/.eslintrc.js",
-    "overrides": [
-      {
-        "files": [
-          "**/*.ts"
-        ],
-        "parserOptions": {
-          "project": [
-            "../chipper/tsconfig/eslint-all/tsconfig.json"
-          ]
-        }
-      }
-    ]
+    "extends": "../chipper/eslint/.eslintrc.js"
   }
 }
