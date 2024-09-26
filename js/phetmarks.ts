@@ -839,7 +839,7 @@
           else if ( wrapperName === 'migration' ) {
             queryParameters = [
               ...migrationQueryParameters,
-              { ...webGLParameter, default: true }, { // eslint-disable-line no-object-spread-on-non-literals
+              { ...webGLParameter, default: true }, { // eslint-disable-line phet/no-object-spread-on-non-literals
                 value: 'phetioMigrationReport',
                 type: 'parameterValues',
                 text: 'How should the migration report be reported?',
