@@ -7,8 +7,8 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-import parent from '../chipper/eslint/root.eslint.config.mjs';
+import phetLibraryEslintConfig from '../chipper/eslint/root.eslint.config.mjs';
 
 export default [
-  ...parent
+  ...phetLibraryEslintConfig
 ];
