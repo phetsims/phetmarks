@@ -8,8 +8,5 @@
   },
   "devDependencies": {
     "grunt": "~1.5.3"
-  },
-  "eslintConfig": {
-    "extends": "../chipper/eslint/.eslintrc.js"
   }
 }
