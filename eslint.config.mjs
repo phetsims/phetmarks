@@ -7,9 +7,8 @@
  * @author Michael Kauzmann (PhET Interactive Simulations)
  */
 
-import rootEslintConfig, { browserGlobals } from '../chipper/eslint/root.eslint.config.mjs';
+import browserEslintConfig from '../chipper/eslint/browser.eslint.config.mjs';
 
 export default [
-  ...rootEslintConfig,
-  browserGlobals
+  ...browserEslintConfig
 ];
