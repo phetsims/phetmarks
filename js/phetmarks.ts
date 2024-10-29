@@ -725,6 +725,15 @@
         } );
       }
 
+      if ( repo === 'phettest' ) {
+        modes.push( {
+          name: 'phettest',
+          text: 'PhET Test',
+          description: 'local version of phettest pointing to the server on bayes',
+          url: '../phettest/'
+        } );
+      }
+
       if ( supportsInteractiveDescription ) {
         modes.push( {
           name: 'a11y-view',
