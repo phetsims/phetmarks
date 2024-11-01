@@ -250,7 +250,7 @@
       type: 'boolean',
       text: 'Emit state events'
     }, {
-      value: 'phetioCompareAPI&randomSeed=332211', // NOTE: DUPLICATION ALERT: random seed must match that of API generation, see generatePhetioMacroAPI.js
+      value: 'phetioCompareAPI&randomSeed=332211', // NOTE: DUPLICATION ALERT: random seed must match that of API generation, see generatePhetioMacroAPI
       text: 'Compare with reference API'
     },
     phetioPrintMissingTandemsQueryParameter,
