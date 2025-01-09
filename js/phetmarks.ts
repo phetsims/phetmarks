@@ -1336,7 +1336,14 @@
   const wrappers = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/wrappers' } ) );
   const unitTestsRepos = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/unit-tests' } ) );
   const phetioHydrogenSims = await $.ajax( { url: '../perennial-alias/data/phet-io-hydrogen.json' } );
-  const phetioPackageJSONs = await loadPackageJSONs( phetioSims );
+
+  let phetioPackageJSONs: Record<RepoName, PackageJSON> = {};
+  try {
+    phetioPackageJSONs = await loadPackageJSONs( phetioSims );
+  }
+  catch( e ) {
+    console.log( 'perchance there are no phet-io sims' );
+  }
 
   render( populate( activeRunnables, activeRepos, phetioSims, interactiveDescriptionSims, wrappers, unitTestsRepos, phetioHydrogenSims, phetioPackageJSONs ) );
 } )().catch( ( e: Error ) => {
