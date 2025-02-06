@@ -517,10 +517,28 @@
       }
       if ( repo === 'scenery' ) {
         modes.push( {
+          name: 'basics-documentation',
+          text: 'Basics Documentation',
+          description: 'Scenery Basics Documentation',
+          url: 'https://scenerystack.org/learn/scenery-basics/'
+        } );
+        modes.push( {
           name: 'layout-documentation',
           text: 'Layout Documentation',
-          description: 'Browse HTML layout documentation',
-          url: `../${repo}/doc/layout.html`
+          description: 'Scenery Layout Documentation',
+          url: 'https://scenerystack.org/learn/scenery-layout/'
+        } );
+        modes.push( {
+          name: 'input-documentation',
+          text: 'Input Documentation',
+          description: 'Scenery Input Documentation',
+          url: 'https://scenerystack.org/learn/scenery-input/'
+        } );
+        modes.push( {
+          name: 'accessibility-documentation',
+          text: 'Accessibility Documentation',
+          description: 'Scenery Accessibility Documentation',
+          url: 'https://scenerystack.org/learn/scenery-accessibility/'
         } );
       }
       if ( repo === 'scenery' || repo === 'kite' || repo === 'dot' ) {
