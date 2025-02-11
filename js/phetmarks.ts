@@ -125,12 +125,9 @@
     text: 'Assertions',
     default: true
   };
-  const localesQueryParameter: PhetmarksQueryParameter = {
-    value: 'locales=*',
-    text: 'Load all locales',
-    dependentQueryParameters: [
-      { value: 'keyboardLocaleSwitcher', text: 'ctrl + u/i to cycle locales' }
-    ]
+  const keyboardLocaleSwitcher: PhetmarksQueryParameter = {
+    value: 'keyboardLocaleSwitcher',
+    text: 'ctrl + u/i to cycle locales'
   };
   const phetioDebugParameter: PhetmarksQueryParameter = {
     value: 'phetioDebug',
@@ -170,7 +167,7 @@
   const webGLParameter: PhetmarksQueryParameter = { value: 'webgl', text: 'WebGL', type: 'boolean' };
 
   // Query parameters used for the following modes: unbuilt, compiled, production
-  const simNoLocalesQueryParameters: PhetmarksQueryParameter[] = [
+  const simQueryParameters: PhetmarksQueryParameter[] = [
     audioQueryParameter, {
       value: 'fuzz', text: 'Fuzz', dependentQueryParameters: [
         { value: 'fuzzPointers=2', text: 'Multitouch-fuzz' }
@@ -223,13 +220,10 @@
         'random',
         'random(42)' // very random, do not change
       ]
-    }
+    },
+    keyboardLocaleSwitcher,
+    screensQueryParameter
   ];
-
-  // This weirdness is to keep the order the same (screens last), while allowing phet-io to change the default of locales=*;
-  const simQueryParameters = simNoLocalesQueryParameters.concat( [ localesQueryParameter ] );
-  simQueryParameters.push( screensQueryParameter );
-  simNoLocalesQueryParameters.push( screensQueryParameter );
 
   const phetBrandQueryParameter = { value: 'brand=phet', text: 'PhET Brand', default: true };
 
@@ -255,7 +249,7 @@
     },
     phetioPrintMissingTandemsQueryParameter,
     phetioPrintAPIProblemsQueryParameter,
-    _.extend( { default: true }, localesQueryParameter ), {
+    keyboardLocaleSwitcher, {
       value: 'phetioValidation',
       text: 'Stricter, PhET-iO-specific validation',
       type: 'boolean'
@@ -822,7 +816,7 @@
           group: 'PhET-iO',
           description: 'Runs the sim in phet-io brand with the standalone query parameter',
           url: `../${repo}/${repo}_en.html?brand=phet-io&phetioStandalone`,
-          queryParameters: phetioSimQueryParameters.concat( simNoLocalesQueryParameters )
+          queryParameters: phetioSimQueryParameters.concat( simQueryParameters )
         } );
 
         const simSpecificWrappers = phetioPackageJSONs[ repo ]?.phet[ 'phet-io' ]?.wrappers || [];
@@ -909,7 +903,7 @@
           group: 'PhET-iO',
           description: 'Show the colorized event log in the console of the stand alone sim.',
           url: `../${repo}/${repo}_en.html?brand=phet-io&phetioConsoleLog=colorized&phetioStandalone&phetioEmitHighFrequencyEvents=false`,
-          queryParameters: phetioSimQueryParameters.concat( simNoLocalesQueryParameters )
+          queryParameters: phetioSimQueryParameters.concat( simQueryParameters )
         } );
       }
     } );
