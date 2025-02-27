@@ -253,6 +253,12 @@
       value: 'phetioValidation',
       text: 'Stricter, PhET-iO-specific validation',
       type: 'boolean'
+    }, {
+      value: 'phetioFuzzValues',
+      text: 'Change phetioFeatured values when fuzzing',
+      dependentQueryParameters: [
+        { value: 'phetioLogFuzzedValues', text: 'console.log featured value changes' }
+      ]
     }
   ];
 
@@ -1165,7 +1171,7 @@
 
       const containerDiv = document.createElement( 'div' );
       parameter.dependentQueryParameters.forEach( relatedParameter => {
-        const dependentCheckbox = createDependentCheckbox( `${relatedParameter.text} (${relatedParameter.value})`, relatedParameter.value, !!relatedParameter.default );
+        const dependentCheckbox = createDependentCheckbox( `${relatedParameter.text} (?${relatedParameter.value})`, relatedParameter.value, !!relatedParameter.default );
         containerDiv.appendChild( dependentCheckbox );
       } );
       toggleContainer.appendChild( containerDiv );
