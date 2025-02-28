@@ -756,8 +756,8 @@
         modes.push( {
           name: 'a11y-view',
           text: 'A11y View',
-          description: 'Runs the simulation in an iframe next to a copy of the PDOM tot easily inspect accessible content.',
-          url: `../${repo}/${repo}_a11y_view.html`,
+          description: 'Runs the simulation in an iframe next to a copy of the PDOM to easily inspect accessible content.',
+          url: `../scenery/wrappers/a11y-view/?sim=${repo}`,
           queryParameters: devSimQueryParameters.concat( simQueryParameters )
         } );
       }
