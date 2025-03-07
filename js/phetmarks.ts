@@ -1233,31 +1233,11 @@
     const modeSelector = createModeSelector( modeData, repositorySelector );
     const queryParameterSelector = createQueryParametersSelector( modeSelector );
 
-    // Combine values from the current page and the text box to get the URL to launch
     function getCurrentURL(): string {
-
-      // Get the query parameters from the custom selector
       const queryParameters = queryParameterSelector.value;
-      const currentPageParams = new URLSearchParams( window.location.search );
       const url = modeSelector.mode.url;
-      const urlObj = new URL( url, window.location.origin );
-
-      // Append parameters from the custom selector if any
-      if ( queryParameters.length ) {
-        new URLSearchParams( queryParameters ).forEach( ( value, key ) => urlObj.searchParams.append( key, value ) );
-      }
-
-      // Append all current page query parameters
-      currentPageParams.forEach( ( value, key ) => urlObj.searchParams.append( key, value ) );
-
-      // Custom serialization: for parameters with an empty value, omit the '='
-      const entries = Array.from( urlObj.searchParams.entries() );
-      const queryString = entries.map( ( [ key, value ] ) => value === '' ? key : `${key}=${value}` ).join( '&' );
-
-      // Reconstruct the full URL with the new query string
-      const base = urlObj.origin + urlObj.pathname;
-      const hash = urlObj.hash;
-      return queryString ? `${base}?${queryString}${hash}` : `${base}${hash}`;
+      const separator = url.includes( '?' ) ? '&' : '?';
+      return url + ( queryParameters.length ? separator + queryParameters : '' );
     }
 
     const launchButton = document.createElement( 'button' );
