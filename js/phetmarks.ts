@@ -300,7 +300,7 @@
   };
 
   // See perennial-alias/data/wrappers for format
-  const nonPublishedPhetioWrappersToAddToPhetmarks = [ 'phet-io-wrappers/mirror-inputs' ];
+  const nonPublishedPhetioWrappersToAddToPhetmarks: string[] = [];
 
   // Query parameters for the PhET-iO wrappers (including iframe tests)
   const phetioWrapperQueryParameters: PhetmarksQueryParameter[] = phetioBaseParameters.concat( [ phetioDebugTrueParameter, {
