@@ -142,8 +142,15 @@
   };
 
   window.addEventListener( 'message', event => {
-    const data = JSON.parse( event.data );
-    if ( data.type === 'reportColor' ) {
+    let data = null;
+    try {
+      data = JSON.parse( event.data );
+    }
+    catch( e ) {
+      // Ignore
+      return;
+    }
+    if ( data?.type === 'reportColor' ) {
       reportForColor( data.name, data.value, data.alpha );
     }
   } );
