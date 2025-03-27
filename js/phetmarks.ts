@@ -352,16 +352,23 @@
   // Track whether 'shift' key is pressed, so that we can change how windows are opened.  If shift is pressed, the
   // page is launched in a separate tab.
   let shiftPressed = false;
+  let ctrlPressed = false;
   window.addEventListener( 'keydown', event => {
     shiftPressed = event.shiftKey;
+    ctrlPressed = event.ctrlKey;
   } );
   window.addEventListener( 'keyup', event => {
     shiftPressed = event.shiftKey;
+    ctrlPressed = event.ctrlKey;
   } );
 
   function openURL( url: string ): void {
     if ( shiftPressed ) {
       window.open( url, '_blank' );
+    }
+    else if ( ctrlPressed ) {
+      window.open( url );
+      window.focus();
     }
     else {
 
