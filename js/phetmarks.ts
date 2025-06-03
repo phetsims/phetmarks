@@ -189,7 +189,7 @@
     { value: 'supportsPanAndZoom', text: 'Supports Pan and Zoom', type: 'boolean' },
     { value: 'supportsVoicing', text: 'Supports Voicing', type: 'boolean' },
     { value: 'voicingInitiallyEnabled', text: 'Voicing on by default' },
-    { value: 'printVoicingResponses', text: 'console.log() voicing responses' },
+    { value: 'logVoicingResponses', text: 'console.log() voicing responses' },
     { value: 'interactiveHighlightsInitiallyEnabled', text: 'Interactive Highlights on by default' },
     { value: 'preferencesStorage', text: 'Load Preferences from localStorage.' },
     webGLParameter,
