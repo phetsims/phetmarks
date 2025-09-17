@@ -1097,7 +1097,8 @@
     return {
       element: div,
       get value() {
-        const radioButtonValue = $( `input[name=${queryParameterName}]:checked` ).val() + '';
+        const checked = document.querySelector( `input[name="${queryParameterName}"]:checked` );
+        const radioButtonValue = ( checked ? ( checked as HTMLInputElement ).value : '' ) + '';
 
         // A value of "Simulation Default" tells us not to provide the query parameter.
         const omitQueryParameter = radioButtonValue === NO_VALUE ||
@@ -1109,10 +1110,11 @@
 
   // get Flag checkboxes as their individual query strings (in a list), but only if they are different from their default.
   function getFlagParameters( toggleContainer: HTMLElement ): string[] {
-    const checkboxElements = $( toggleContainer ).find( '.flagParameter' ) as unknown as HTMLInputElement[];
+    const checkboxNodeList = toggleContainer.querySelectorAll( '.flagParameter' );
+    const checkboxElements: HTMLInputElement[] = Array.prototype.slice.call( checkboxNodeList );
 
-    // Only checked boxed.
-    return _.filter( checkboxElements, ( checkbox: HTMLInputElement ) => checkbox.checked )
+    // Only checked boxes.
+    return checkboxElements.filter( ( checkbox: HTMLInputElement ) => checkbox.checked )
       .map( ( checkbox: HTMLInputElement ) => checkbox.name );
   }
 
@@ -1333,10 +1335,26 @@
     resetButton.addEventListener( 'click', queryParameterSelector.update );
   }
 
+  async function fetchText( url: string ): Promise<string> {
+    const response = await fetch( url, { credentials: 'same-origin' } );
+    if ( !response.ok ) {
+      throw new Error( `Failed to fetch ${url}: ${response.status} ${response.statusText}` );
+    }
+    return response.text();
+  }
+
+  async function fetchJSON<T>( url: string ): Promise<T> {
+    const response = await fetch( url, { credentials: 'same-origin' } );
+    if ( !response.ok ) {
+      throw new Error( `Failed to fetch ${url}: ${response.status} ${response.statusText}` );
+    }
+    return response.json();
+  }
+
   async function loadPackageJSONs( repos: RepoName[] ): Promise<Record<RepoName, PackageJSON>> {
     const packageJSONs: Record<RepoName, PackageJSON> = {};
     for ( const repo of repos ) {
-      packageJSONs[ repo ] = await $.ajax( { url: `../${repo}/package.json` } );
+      packageJSONs[ repo ] = await fetchJSON<PackageJSON>( `../${repo}/package.json` );
     }
     return packageJSONs;
   }
@@ -1354,13 +1372,13 @@
   const getDependentParameterControlId = ( value: string ) => `dependent-checkbox-${value}`;
 
   // Load files serially, populate then render
-  const activeRunnables = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/active-runnables' } ) );
-  const activeRepos = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/active-repos' } ) );
-  const phetioSims = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/phet-io' } ) );
-  const interactiveDescriptionSims = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/interactive-description' } ) );
-  const wrappers = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/wrappers' } ) );
-  const unitTestsRepos = whiteSplitAndSort( await $.ajax( { url: '../perennial-alias/data/unit-tests' } ) );
-  const phetioHydrogenSims = await $.ajax( { url: '../perennial-alias/data/phet-io-hydrogen.json' } );
+  const activeRunnables = whiteSplitAndSort( await fetchText( '../perennial-alias/data/active-runnables' ) );
+  const activeRepos = whiteSplitAndSort( await fetchText( '../perennial-alias/data/active-repos' ) );
+  const phetioSims = whiteSplitAndSort( await fetchText( '../perennial-alias/data/phet-io' ) );
+  const interactiveDescriptionSims = whiteSplitAndSort( await fetchText( '../perennial-alias/data/interactive-description' ) );
+  const wrappers = whiteSplitAndSort( await fetchText( '../perennial-alias/data/wrappers' ) );
+  const unitTestsRepos = whiteSplitAndSort( await fetchText( '../perennial-alias/data/unit-tests' ) );
+  const phetioHydrogenSims = await fetchJSON<MigrationData[]>( '../perennial-alias/data/phet-io-hydrogen.json' );
 
   let phetioPackageJSONs: Record<RepoName, PackageJSON> = {};
   try {
