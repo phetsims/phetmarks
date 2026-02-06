@@ -829,7 +829,11 @@
           group: 'PhET-iO',
           description: 'Runs the sim in phet-io brand with the standalone query parameter',
           url: `../${repo}/${repo}_en.html?brand=phet-io&phetioStandalone`,
-          queryParameters: phetioSimQueryParameters.concat( simQueryParameters )
+
+          // Because 'Standalone' is not a PhET-iO wrapper, concatenating phetioSimQueryParameters and simQueryParameters
+          // may result in duplicate query parameters, which will cause a runtime failure.  So ensure that the set
+          // of query parameters is unique.
+          queryParameters: _.uniq( phetioSimQueryParameters.concat( simQueryParameters ) )
         } );
 
         const simSpecificWrappers = phetioPackageJSONs[ repo ]?.phet[ 'phet-io' ]?.wrappers || [];
