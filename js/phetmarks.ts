@@ -1356,9 +1356,10 @@
   }
 
   async function loadPackageJSONs( repos: RepoName[] ): Promise<Record<RepoName, PackageJSON>> {
+    const results = await Promise.all( repos.map( repo => fetchJSON<PackageJSON>( `../${repo}/package.json` ).then( json => [ repo, json ] as const ) ) );
     const packageJSONs: Record<RepoName, PackageJSON> = {};
-    for ( const repo of repos ) {
-      packageJSONs[ repo ] = await fetchJSON<PackageJSON>( `../${repo}/package.json` );
+    for ( const [ repo, json ] of results ) {
+      packageJSONs[ repo ] = json;
     }
     return packageJSONs;
   }
