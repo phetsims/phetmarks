@@ -31,6 +31,127 @@
       top: 10px;
       border: 0;
     }
+
+    #contrast-checker {
+      display: block;
+      background: #ddd;
+      border: 1px solid #666;
+      border-radius: 6px;
+      padding: 12px;
+      margin: 10px 0;
+      max-width: 400px;
+    }
+
+    #contrast-checker h3 {
+      margin: 0 0 8px 0;
+      font-size: 15px;
+    }
+
+    .contrast-color-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .contrast-color-row label {
+      width: 90px;
+      font-size: 13px;
+    }
+
+    .contrast-color-row input[type="color"] {
+      width: 40px;
+      height: 28px;
+      border: 1px solid #999;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .contrast-hex-input {
+      width: 70px;
+      font-family: monospace;
+      font-size: 13px;
+      padding: 2px 4px;
+    }
+
+    #contrast-preview {
+      border: 2px solid #999;
+      border-radius: 4px;
+      padding: 12px;
+      margin: 10px 0;
+      text-align: center;
+    }
+
+    #contrast-preview-normal {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    #contrast-preview-large {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    #contrast-ratio-display {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin: 8px 0;
+    }
+
+    .contrast-section {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .contrast-section-title {
+      font-weight: bold;
+      font-size: 13px;
+      margin: 0 0 2px 0;
+    }
+
+    .contrast-section-row {
+      display: block;
+      font-size: 13px;
+      padding: 0 4px;
+    }
+
+    .contrast-section-row span:first-child {
+      display: inline-block;
+      width: 80px;
+    }
+
+    .contrast-result {
+      font-weight: bold;
+    }
+
+    .pass {
+      color: #080;
+    }
+
+    .fail {
+      color: #c00;
+    }
+
+    .contrast-pick-btn {
+      font-size: 10px;
+      padding: 1px 4px;
+      cursor: pointer;
+      border: 1px solid #999;
+      border-radius: 3px;
+      background: #eee;
+      margin-left: 2px;
+    }
+
+    .contrast-pick-btn:hover {
+      background: #ccc;
+    }
+
+    .contrast-pick-btn.active {
+      background: #69f;
+      color: #fff;
+      border-color: #47d;
+    }
   </style>
 </head>
 <body>
@@ -38,6 +159,42 @@
   <div id="color-column">
     <button id="export-button">Export changed colors (console.logged)</button>
     <br>
+    <details id="contrast-checker" open>
+      <summary><h3 style="display: inline">Contrast Ratio Checker</h3></summary>
+      <div id="contrast-preview">
+        <div id="contrast-preview-normal">Normal text (16px)</div>
+        <div id="contrast-preview-large">Large text</div>
+      </div>
+      <div id="contrast-ratio-display"></div>
+      <div id="contrast-results">
+        <div class="contrast-section">
+          <div class="contrast-section-title">Normal Text</div>
+          <div class="contrast-section-row"><span>WCAG AA</span> <span class="contrast-result" id="result-aa-normal"></span></div>
+          <div class="contrast-section-row"><span>WCAG AAA</span> <span class="contrast-result" id="result-aaa-normal"></span></div>
+        </div>
+        <div class="contrast-section">
+          <div class="contrast-section-title">Large Text</div>
+          <div class="contrast-section-row"><span>WCAG AA</span> <span class="contrast-result" id="result-aa-large"></span></div>
+          <div class="contrast-section-row"><span>WCAG AAA</span> <span class="contrast-result" id="result-aaa-large"></span></div>
+        </div>
+        <div class="contrast-section">
+          <div class="contrast-section-title">Graphical Objects and User Interface Components</div>
+          <div class="contrast-section-row"><span>WCAG AA</span> <span class="contrast-result" id="result-aa-ui"></span></div>
+        </div>
+      </div>
+      <div class="contrast-color-row" style="margin-top: 10px">
+        <label for="contrast-fg">Foreground:</label>
+        <input type="color" id="contrast-fg" value="#0000FF">
+        <input type="text" id="contrast-fg-hex" class="contrast-hex-input" value="#0000FF">
+        <span id="contrast-fg-linked" style="font-size: 11px; color: #555"></span>
+      </div>
+      <div class="contrast-color-row">
+        <label for="contrast-bg">Background:</label>
+        <input type="color" id="contrast-bg" value="#FFFFFF">
+        <input type="text" id="contrast-bg-hex" class="contrast-hex-input" value="#FFFFFF">
+        <span id="contrast-bg-linked" style="font-size: 11px; color: #555"></span>
+      </div>
+    </details>
   </div>
   <iframe id="sim-iframe"></iframe>
 </div>
@@ -66,11 +223,17 @@
   // Maps color keys {string} => data object that holds the HTML input and other items
   const colorInputMap = {};
 
+  // Track which sim color name is linked to the contrast checker FG/BG
+  let linkedFGName = null;
+  let linkedBGName = null;
+
   // Re-populate all color controls, sorted by color name.
+  const contrastChecker = document.getElementById( 'contrast-checker' );
   const reorganize = () => {
     colorColumn.innerHTML = '';
     colorColumn.appendChild( exportButton );
     colorColumn.appendChild( document.createElement( 'br' ) );
+    colorColumn.appendChild( contrastChecker );
     Object.keys( colorInputMap ).sort().forEach( name => {
       colorColumn.appendChild( colorInputMap[ name ].elementDiv );
     } );
@@ -93,12 +256,20 @@
       const alphaSliderReadout = document.createElement( 'div' );
       const applyColorToSim = () => {
         alphaSliderReadout.innerText = alphaSlider.valueAsNumber.toFixed( 2 );
-        document.getElementById( 'sim-iframe' ).contentWindow.postMessage( JSON.stringify( {
+        simFrame.contentWindow.postMessage( JSON.stringify( {
           type: 'setColor',
           name: name,
           value: colorInput.value,
           alpha: alphaSlider.valueAsNumber
         } ), '*' );
+
+        // Sync to contrast checker if this color is linked
+        if ( name === linkedFGName ) {
+          setContrastColor( 'fg', colorInput.value, name );
+        }
+        if ( name === linkedBGName ) {
+          setContrastColor( 'bg', colorInput.value, name );
+        }
       };
       // Send user changes to the sim
       colorInput.addEventListener( 'input', applyColorToSim );
@@ -121,6 +292,21 @@
 
       alphaSliderReadout.innerText = alpha.toFixed( 2 );
 
+      // Buttons to link this color to the contrast checker
+      const createContrastBtn = ( target, label ) => {
+        const btn = document.createElement( 'button' );
+        btn.textContent = label;
+        btn.dataset.target = target;
+        btn.className = 'contrast-pick-btn';
+        btn.title = 'Link as contrast checker ' + ( target === 'fg' ? 'foreground' : 'background' );
+        btn.addEventListener( 'click', () => {
+          setContrastColor( target, colorInput.value, name );
+        } );
+        return btn;
+      };
+
+      element.appendChild( createContrastBtn( 'fg', 'FG' ) );
+      element.appendChild( createContrastBtn( 'bg', 'BG' ) );
       element.appendChild( document.createTextNode( ' ' + name ) );
       element.appendChild( document.createElement( 'br' ) );
 
@@ -154,6 +340,140 @@
       reportForColor( data.name, data.value, data.alpha );
     }
   } );
+
+  // --- Contrast Ratio Checker ---
+
+  // Set a color in the contrast checker, optionally linking it to a sim color name
+  const setContrastColor = ( target, hexValue, colorName ) => {
+    const picker = document.getElementById( 'contrast-' + target );
+    const hexInput = document.getElementById( 'contrast-' + target + '-hex' );
+    const linkedLabel = document.getElementById( 'contrast-' + target + '-linked' );
+    picker.value = hexValue;
+    hexInput.value = hexValue.toUpperCase();
+
+    // Update linked name tracking
+    if ( colorName !== undefined ) {
+      if ( target === 'fg' ) { linkedFGName = colorName; }
+      else { linkedBGName = colorName; }
+      linkedLabel.textContent = colorName ? '(' + colorName + ')' : '';
+    }
+
+    // Update active button highlights across all rows
+    const linkedName = target === 'fg' ? linkedFGName : linkedBGName;
+    Object.keys( colorInputMap ).forEach( name => {
+      const btns = colorInputMap[ name ].elementDiv.querySelectorAll( '.contrast-pick-btn' );
+      btns.forEach( btn => {
+        if ( btn.dataset.target === target ) {
+          btn.classList.toggle( 'active', name === linkedName );
+        }
+      } );
+    } );
+
+    updateContrast();
+  };
+
+  // sRGB linearization per WCAG 2.0 https://www.w3.org/TR/WCAG20/#relativeluminancedef
+  const sRGBToLinear = c => {
+    c = c / 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow( ( c + 0.055 ) / 1.055, 2.4 );
+  };
+
+  // Parse a hex color string (with or without #) to {r, g, b}
+  const hexToRGB = hex => {
+    hex = hex.replace( /^#/, '' );
+    return {
+      r: parseInt( hex.substring( 0, 2 ), 16 ),
+      g: parseInt( hex.substring( 2, 4 ), 16 ),
+      b: parseInt( hex.substring( 4, 6 ), 16 )
+    };
+  };
+
+  // WCAG 2.0 relative luminance
+  const getRelativeLuminance = hex => {
+    const { r, g, b } = hexToRGB( hex );
+    return 0.2126 * sRGBToLinear( r ) + 0.7152 * sRGBToLinear( g ) + 0.0722 * sRGBToLinear( b );
+  };
+
+  // WCAG 2.0 contrast ratio
+  const getContrastRatio = ( hex1, hex2 ) => {
+    const l1 = getRelativeLuminance( hex1 );
+    const l2 = getRelativeLuminance( hex2 );
+    return ( Math.max( l1, l2 ) + 0.05 ) / ( Math.min( l1, l2 ) + 0.05 );
+  };
+
+  // Truncate to 2 decimal places without rounding (matching WebAIM behavior)
+  const truncate2 = num => {
+    return Math.floor( num * 100 ) / 100;
+  };
+
+  const setResult = ( elementId, passes ) => {
+    const el = document.getElementById( elementId );
+    el.textContent = passes ? 'Pass' : 'Fail';
+    el.className = 'contrast-result ' + ( passes ? 'pass' : 'fail' );
+  };
+
+  const updateContrast = () => {
+    const fg = document.getElementById( 'contrast-fg' ).value;
+    const bg = document.getElementById( 'contrast-bg' ).value;
+    const ratio = getContrastRatio( fg, bg );
+    const display = truncate2( ratio );
+
+    document.getElementById( 'contrast-ratio-display' ).textContent = display + ':1';
+
+    const preview = document.getElementById( 'contrast-preview' );
+    preview.style.color = fg;
+    preview.style.backgroundColor = bg;
+
+    setResult( 'result-aa-normal', ratio >= 4.5 );
+    setResult( 'result-aa-large', ratio >= 3 );
+    setResult( 'result-aa-ui', ratio >= 3 );
+    setResult( 'result-aaa-normal', ratio >= 7 );
+    setResult( 'result-aaa-large', ratio >= 4.5 );
+  };
+
+  // Push a contrast checker color change back to the linked sim color row
+  const pushToLinkedSimColor = ( linkedName, hexValue ) => {
+    if ( linkedName && colorInputMap[ linkedName ] ) {
+      const data = colorInputMap[ linkedName ];
+      data.colorInput.value = hexValue;
+      // Trigger the sim update
+      simFrame.contentWindow.postMessage( JSON.stringify( {
+        type: 'setColor',
+        name: linkedName,
+        value: hexValue,
+        alpha: data.alphaSlider.valueAsNumber
+      } ), '*' );
+    }
+  };
+
+  const setupContrastListeners = target => {
+    const picker = document.getElementById( 'contrast-' + target );
+    const hexInput = document.getElementById( 'contrast-' + target + '-hex' );
+    const getLinkedName = () => target === 'fg' ? linkedFGName : linkedBGName;
+
+    picker.addEventListener( 'input', () => {
+      hexInput.value = picker.value.toUpperCase();
+      pushToLinkedSimColor( getLinkedName(), picker.value );
+      updateContrast();
+    } );
+
+    hexInput.addEventListener( 'input', () => {
+      let val = hexInput.value.trim();
+      if ( !val.startsWith( '#' ) ) { val = '#' + val; }
+      if ( /^#[0-9a-fA-F]{6}$/.test( val ) ) {
+        picker.value = val;
+        pushToLinkedSimColor( getLinkedName(), val );
+        updateContrast();
+      }
+    } );
+  };
+
+  setupContrastListeners( 'fg' );
+  setupContrastListeners( 'bg' );
+
+  updateContrast();
+
+  // --- Export ---
 
   exportButton.addEventListener( 'click', () => {
 
