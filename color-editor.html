@@ -186,13 +186,11 @@
         <label for="contrast-fg">Foreground:</label>
         <input type="color" id="contrast-fg" value="#0000FF">
         <input type="text" id="contrast-fg-hex" class="contrast-hex-input" value="#0000FF">
-        <span id="contrast-fg-linked" style="font-size: 11px; color: #555"></span>
       </div>
       <div class="contrast-color-row">
         <label for="contrast-bg">Background:</label>
         <input type="color" id="contrast-bg" value="#FFFFFF">
         <input type="text" id="contrast-bg-hex" class="contrast-hex-input" value="#FFFFFF">
-        <span id="contrast-bg-linked" style="font-size: 11px; color: #555"></span>
       </div>
     </details>
   </div>
@@ -347,7 +345,6 @@
   const setContrastColor = ( target, hexValue, colorName ) => {
     const picker = document.getElementById( 'contrast-' + target );
     const hexInput = document.getElementById( 'contrast-' + target + '-hex' );
-    const linkedLabel = document.getElementById( 'contrast-' + target + '-linked' );
     picker.value = hexValue;
     hexInput.value = hexValue.toUpperCase();
 
@@ -355,7 +352,6 @@
     if ( colorName !== undefined ) {
       if ( target === 'fg' ) { linkedFGName = colorName; }
       else { linkedBGName = colorName; }
-      linkedLabel.textContent = colorName ? '(' + colorName + ')' : '';
     }
 
     // Update active button highlights across all rows
