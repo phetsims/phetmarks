@@ -141,25 +141,24 @@ export function resolveSearch( catalog: LaunchCatalog, rawSearch: string, pinned
 
   const repoTokens = strictSearch.repoTokens;
   const candidateSearches: ParsedSearch[] = [];
-  const candidateCount = 1 << repoTokens.length;
-  for ( let mask = 1; mask < candidateCount; mask++ ) {
-    const candidateRepoTokens: string[] = [];
-    const candidateModeTokens = [ ...strictSearch.modeTokens ];
 
-    repoTokens.forEach( ( token, index ) => {
-      if ( mask & ( 1 << index ) ) {
-        candidateModeTokens.push( token );
+  const addCandidateSearches = ( index: number, candidateRepoTokens: string[], candidateModeTokens: string[] ): void => {
+    if ( index === repoTokens.length ) {
+      if ( candidateModeTokens.length > strictSearch.modeTokens.length ) {
+        candidateSearches.push( {
+          repoTokens: candidateRepoTokens,
+          modeTokens: candidateModeTokens
+        } );
       }
-      else {
-        candidateRepoTokens.push( token );
-      }
-    } );
+      return;
+    }
 
-    candidateSearches.push( {
-      repoTokens: candidateRepoTokens,
-      modeTokens: candidateModeTokens
-    } );
-  }
+    const token = repoTokens[ index ];
+    addCandidateSearches( index + 1, [ ...candidateRepoTokens, token ], candidateModeTokens );
+    addCandidateSearches( index + 1, candidateRepoTokens, [ ...candidateModeTokens, token ] );
+  };
+
+  addCandidateSearches( 0, [], [ ...strictSearch.modeTokens ] );
 
   candidateSearches.sort( ( a, b ) => {
     return b.repoTokens.length - a.repoTokens.length ||

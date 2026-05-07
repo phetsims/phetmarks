@@ -34,7 +34,7 @@ function loadStringArray( key: string ): string[] {
     const rawValue = localStorage.getItem( storageKey( key ) );
     return rawValue ? JSON.parse( rawValue ) : [];
   }
-  catch {
+  catch{
     return [];
   }
 }
@@ -48,7 +48,7 @@ function loadRecentLaunches(): RecentLaunch[] {
     const rawValue = localStorage.getItem( storageKey( 'recentLaunches' ) );
     return rawValue ? JSON.parse( rawValue ) : [];
   }
-  catch {
+  catch{
     return [];
   }
 }
@@ -85,7 +85,7 @@ export function renderApp( catalog: LaunchCatalog ): void {
   const detailPane = getElement<HTMLDivElement>( 'detailPane' );
   const pinButton = getElement<HTMLButtonElement>( 'pinButton' );
 
-  let pinnedRepos = new Set<RepoName>( loadStringArray( 'pinnedRepos' ) );
+  const pinnedRepos = new Set<RepoName>( loadStringArray( 'pinnedRepos' ) );
   let recentLaunches = loadRecentLaunches();
   let currentSearch: ParsedSearch = parseSearch( '' );
   let rankedRepos = rankRepos( catalog, currentSearch, pinnedRepos );
@@ -370,7 +370,7 @@ export function renderApp( catalog: LaunchCatalog ): void {
     }
 
     if ( recentLaunches.length > 0 ) {
-      container.appendChild( createTextElement( 'div', 'sectionTitle', 'Recent' ) );
+      container.appendChild( createTextElement( 'div', 'sectionTitle recentSectionTitle', 'Recent' ) );
       recentLaunches.forEach( launchInfo => {
         const button = document.createElement( 'button' );
         button.type = 'button';
