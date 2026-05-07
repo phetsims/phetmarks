@@ -196,6 +196,26 @@
       background: var(--accent-soft);
     }
 
+    .recentButton {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+      gap: 8px;
+    }
+
+    .recentShortcut {
+      color: var(--accent-strong);
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+
+    .recentContent {
+      min-width: 0;
+    }
+
     .repoRowText {
       display: flex;
       align-items: center;

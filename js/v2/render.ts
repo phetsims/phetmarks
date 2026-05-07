@@ -210,6 +210,10 @@ export function renderApp( catalog: LaunchCatalog ): void {
 
   function openURL( url: string, forceNewTab: boolean ): void {
     addRecentLaunch( url );
+    openRawURL( url, forceNewTab );
+  }
+
+  function openRawURL( url: string, forceNewTab: boolean ): void {
     if ( forceNewTab || targetSelect.value === 'newTab' ) {
       window.open( url, '_blank' );
     }
@@ -222,6 +226,32 @@ export function renderApp( catalog: LaunchCatalog ): void {
     if ( selectedMode ) {
       openURL( getCurrentURL(), forceNewTab );
     }
+  }
+
+  function launchRecent( recentIndex: number ): void {
+    const launchInfo = recentLaunches[ recentIndex ];
+    if ( !launchInfo ) {
+      return;
+    }
+
+    recentLaunches = [
+      launchInfo,
+      ...recentLaunches.filter( recentLaunch => recentLaunch.repo !== launchInfo.repo ||
+                                                recentLaunch.modeName !== launchInfo.modeName ||
+                                                recentLaunch.url !== launchInfo.url )
+    ].slice( 0, MAX_RECENT_LAUNCHES );
+    saveRecentLaunches( recentLaunches );
+    openRawURL( launchInfo.url, false );
+    render();
+  }
+
+  function getRecentShortcutIndex( event: KeyboardEvent ): number | null {
+    if ( !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey ) {
+      return null;
+    }
+
+    const match = event.code.match( /^(Digit|Numpad)([1-8])$/ );
+    return match ? parseInt( match[ 2 ], 10 ) - 1 : null;
   }
 
   function renderRepos(): void {
@@ -371,13 +401,19 @@ export function renderApp( catalog: LaunchCatalog ): void {
 
     if ( recentLaunches.length > 0 ) {
       container.appendChild( createTextElement( 'div', 'sectionTitle recentSectionTitle', 'Recent' ) );
-      recentLaunches.forEach( launchInfo => {
+      recentLaunches.forEach( ( launchInfo, index ) => {
         const button = document.createElement( 'button' );
         button.type = 'button';
         button.className = 'recentButton';
-        button.appendChild( createTextElement( 'div', 'repoName', `${launchInfo.repo} / ${launchInfo.modeText}` ) );
-        button.appendChild( createTextElement( 'div', 'recentMeta', launchInfo.url ) );
-        button.addEventListener( 'click', () => openURL( launchInfo.url, false ) );
+        button.appendChild( createTextElement( 'span', 'recentShortcut', `[${index + 1}]` ) );
+
+        const content = document.createElement( 'span' );
+        content.className = 'recentContent';
+        content.appendChild( createTextElement( 'div', 'repoName', `${launchInfo.repo} / ${launchInfo.modeText}` ) );
+        content.appendChild( createTextElement( 'div', 'recentMeta', launchInfo.url ) );
+        button.appendChild( content );
+
+        button.addEventListener( 'click', () => launchRecent( index ) );
         container.appendChild( button );
       } );
     }
@@ -407,7 +443,7 @@ export function renderApp( catalog: LaunchCatalog ): void {
     renderDetails();
   }
 
-    searchInput.addEventListener( 'input', () => {
+  searchInput.addEventListener( 'input', () => {
     updateSelectionFromSearch( false );
     persistSelection();
     render();
@@ -416,7 +452,13 @@ export function renderApp( catalog: LaunchCatalog ): void {
   customQueryInput.addEventListener( 'input', render );
 
   searchInput.addEventListener( 'keydown', event => {
-    if ( event.key === 'ArrowDown' || event.key === 'ArrowUp' ) {
+    const recentShortcutIndex = getRecentShortcutIndex( event );
+    if ( recentShortcutIndex !== null ) {
+      event.preventDefault();
+      event.stopPropagation();
+      launchRecent( recentShortcutIndex );
+    }
+    else if ( event.key === 'ArrowDown' || event.key === 'ArrowUp' ) {
       event.preventDefault();
       if ( rankedRepos.length > 0 ) {
         selectedIndex = Math.max( 0, Math.min( rankedRepos.length - 1, selectedIndex + ( event.key === 'ArrowDown' ? 1 : -1 ) ) );
