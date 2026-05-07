@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+  <title>PhET Bookmarks 2</title>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --background: #f5f6f7;
+      --surface: #ffffff;
+      --surface-quiet: #eef1f3;
+      --border: #cfd6dc;
+      --border-strong: #9aa8b3;
+      --text: #17212b;
+      --muted: #5d6a73;
+      --accent: #006fbf;
+      --accent-strong: #005894;
+      --accent-soft: #e5f2fb;
+      --green: #177245;
+      --orange: #9c5713;
+      --focus: #d18b00;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--background);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      min-height: 32px;
+      padding: 5px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: var(--accent);
+      color: var(--accent-strong);
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 1px;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: minmax(250px, 30%) minmax(240px, 28%) minmax(320px, 42%);
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 10px;
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-column: 1 / -1;
+      grid-template-columns: minmax(300px, 1fr) auto auto;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .searchInput {
+      width: 100%;
+      min-height: 38px;
+      padding: 7px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .targetSelect {
+      min-height: 36px;
+      padding: 5px 8px;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .launchButton {
+      min-width: 92px;
+      border-color: var(--accent-strong);
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: 650;
+    }
+
+    .launchButton:hover {
+      background: var(--accent-strong);
+      color: #ffffff;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .columnHeader {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 38px;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-quiet);
+      font-weight: 700;
+    }
+
+    .countText {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .scrollList {
+      min-height: 0;
+      overflow: auto;
+      padding: 6px;
+    }
+
+    .repoButton,
+    .modeButton,
+    .recentButton,
+    .pinListButton {
+      display: block;
+      width: 100%;
+      min-height: 34px;
+      margin: 0 0 4px;
+      padding: 6px 8px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+    }
+
+    .repoButton:hover,
+    .modeButton:hover,
+    .recentButton:hover,
+    .pinListButton:hover {
+      border-color: var(--border-strong);
+      background: var(--surface-quiet);
+      color: var(--text);
+    }
+
+    .repoButton.selected,
+    .modeButton.selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .repoRowText {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .repoName,
+    .modeName {
+      overflow-wrap: anywhere;
+      font-weight: 650;
+    }
+
+    .repoMeta,
+    .modeDescription,
+    .recentMeta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .pinMark {
+      color: var(--orange);
+      font-weight: 800;
+    }
+
+    .modeGroup {
+      margin: 8px 4px 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .detailPane {
+      min-height: 0;
+      overflow: auto;
+      padding: 10px;
+    }
+
+    .urlPreview {
+      display: block;
+      width: 100%;
+      min-height: 54px;
+      margin: 0 0 10px;
+      padding: 8px;
+      overflow-wrap: anywhere;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fbfcfd;
+      color: #27333d;
+      line-height: 1.35;
+      user-select: text;
+    }
+
+    .sectionTitle {
+      margin: 14px 0 7px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .sectionTitle:first-child {
+      margin-top: 0;
+    }
+
+    .chipGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+      gap: 6px;
+    }
+
+    .chip {
+      min-height: 32px;
+      border-color: var(--border);
+      background: var(--surface);
+      text-align: center;
+    }
+
+    .chip[aria-pressed="true"] {
+      border-color: var(--green);
+      background: #e9f6ef;
+      color: #0d5e35;
+      font-weight: 700;
+    }
+
+    .fieldGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    label.fieldLabel {
+      display: grid;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .fieldLabel select,
+    .customQueryInput {
+      width: 100%;
+      min-height: 32px;
+      padding: 5px 7px;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .smallActions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .quietButton {
+      min-height: 28px;
+      padding: 3px 8px;
+      color: var(--muted);
+    }
+
+    .emptyText,
+    .statusText {
+      padding: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .errorText {
+      color: #a12424;
+      font-weight: 700;
+    }
+
+    @media (max-width: 850px) {
+      html,
+      body {
+        overflow: auto;
+      }
+
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        height: auto;
+        min-height: 100%;
+      }
+
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+
+      .column {
+        min-height: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div id="app" class="app">
+  <div class="topbar">
+    <input id="search" class="searchInput" type="search" autocomplete="off" spellcheck="false"
+           placeholder="Search repos or use mode filters, e.g. energy skate -studio"/>
+    <select id="targetSelect" class="targetSelect" aria-label="Launch target">
+      <option value="sameTab">Same tab</option>
+      <option value="newTab">New tab</option>
+    </select>
+    <button id="launchButton" class="launchButton" type="button">Launch</button>
+  </div>
+
+  <section class="column" aria-label="Repositories">
+    <div class="columnHeader">
+      <span>Repositories</span>
+      <span id="repoCount" class="countText"></span>
+    </div>
+    <div id="repoList" class="scrollList"></div>
+  </section>
+
+  <section class="column" aria-label="Modes">
+    <div class="columnHeader">
+      <span>Modes</span>
+      <span id="modeCount" class="countText"></span>
+    </div>
+    <div id="modeList" class="scrollList"></div>
+  </section>
+
+  <section class="column" aria-label="Launch options">
+    <div class="columnHeader">
+      <span>Launch Options</span>
+      <button id="pinButton" class="quietButton" type="button">Pin</button>
+    </div>
+    <div id="detailPane" class="detailPane"></div>
+  </section>
+</div>
+
+<script src="../../assert/js/assert.js"></script>
+<script>
+  window.assertions.enableAssert();
+</script>
+<script src="../../query-string-machine/js/QueryStringMachine.js"></script>
+<script src="../../chipper/js/browser/initialize-globals.js"></script>
+<script type="module" src="../../chipper/dist/js/phetmarks/js/v2/main.js"></script>
+</body>
+</html>
